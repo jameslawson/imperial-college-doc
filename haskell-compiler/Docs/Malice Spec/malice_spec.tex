@@ -1,0 +1,256 @@
+\documentclass[a4wide, 10pt]{article}
+\usepackage{a4, fullpage}
+\thispagestyle{empty}
+\setlength{\parskip}{0.3cm}
+\setlength{\parindent}{0cm}
+
+%to do stuff with margins...
+\usepackage[top=0.7in, bottom=0.7in, left=0.7in, right=0.7in]{geometry}
+
+%to do stuff with code listings
+\usepackage{listings}
+\lstset{breaklines=true, basicstyle=\footnotesize}
+
+
+% This is the preamble section where you can include extra packages etc.
+
+\begin{document}
+
+\title{Language Specification}
+
+\author{Mohamed Eltuhamy \and James Lawson \and Alejandro Garcia Ochoa}
+
+\date{\today}         % inserts today's date
+
+\maketitle            % generates the title from the data above
+
+\section{Introduction}
+
+\subsection{Project Background}
+
+This document is a specification for the \emph{MAlice Programming Language} and is aimed at programmers who
+want to familiarise themselves with the syntax and semantics of the language.  The MAlice programming
+language is part of a second year course on compilers from the Department of Computing at Imperial College
+London. This document has been produced by three students as part of an exercise in writing a compiler for
+the language.
+
+\subsection{Introduction to the Language}
+
+The MAlice programming language is a imperative programming language that uses keyphrases
+instead of keywords to write programs. Instead using symbols to perform the features of the language,
+we have phrases such as \emph{x is a number then x became 10}. The language is a high-level programming language that 
+is close to 4th generation programming languages such as variants of SQL and Prolog in terms 
+of how close the language read reads to English. The language does not support commenting and function calls currently.
+
+For this project, we have been given a group of 20 MAlice programs and have examined 
+their source code in an attempt to product this language specification. It is based only
+on the source code of the given 20 programs. The following specification represents
+our group interpretation of the MAlice programming language.
+
+
+\subsection{Contents}
+\begin{itemize}
+\item 1. Introduction. An introduction to the project.
+\item 2. BNF Grammar. A description of the syntax using Backus-Naur Form.
+\item 3. Semantics. A description of the meaning of keywords, expressions and features.
+\end{itemize}
+
+
+\newpage
+
+\section{BNF Grammar} 
+
+In this section, we have formally defined the syntax of the language using the Backus-Naur Form language
+specification tool. The non-terminal symbol \verb+<program>+ is the start symbol for every MAlice program. 
+
+\textbf{Note: }\verb+ASCIICHAR+\textbf{ refers to \emph{any} ASCII character.}
+\begin{lstlisting}
+
+<letter>          ::= a | b | c | d | e | f | g | h | i | j | k | l | m | n  | o | p | q | r | s | t | u | v | w | x | y | z | A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z
+               
+<digit>           ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
+<number>          ::= <digit> <number>
+
+<variable>        ::= <a> <b>
+<a>               ::= <letter> | _ <letter> | _ <a>
+<b>               ::= <letter> | <number> | _ | <letter> <b> | <number> <b> | _ <b>
+
+<binaryoperator>  ::= + | * | & | | | ^ | / | %
+<unaryoperator>   ::= ~
+
+<expression>      ::= <mathsExpression> | <charExpression>
+
+<mathsExpression> ::= <number> | <variable>
+<mathsExpression> ::= (<mathsExpression>)
+<mathsExpression> ::= <mathsExpression> <binaryoperator> <mathsExpression>
+<mathsExpression> ::= <unaryoperator> <mathsExpression>
+
+<charExpression>  ::= 'ASCIICHAR'
+<charExpression>  ::= (<charExpression>)
+
+<type>            ::= number | letter
+
+<declaration>     ::= <variable> was a <type>
+<assignment>      ::= <variable> became <expression>
+
+<action>          ::= <variable> ate
+<action>          ::= <variable> drank
+
+<program>         ::= <statements>
+<statements>      ::= <statement> | <statement> <statements>
+<statement>       ::= <sentence> <endSentence>
+<sentence>        ::= <declaration> | <assignment> | <action> | Alice found  <expression>
+
+<endSentence>     ::= and | but | then | . | , | too.
+    
+\end{lstlisting}
+
+\section{Semantics}
+
+\subsection{Basic Program Structure}
+
+Every MAlice program consists of zero or more statements, separated by an ending command. Ending commands include "\verb+and+", "\verb+but+", "\verb+then+", "\verb+too.+", "\verb+.+" and "\verb+,+". Note how \verb+too.+ always ends with a "\verb+.+". Whitespace, such as new lines, empty spaces "\verb+ +", tabs, etc. are ignored between sentences. Below shows a example of a simple MAlice program.
+
+\begin{lstlisting}
+x was a number.
+x became 10.
+Alice found x.
+\end{lstlisting}
+
+The MAlice programming language supports variables. 
+A variable is a name given to a temporary place in memory. 
+The next sections (cf. Section 3.2, Section 3.3, Section 3.4) explain the
+semantics of how variables can be used in MAlice. The above example has the variable x which
+becomes a number. This is variable assignment. x stores the value 10 in its memory location.
+
+When Alice has found a value, the program terminates and the output is what Alice has found.
+So in the program above, 10 is outputted. A program that does not have \verb+Alice has found <expression>+ 
+will not output a value, but will compile provided the rest of the program is correct.
+
+Malice programs are case sensitive. So \verb+x+ and \verb+X+ are different variables, and \verb+AtE+ is different to the keyword \verb+ate+ (see later).
+
+\subsection{Variable Types}
+There are only two types in MAlice, and these are \textbf{letter} and \textbf{number}. Numbers in MAlice represent the natural numbers
+starting from zero. So \verb+0+, \verb+1+, \verb+2+, \verb+3+, \verb+4+, etc. are of the \verb+number+ type. 
+
+Numbers are represented in 8 bits. There is no support for signed binary integers. There is no subtraction operation (cf. Section 3.2) and no minus operator. There is no support for floating point representations and no operations for floating point arithmetic. 
+
+The variables with the \textbf{letter} type can store 8-bit Extended ASCII characters. They can only
+be assigned using the explicit character in quotes e.g. \verb+'a'+. 
+
+
+\subsection{Variable Identification}
+
+In MAlice, a variable must have a unique identifier that is chosen when it is first introduced in program execution.
+The identifier must be a string of alphanumerical characters that can contain zero or more underscores anywhere in the string. 
+
+There cannot be identifiers that have only digits. There cannot be identifiers that have only underscores but no other punctuation marks. If a number is used, it must be preceded by at least one letter.
+Variable names must not contain spaces. 
+
+The language has some reserved keywords. These are \verb+number+, \verb+letter+, \verb+was+, \verb+a+, \verb+became+, \verb+ate+, \verb+drank+, \verb+and+, \verb+but+, \verb+then+, \verb+too+, \verb+Alice+, \verb+found+. As previously mentioned, however, we can have variable names which are similar to keywords, but with different case, e.g. \verb+NUMBER+ is a valid variable name.
+
+Examples of \textbf{valid} identifiers: \verb+x+, 
+\verb+y+, \verb+xy+, \verb+this+, \verb+a_3+, \verb+a3+,
+ \verb+a4b5+, \verb+a__t+, \verb+aat_3+, \verb+a4_t1+, \verb+alice+.
+\\ \\Examples of \textbf{invalid} identifiers: \verb+_a+, \verb+a+, \verb+some space+, \verb+hello!+, \verb+0a+, \verb+___+, \verb+_5c+, \verb+Alice+.
+
+
+
+\subsection{Variable Declaration and Assignment}
+ 
+\begin{tabular}{|c|c|c|c|}
+\hline 
+\textbf{Example} & \textbf{Explanation}\tabularnewline
+\hline 
+
+\verb+x was a number. y was a letter+ & Declares \verb+x+ as a \verb+number+ and \verb+y+ as a \verb+letter+. \\&The variables can now be used in the program.\tabularnewline
+\hline 
+\verb+x became 2+ & Assigns the value \verb+2+ to the variable \verb+x+ \\\verb+y became 'a'+&Assigns the value \verb+'a'+ to \verb+y+. \tabularnewline
+\hline 
+
+\verb@something became 4 + x + 7@ & Computes the value of \verb@4+x+7@ and assigns that value to the variable\\&The value of \verb+x+ is evaluated and used in the expression.\tabularnewline
+\hline 
+\end{tabular}
+\subsection{Operators and Expressions}
+
+The MAlice programming language provides 7 binary operators and 1 unary operator
+to be performed on the integer variables of the language. Two are arithmetic operations and the rest are bitwise operations that operate on the binary representation of the operand(s). These operators only work on \verb+number+ types and are undefined on character types.
+
+\begin{tabular}{|c|c|c|c|}
+\hline 
+\textbf{Name} & \textbf{Symbol} & \textbf{Example} & \textbf{Result}\tabularnewline
+
+\hline Addition & \verb@+@ & \verb@a + b@
+	& Performs integer addition on \verb+a+ and \verb+b+ 
+\tabularnewline\hline 
+Multiplication & \verb+*+ & \verb@a * b@ & Performs integer multiplication on \verb+a+ and \verb+b+\tabularnewline\hline 
+Division & \verb+/+ & \verb+a / b+ & Result is the quotient of \verb+a+ and \verb+b+.\tabularnewline
+\hline 
+Modulo & \verb+%+ & \verb+a % b+ & Result is the remainder of \verb+a+ divided by \verb+b+\tabularnewline
+\hline 
+Bitwise AND & \verb+&+ & \verb+a & b+ & Bits that are set in both \verb+a+ and \verb+b+ are set in the result\tabularnewline
+\hline 
+Bitwise OR & \verb+|+ & \verb+a | b+ & Bits that are set in either \verb+a+ or \verb+b+ are set in the result\tabularnewline
+\hline 
+Bitwise XOR & \verb+^+ & \verb+a ^ b+ & Bits that are set in \verb+a+ or \verb+b+ but not both are set in the result\tabularnewline
+\hline 
+Bitwise NOT & \textasciitilde{} & \textasciitilde{}\verb+a+ & Bits that are set in \verb+a+ are not set in the result, and vice versa\tabularnewline \hline 
+\end{tabular}
+
+The operands of these 8 operators may be either variables of type \textbf{number} or a literal (immediate) value. The immediate values must be within the range 0-255 (ie they must be able
+to be represented by 8 bits). These operators will not work with operands with type  \textbf{letter}. These expressions allow bracketing to enforce precedence (the order in which
+the operations are evaluated). As stated earlier, the operators above only work on \verb+number+ types, however, bracketing \textit{also} works on \verb+letter+.
+
+
+
+We also require that the variable has already been declared in program execution if we use a variable as an operand. We also specify that
+integer division with a divisor of 0 is forbidden and any results have no significant meaning.
+We may have an overflow with the addition and multiplication operators. This is a runtime error
+that our compiler may not be able to see in advance. 
+
+The precedence of these operators (and also bracketing), from highest to lowest are: 
+
+\textbf{(1)} brackets
+\textbf{(2)} Bitwise NOT \textasciitilde{}
+\textbf{(3)} Multiplication *, Division \verb+/+ and Modulo \verb@%@ 
+\textbf{(4)} Addition \verb@+@ 
+\textbf{(5)} Bitwise AND \verb+&+
+\textbf{(6)} Bitwise XOR \verb+^+  
+\textbf{(7)} Bitwise OR \verb+|+
+
+
+These operators discussed previously are key for computation to give values for Alice to find. 
+By combining valid operands and zero or more operators we can form expressions that are evaluated at runtime.
+
+Variables of type \textbf{number} can be assigned to expressions that use the operators 
+of the previous section, with operands that are numerical constants or 
+other number variables. Variables of type \textbf{letter} can only be assigned to a constant ASCII character, but note they (constant ASCII characters) are \textit{also} expressions. So for example, \verb+((('a')))+ is a valid expression.
+
+
+\subsection{Actions}
+
+So far we have looked at statements that involve variable declaration and expression assignment. We will now
+cover additional statements for manipulating numbers. A statement can contain the past participle of two verbs,
+to drink and to eat that represent a number being decreased and increased by one respectively. 
+
+The \verb+ate+ action increments the number, while the \verb+drank+ action decrements it. When we decrement zero, the number wraps back round to the largest number that we can represent (255). Similarly, when we increment 255 using \verb+ate+, the number loops back round to zero. 
+
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Example & Explanation\tabularnewline
+
+\hline \verb+x was a number.+& Declares x as a number and increments it.
+\\\verb+x became 2.+ &  So the program will output 3.\\ \verb+x ate.+ & \\ \verb+Alice found x.+ &
+\tabularnewline
+\hline 
+\verb+x was a number.+ & Declares x as a number and increments it. 
+\\ \verb+x became 6. + & So the program will output 5. \\ \verb+ x drank.+ & \\ \verb+Alice found x.+ &
+\tabularnewline
+\hline 
+\end{tabular}
+
+
+
+
+\end{document}

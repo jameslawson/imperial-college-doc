@@ -1,0 +1,24 @@
+\begin{tabular}{|c|c|c|c|}
+\hline 
+Name & Symbol & Example & Result\tabularnewline
+\hline 
+\hline 
+Addition & + & a + b & Performs integer addition on \textbf{a} and \textbf{b}\tabularnewline
+\hline 
+Multiplication & {*} & a {*} b & Performs integer multiplication on \textbf{a} and \textbf{b}\tabularnewline
+\hline 
+Bitwise AND & \& & a \& b & Bits that are set in both a and b are set in the result\tabularnewline
+\hline 
+Bitwise OR & | & a | b & Bits that are set in either a or b are set in the result\tabularnewline
+\hline 
+Bitwise XOR & \textasciicircum{} & a \textasciicircum{} b & Bits that are set in a or b but not both are set in the result\tabularnewline
+\hline 
+Bitwise NOT & \textasciitilde{} & \textasciitilde{} a & Bits that are set in a are not set in the result, and vice versa\tabularnewline
+\hline 
+Division & / & a / b & Result is the quotient of a and b.\tabularnewline
+\hline 
+Modulo & \% & a \% b & Result is the remainder of a divided by b\tabularnewline
+\hline 
+ &  &  & \tabularnewline
+\hline 
+\end{tabular}

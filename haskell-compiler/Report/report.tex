@@ -1,0 +1,215 @@
+\documentclass[a4wide, 10pt]{article}
+\usepackage{a4, fullpage}
+\thispagestyle{empty}
+\setlength{\parskip}{0.3cm}
+\setlength{\parindent}{0cm}
+
+%to do stuff with margins...
+\usepackage[top=0.7in, bottom=0.7in, left=0.7in, right=0.7in]{geometry}
+
+%to do stuff with code listings
+\usepackage{listings}
+\lstset{breaklines=true, basicstyle=\footnotesize}
+
+
+% This is the preamble section where you can include extra packages etc.
+
+\begin{document}
+
+\title{The MAlice Compiler}
+
+\author{Mohamed Eltuhamy \and James Lawson \and Alejandro Garcia Ochoa}
+
+\date{\today}         % inserts today's date
+
+\maketitle            % generates the title from the data above
+
+
+\section{The MAlice Compiler}
+
+\subsection{Project Background}
+
+The aim of the project was to write a compiler for the \textit{MAlice
+programming language}. We were given several samples and our task was to
+understand these samples to make a language specification and then use this to
+create a compiler for the language. No doubt it was our longest, most
+challenging project yet but also the most exciting.
+
+Given its ability to pattern-match complex structures and the availability of
+several tools to help us write the compiler, we decided to use the Haskell
+programming language. Although several tools were available to generate a
+lexer and a parser using Haskell, we decided to use \textit{Alex} as our
+scanner generator and \textit{Happy} as our parser generator. We decided to
+use these tools because they were the quickest to get used to, since none of
+us had any particular experience in Monads or, in fact, of Haskell in such a
+large-scale project.
+
+
+\section{Design decisions}
+
+\subsection{Choice of tools} \textbf{Haskell} Our compiler was
+written in Haskell, as we quickly figured it was very easy to use the power of
+pattern matching to speed up semantic checking and code generation.
+Haskell is very flexible with data structures. Unlike languages such as Java, 
+Haskell is very quick with representing lists and trees. We knew from the
+very start that walking over an Abstract Syntax Tree would be very simple.
+Haskell, being a functional programming language, made it 
+
+\textbf{Lexer generator:} We decided to choose Alex
+because it is well supported by the Haskell community
+http://www.haskell.org/alex and is part of the Haskell platform. There are
+plenty of examples and tutorials, unlike other lexer generators such as "The
+Haskell Dynamic Lexer Engine" which is much less supported. Strong support
+from the Haskell community was, however, the main reason for choosing Alex.
+Another reason was that Alex was compatible with Happy. 
+
+\textbf{Parser generator} Happy is another tool with a lot of documentation.
+It takes in grammatical rules and produces the builds an AST in Haskell. 
+The documentation for Happy was very good. It gave examples that
+helped us to do the basics from parsing a sequence of statements to handling more difficult
+problems such as precedence and context sensitive parsing (a unary minus versus a binary subtraction).
+ 
+The parser file itself uses similar syntax to ``YACC'' for
+C. The main competitor was \textit{Parsec}, which is completely monadic.
+Since none of us were very experienced with Monads in Haskell, we decided to
+use \textit{Happy} instead.
+
+
+
+
+\subsection{Basic project structure} In our project, we had 4 files:
+
+\textbf{TypeDefinitions.hs:} This file included almost all our type
+definitions. We decided to do that because almost all the types were dependant
+on each other. It is therefore easier to see these important relations between
+types if they're all in the same place. Also, many files can now use the same
+types by simply including that one file.
+
+\textbf{Scanner.x:} This is the file that is passed into \textit{Alex} to
+generate the scanner. Here we define the syntax of the language in order to
+produce tokens. A large part of this file is used to define the Token type and
+a function \texttt{tokenPosn} that's used to get the line numbers in error
+messages.
+
+\textbf{Parser.y:} The list of tokens gernerated from the scanner is then
+passed here for parsing. We pass this file to \textit{Happy} to generate our
+parser which will generate Haskell lists which will define the input program.
+
+\textbf{SemanticAnalyser.hs:} This file was used to produce error messages
+by looking over the semantics of a given tree representation of a Malice
+program. What's produced from the parser is passed here. It also produces
+various symbol tables to define scopes (see 2.3 below) and bind variables to
+unique identifiers in the generated code (to remove scoping conflicts).
+
+\textbf{CodeGenerator.hs:} Given a Haskell syntax tree produced by the
+parser, this section produces our \textit{intermediate representation} (IR)
+and finally the assembly code and executable file. It contains two main
+functions \texttt{transStatement} and \texttt{transExpression} which are
+used together to generate a list of \texttt{IntelInstruction}s. This list,
+along with the global symbol table is our IR. Our \texttt{show} function for
+the \texttt{IntelInstruction} type converts this IR into assembly code.
+
+\subsection{Scope} We made sure all the rooms defined (commonly called methods) were visisble
+throughout the whole scope program. To handle scope, we pass as an accumulating parameter 
+a list of symbol tables. These tables store the levels of scope that could currently apply to
+the statement currently being checked for semantics. A helper function will look up each level
+and stops when we match the first variable with the same name. 
+
+\subsection{Rooms} We treated the main malice program as a room itself. This made it easier to
+generalise semantic checking and code generation. We originally treated the main program separately
+to rooms and ended up with severe code duplication. In the end, the main program was a room
+with no parameters being passed to it and has no return type.
+
+\subsection{Conditions} We treated perhaps-or-maybe-or statements (as we may call if-then-else stataments)
+in their simplest form; using nested conditions having either a true case or a false case.
+So for example: \texttt{if B1 then S1 else if B2 then Y else Z} would be rewritten to
+\texttt{if B1 then (if B2 then Y else []) else Z}. This made it easier to do code generation.
+This translates well to low-level architectures which use branches and labels to condition seqauential
+execution.
+
+
+
+
+{\newpage}
+
+\section{Beyond the specification}
+
+\subsection{Extending the Malice Language}
+
+Extending the programming language is not a difficult task in most cases,
+though, due to Haskell, it is rather repetitive. In fact, to extend the
+programming language from Milestone 2 to Milestone 3, in most cases it was a
+simple case of changing the scanner (Scanner.x) to include the new syntax and
+token types, changing the parser syntax to specify how that token is used with
+others and generate a tree, and changing the semantic analyser to add errors
+for this new syntax. Finally in code generation, you simply specify a general
+case of using the new syntax. Normally we did this by writing down a specific
+example first in direct assembly, testing this assembly file, and then using
+that example to generalise all cases.
+
+
+
+It would therefore not be difficult to implement the following programming
+features:
+
+\textbf{For loops:} This could be done by analysing the eventually loop, and
+creating something similar but creating a new scope to execute statements in
+the for-loop header, then using an eventually loop to actually carry out the
+looping, and executing the statements specified in the for-loop header at the
+end of the body of the eventually loop.
+
+\textbf{Switch statements:} These have very similar semantics to  
+statements. They could easily be implemented by updating the scanner for new
+syntax, and simply reusing code for  , the difference being the condition is
+always the same (always an == expression with the variable being ``switched'')
+except for one expression, the expression being tested against.
+
+\textbf{Additional Operators} We could add additional operators on strings and
+letters such as string concatenation. 
+
+\textbf{Other scoping constructs:} These can include classes or structers
+that group data. This would be more difficult to implement but still would be
+possible. Here's how: (James?)
+
+
+
+\subsection{Optimising the compiler}
+
+Due to timing constraints, we decided not to include any optimisation features
+other than the \textit{Sethi-Ulman} weighting scheme. However, it would
+still be possible to do some optimisations to how our compiler works:
+
+
+
+\textbf{Using ``naieve'' compile-time calculations:} If we had a MAlice
+program that included the simple statement ``\texttt{x became 5+3}'', it would 
+be easy to let \textit{Haskell} work out the value of 5+3 instead of compiling 
+that to assembly and letting the code actually do it. This would be done in the
+Semantic Analyser since it passes through the code generated by the parser. If
+two number literals are found in a mathematical expression (this is a type  
+in our code), we can calculate the result and compile a single number literal
+instead of a full calculation in assembly.
+
+\textbf{Live Variable Analysis} 
+
+
+
+\textbf{Loop Optimisations} 
+
+
+
+
+\textbf{Using more registers and less memory:} To simplify our compiler and due
+to timing constraints, we decided to simply store all variables in memory and 
+move them to-and-from registers when carrying out calculations and assignments.
+Of course, this is not the most efficient approach since that way a lot of 
+memory is used unnecesarily. To tackle scoping, we just generated unique 
+variable names according the the local scope symbol table. Instead, a more 
+efficient approach would be to use registers for variables and do live variable
+analysis to ensure scoping works. We could then use memory if registers run out.
+If we were to do this, it would probably be done in Semantic Analysis, though a
+lot of code will need to be changed since this was a very early design decision.
+
+
+
+\end{document}
