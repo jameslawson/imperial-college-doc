@@ -1,0 +1,261 @@
+\ProvidesPackage{pantheon}
+
+% BEGIN PACKAGE IMPORT
+% =============================================================================
+\usepackage{environ}
+% Import American Society maths
+\usepackage[fleqn]{amsmath}
+\usepackage{centernot}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{mathtools}
+\usepackage[makeroom]{cancel} % e.g. drawing lines when cancelling fractions
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+
+% PFG/TikZ and tikz libraries
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usepackage{tikz} 
+\usetikzlibrary{trees, matrix, positioning, arrows, automata, shadows, calc, fit, 
+shapes.multipart, shapes.geometric, shapes.symbols,shapes.misc, 
+decorations.pathreplacing, decorations.markings, chains, snakes, 
+backgrounds, intersections} 
+\usepackage{xifthen}
+
+% Import times lookalike font
+%\usepackage{newtxtext}
+%\usepackage{newtxmath}
+\usepackage{mathptmx} %ptm doesn't have bold math font
+
+
+\usepackage{colortbl} % colour table cols
+
+\usepackage{calc}
+
+\usepackage{semantic}
+\usepackage{bussproofs}
+\usepackage{array}
+\usepackage{rotating}
+\usepackage{multirow} 
+\usepackage{stmaryrd}
+\usepackage[explicit]{titlesec}
+
+\usepackage{enumitem} % customising list
+%\setlist[itemize]{itemsep=5pt, parsep=0pt, topsep=0pt}
+%\setlist[enumerate]{itemsep=5pt, parsep=0pt, topsep=0pt}
+
+
+ % For typesetting code.
+ % [final] is needed because listings doesn't like draft and renders nothing
+\usepackage[final]{listings} 
+% =============================================================================
+
+% REMOVE PARAGRAPH INDENTS
+\setlength{\parindent}{0in}
+\setlength{\parskip}{6pt}
+
+
+% TIKZ STYLES
+% =============================================================================
+\tikzstyle{node_sty}=[rectangle, draw=black, thick, fill=black!5,
+text width=8em, text centered, drop shadow, anchor=north]
+\tikzstyle{node_sty2}=[rectangle, draw=black, thick, fill=black!5,
+text centered, drop shadow, anchor=north]
+% =============================================================================
+\tikzstyle{block_shadow_sty}=[draw=black, thick, fill=black!5, drop shadow]
+% =============================================================================
+\tikzstyle{edge_sty}=[very thick, draw=black=!70]
+% =============================================================================
+\tikzstyle{fra_ans_sty}=[rectangle, draw=black, thick, fill=white, 
+align=center, minimum width=8em, text centered, anchor=north]
+% =============================================================================
+\pgfdeclarelayer{background5}
+\pgfdeclarelayer{background4}
+\pgfdeclarelayer{background3}
+\pgfdeclarelayer{background2}
+\pgfdeclarelayer{background1}
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfdeclarelayer{foreground1}
+\pgfdeclarelayer{foreground2}
+\pgfdeclarelayer{foreground3}
+\pgfdeclarelayer{foreground4}
+\pgfdeclarelayer{foreground5}
+\pgfsetlayers{background5,background4,background3,background2,background1,background,main,foreground,foreground1,foreground2,foreground3,foreground4,foreground5}
+% =============================================================================
+
+
+
+% CHAPTER HEADINGS
+% =============================================================================
+
+\usepackage{fancyhdr}% http://ctan.org/pkg/fancyhdr
+\pagestyle{fancy}% Change page style to fancy
+%\fancyhf{}% Clear header/footer
+%\fancyhead[C]{Header}
+%\fancyfoot[C]{Footer}% \fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}% Default \headrulewidth is 0.4pt
+\renewcommand{\footrulewidth}{0.4pt}% Default \footrulewidth is 0pt
+\renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
+\renewcommand{\chaptermark}[1]{%
+\markboth{\thechapter.\ #1}{}}
+
+\fancypagestyle{plain}{%
+\fancyhf{} % clear all header and footer fields
+\fancyfoot[C]{\thepage} % except the center
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.4pt}}
+
+\addtocontents{toc}{\protect\thispagestyle{empty}}
+
+\titleformat{\chapter}
+{\gdef\chapterlabel{}\normalfont\Huge\bfseries}
+{\gdef\chapterlabel{\thechapter\ }}{0pt}
+{\begin{tikzpicture}[remember picture,overlay]
+\node at (current page.north west)
+    {\begin{tikzpicture}[remember picture, overlay]
+    %\draw[fill=black!20, draw=none] (0,0) rectangle (\paperwidth,-3.4cm);
+    %\draw[fill=black!10, draw=none] (0,0) rectangle (\paperwidth,-4.4cm);
+    %
+    %\node[anchor=west,xshift=.100\paperwidth,yshift=-3cm,rectangle,inner sep=14pt,fill=black!10] (l) 
+    %{\chapterlabel};
+    \node[anchor=west,xshift=.050\paperwidth,yshift=-3cm,rectangle,inner sep=14pt] (l) {};
+    \node[anchor=west,right=0.1cm of l,inner sep=11pt,yshift=-0.1cm, text=black] {\chapterlabel.\ #1};
+    %\draw[draw=black!85, thick] (3.5cm,-2.6cm) -- (\paperwidth,-2.6cm);
+    %\draw[draw=black, thick] (3.5cm,-6.4cm) -- (16cm,-6.4cm);
+    \draw[draw=black] (2.5cm,-3.9cm) -- (\paperwidth,-3.9cm);
+    \draw[draw=black] (2.5cm,-4cm) -- (\paperwidth,-4cm);
+    %
+    \end{tikzpicture}
+    };
+\end{tikzpicture}
+}
+\titlespacing*{\chapter}{0pt}{6pt}{-35pt}
+
+
+\newcommand{\frmrule}{\rule{\linewidth}{0.1mm}}
+
+\newcommand{\frmrulet}[1]{\frmrule ~\\[0cm]\textit{#1}}
+
+\newcommand{\highlightdef}[1] {
+	\par\begin{minipage}{\textwidth}
+	\frmrule ~\\[0cm]
+	\centering{#1} ~\\[-0.2cm]
+	\frmrule
+	\end{minipage} \par
+}
+
+
+% =============================================================================
+\newcommand{\frameans}[2]{
+	\begin{flushright} 
+  \textit{#1}
+	\begin{tikzpicture} [every node/.style={fra_ans_sty}]
+	\draw[line cap=rect] (0,0) -- (\linewidth-\pgflinewidth,0);
+	\node (g1) at (\linewidth/2, -0.2) {#2};
+	\end{tikzpicture}
+  \end{flushright}
+}
+
+
+
+% =============================================================================
+
+
+
+\NewEnviron{sidenote}[1]
+  {\par\medskip\noindent
+  \begin{tikzpicture}
+    \node[inner ysep=10pt, inner xsep=0pt, fill=black!10] (box) {\parbox[t]{.999\textwidth}{%
+      \begin{minipage}{.10\textwidth}
+      \hfill
+      \end{minipage}%
+      \begin{minipage}{.80\textwidth}
+      \textbf{#1}\par\smallskip
+      \BODY
+      \end{minipage}\hfill}%
+    };
+  \end{tikzpicture}\par\medskip%
+}
+
+
+% Example Environment
+% -------------------
+\newcounter{example_ctr}
+\setcounter{example_ctr}{0}
+\newenvironment{example} {
+	\refstepcounter{example_ctr}
+	\textbf{Example \arabic{example_ctr}}\\
+}
+
+
+\lstdefinestyle{default_listing}{
+  belowcaptionskip=1\baselineskip,
+  breaklines=true,
+  xleftmargin=0in,
+  showstringspaces=false,
+  basicstyle=\footnotesize\ttfamily,
+}
+\lstset{escapechar=@,style=default_listing}
+
+
+
+
+%-----------------------------------------------------------------------
+%       Caligraphic Letters
+%-----------------------------------------------------------------------
+
+\def\calA{\mathcal A}             \def\calB{\mathcal B}
+\def\calC{\mathcal C}             \def\calD{\mathcal D}
+\def\calE{\mathcal E}             \def\calF{\mathcal F}
+\def\calG{\mathcal G}             \def\calH{\mathcal H}
+\def\calI{\mathcal I}             \def\calJ{\mathcal J}
+\def\calK{\mathcal K}             \def\calL{\mathcal L}
+\def\calM{\mathcal M}             \def\calN{\mathcal N}
+\def\calO{\mathcal O}             \def\calP{\mathcal P}
+\def\calQ{\mathcal Q}             \def\calR{\mathcal R}
+\def\calS{\mathcal S}             \def\calT{\mathcal T}
+\def\calU{\mathcal U}             \def\calV{\mathcal V}
+\def\calW{\mathcal W}             \def\calX{\mathcal X}
+\def\calY{\mathcal Y}             \def\calZ{\mathcal Z}
+
+%-----------------------------------------------------------------------
+%       Mathematical Boldface Letters
+%-----------------------------------------------------------------------
+
+\def\bfA{\bm A}              \def\bfB{\bm B}
+\def\bfC{\bm C}              \def\bfD{\bm D}
+\def\bfE{\bm E}              \def\bfF{\bm F}
+\def\bfG{\bm G}              \def\bfH{\bm H}
+\def\bfI{\bm I}              \def\bfJ{\bm J}
+\def\bfK{\bm K}              \def\bfL{\bm L}
+\def\bfM{\bm M}              \def\bfN{\bm N}
+\def\bfO{\bm O}              \def\bfP{\bm P}
+\def\bfQ{\bm Q}              \def\bfR{\bm R}
+\def\bfS{\bm S}              \def\bfT{\bm T}
+\def\bfU{\bm U}              \def\bfV{\bm V}
+\def\bfW{\bm W}              \def\bfX{\bm X}
+\def\bfY{\bm Y}              \def\bfZ{\bm Z}
+
+%-----------------------------------------------------------------------
+%       Mathematical Blockbold Letters
+%-----------------------------------------------------------------------
+
+\def\bbA{\mathbb A}              \def\bbB{\mathbb B}
+\def\bbC{\mathbb C}              \def\bbD{\mathbb D}
+\def\bbE{\mathbb E}              \def\bbF{\mathbb F}
+\def\bbG{\mathbb G}              \def\bbH{\mathbb H}
+\def\bbI{\mathbb I}              \def\bbJ{\mathbb J}
+\def\bbK{\mathbb K}              \def\bbL{\mathbb L}
+\def\bbM{\mathbb M}              \def\bbN{\mathbb N}
+\def\bbO{\mathbb O}              \def\bbP{\mathbb P}
+\def\bbQ{\mathbb Q}              \def\bbR{\mathbb R}
+\def\bbS{\mathbb S}              \def\bbT{\mathbb T}
+\def\bbU{\mathbb U}              \def\bbV{\mathbb V}
+\def\bbW{\mathbb W}              \def\bbX{\mathbb X}
+\def\bbY{\mathbb Y}              \def\bbZ{\mathbb Z}
+
+
