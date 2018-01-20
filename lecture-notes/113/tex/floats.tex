@@ -1,0 +1,228 @@
+
+
+\chapter{Floating-point Arithmetic}
+
+
+\section{Fixed Point Arithmetic}
+
+\begin{figure}[h]
+\begin{tikzpicture} [
+   every node/.style={node_sty, align=center},
+   edge from parent/.style={edge_sty},
+   edge from parent path={(\tikzparentnode.south) 
+   |- ($(\tikzparentnode.south)!0.5!(\tikzchildnode.north)$) -| (\tikzchildnode.north)},
+   level 1/.style={sibling distance=4cm, level distance = 0.9cm},
+   ch/.style={text width=2.5cm}
+]
+   \node 
+   (root) {Representing Real numbers in Binary}
+      child {node[ch] {Dyadic rationals}}
+      child {node[ch] {Recurring values}}
+      child {node[ch] {Irrational values}};
+   
+\end{tikzpicture}
+\end{figure}
+
+\frmrule
+
+\begin{example}
+Show that 0.1 is \textit{not} a dyadic rational number.
+\[ 
+\begin{array}{ll}
+0.1 & = \frac{0.1}{1} = ... = \frac{1.6}{16} \\
+    & = \left(\frac{1}{16}\right) + \frac{0.6}{16} = \left(\frac{1}{16}\right) + \frac{1.2}{32} \\
+    & = \left(\frac{1}{16} + \frac{1}{32}\right) + \frac{0.2}{32} = ... = 
+    \left(\frac{1}{16} + \frac{1}{32}\right) + \frac{1.6}{256} = 
+    \left(\frac{1}{16} + \frac{1}{32}\right) + \frac{1}{16} \times \frac{\text{\textbf{1.6}}}{\textbf{16}}
+\end{array}
+\] 
+
+
+\end{example}
+
+\begin{example}
+\textbf{(a)} Show that 42.6875 is a \textit{dyadic rational number} \\
+\textbf{(b)} Hence write 42.6875 in binary
+
+$42.6875 = 32 + 10.6875 = 32 + 8 + 2.6875 = 32 + 8 + 2 + 0.6875 = 32 + 8 + 2 + ....$
+\end{example}
+
+
+\frmrule
+
+\begin{example}
+What is the the binary: 0.11111111111111111111... (recurring ones) equal to?
+\end{example}
+
+
+\frmrule
+
+We can obtain $x'$ by either \textit{rounding} or \textit{truncation}.
+
+
+\frmrule
+
+\section{Introducing IEEE Standard}
+
+Previously we have looked at how floating point binary can represent certain rational numbers. 
+However there are many formats possible. 
+Now we will look certain representations that are standardised by:
+
+\highlightdef{\textbf{IEEE}: The Institute of Electrical and Electronics Engineers}
+
+\textsc{ieee} (pronounced \textit{eye-triple-E})
+stands for \textit{The Institute of Electrical and Electronics Engineers}. 
+They are a not-for-profit organisation that specialises in \textit{laying down industry standards}, 
+as well as holding conferences and providing a medium for the publication of academic papers. 
+
+\textsc{ieee} have formalised what is, by far, the \textit{most popular floating-point representations}
+used in computer systems. The standard defines the \textit{storage format} of binary floating point numbers 
+(how the fields are stored in memory), the exact \textit{semantics of arithmetic operations} (including how to handle 
+certain few edge cases) and rules for \textit{error conditions}
+(overflow, underflow, truncation rules, ...).
+
+
+
+\begin{tikzpicture}
+  [every node/.style={node_sty2, align=center}]
+  \node (A) {\textsc{ieee} standard for floats};
+  \coordinate (a1) at ($(A.south)+(-0.5cm, 0.0cm)$); 
+  \coordinate (a2) at ($(A.south)+(0.5cm, 0.0cm)$); 
+  %
+  \node [below left=0.2cm and -0.5cm of A, text width=2.5cm]  (B) {Representation};
+  \node [below=0.2cm of B, text width=2.5cm] (C) {Special Values};
+  \draw[edge_sty] (a1) |- (B.east);
+  \draw[edge_sty] (a1) |- (C.east);
+  %
+  \node [below right=0.2cm and -0.5cm of A, text width=2.5cm] (D) {Operations};
+  \node [below=0.2cm of D, text width=2.5cm] (E) {Error conditions};
+  \draw[edge_sty] (a2) |- (D.west);
+  \draw[edge_sty] (a2) |- (E.west);
+\end{tikzpicture}
+
+
+
+\frmrule
+
+
+
+\section{Operations}
+
+\begin{example}
+Which is larger, -0 or +0?
+\end{example}
+
+
+
+
+\highlightdef{Addition/subtraction requires two exponents to be compared. 
+\textsc{ieee} uses excess-n as it allows exponents to be compared more easily. }
+
+Checking whether $a < b$ is simpler in excess-n compared to two's complement. 
+
+
+\highlightdef{\textbf{Loss of Precision} can occur when an integer is converted to a float}
+This is a common warning message for beginner \textsc{c} programmers. 
+
+
+
+
+\section{Special Values}
+
+
+\highlightdef{\textbf{Special Values}: +0, -0,  +\textsc{inf}, -\textsc{inf}, \textsc{nan} }
+
+
+\begin{lstlisting}
+int main (int argc, char **argv) 
+{ 
+  float a = 1.0/0.0; 
+  float b = a * -100; 
+  float c = b/a; 
+  printf ("\nValue of a = %f\n\n", a); 
+  printf ("\nValue of b = %f\n\n", b); 
+  printf ("\nValue of c = %f\n\n", c); 
+} 
+\end{lstlisting}
+
+
+\section{Floating Point Systems}
+
+We now look at floating point systems in general.
+
+
+
+\section{Error Analysis}
+
+
+\highlightdef{\textbf{Relative Error}: }
+
+
+\highlightdef{\textbf{Absolute Error}: }
+
+
+
+\highlightdef{Floating-point arithmetic is \textit{not associative}}
+% http://stackoverflow.com/questions/6430448/why-doesnt-gcc-optimize-aaaaaa-to-aaaaaa?rq=1
+But it is \textit{commutative}. 
+
+\begin{example}
+The example below demonstrates that floating-point arithmetic is not associative.
+
+\begin{lstlisting}
+int main(int intc, char **argv) 
+{
+    int x = 1;
+    for (int i = 1; i < 10000000; i++) {
+       x += 1/i;
+    }
+    int y = 1;
+    for (int i = 10000000; i >= 0; i--) {
+       y += 1/i;
+    }
+    printf("x: %d\n", x);
+    printf("y: %d\n", y);
+    printf("abs(x-y): %d\n", abs(x-y));
+}
+\end{lstlisting}
+\end{example}
+
+\frmrule 
+
+% Real-world: most machines have a floating point unit
+% why? what does a floating point unit do?
+% relate to the work done
+
+\frmrule 
+
+
+
+\highlightdef{The \textbf{Machine Epsilon} measures the \textit{accuracy} 
+of a floating-point system}
+
+Although we call this value the \textit{machine} epsilon, 
+it doesn't necessarily characterise the entire system. 
+Not all parts of the machine use floating point arithmetic. 
+We call this value the \textit{machine} epsilon 
+to highlight this number is a result of the \textit{limitation} of the machine 
+and the fact that we do not have the resources to have perfect accuracy.  
+
+
+Below shows code to find the machine epsilon. 
+
+\begin{lstlisting}
+int main(int intc, char **argv) 
+{
+    float machEps = 1.0f;
+    do {
+        machEps /= 2.0f;
+    }
+    while ((float) 1.0f + (machEps/2.0f) != 1.0f);
+    printf("\nCalculated Machine epsilon: %g\n\n", machEps); 
+    return 0;
+}
+\end{lstlisting}
+
+
+
+

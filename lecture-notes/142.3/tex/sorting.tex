@@ -1,0 +1,37 @@
+
+\chapter{Distinct Sorting}
+
+
+\section{Insertion Sort}
+
+\section{Bubble Sort}
+
+\section{Quick Sort}
+
+\section{Merge Sort}
+
+
+
+
+\section{Lower Bound on Sorting}
+
+
+\highlightdef{Any decision tree sorting n distinct elements has height $h(n) \doteq \Omega(n \log n)$}
+
+An algorithm A sorting a list of n distinct elements $a_1, . . ., a_n$.
+
+$\log_2(n!) = \log_2(n \times [n-1] \times \cdots 2 \times 1)$
+$= \log_2(n) + \log_2(n-1) + \cdots \log_2(2) \times \log_2(1)$
+$= \sum^n_{i=1}\log_2(i) = \sum^{\ceil{\frac{n}{2}}-1}_{i=1}\log_2(i) + \sum^{n}_{i=\ceil{\frac{n}{2}}}\log_2(i)$
+$= [\log_2(1) + \log_2(2) + \cdots + \log_2(\ceil{\frac{n}{2}} - 1)] + 
+[\log_2(\ceil{\frac{n}{2}}) + \log_2(\ceil{\frac{n}{2}} + 1) + \log_2(\ceil{\frac{n}{2}} + 2) + \cdots
++ \log_2(n)]$ 
+$ \geqslant  \log_2(\ceil{\frac{n}{2}}) + \log_2(\ceil{\frac{n}{2}}) + \cdots \log_2(\ceil{\frac{n}{2}})$ 
+$ = \ceil{\frac{n}{2}} \log_2(\ceil{\frac{n}{2}})$
+$ \geqslant \frac{n}{2} [\log_2(\frac{n}{2})]$
+$ = \frac{n}{2}[\log_2(n) - 1]$
+$ \doteq \Omega(n \log n)$
+
+\begin{example}
+Prove formally that $ \frac{n}{2}[\log_2(\frac{n}{2})] \doteq \Omega(n \log n)$ 
+\end{example}

@@ -1,0 +1,374 @@
+
+\chapter{Turing Machines}
+
+
+
+\section{Turing Machines I}
+
+Formally a TM is $M = (Q,\Sigma,q_0,\delta)$ 
+where 
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{State Set} Formally, set $Q$ is the set of \textit{states} of a TM. 
+$Q$ will always include three special states, $h$, $\textsc{yes}$.
+and $\textsc{no}$. Intuitively, these are the nodes of our TM transition diagram.
+%
+\item \textbf{Symbol Set} Formally, the set $\Sigma$ is 
+the set of \textit{symbols} of a TM. 
+$\Sigma$ will always include two special symbols, $>$ and $\Box$.
+Intuitively, the symbol set are the symbols that can appear on the squares of the TM.
+%
+\item \textbf{Start State} Formally, the start state is one state chosen 
+from the state set. 
+Intuitively, this is the start state on the TM. 
+%
+\item \textbf{Transition Function} The transition function is a partial function 
+that performs the map $(q,s) \mapsto (q',s',\{L,R,-\})$.
+Intuitively, this function determines the arrows on our TM transition diagram.
+\end{itemize} 
+
+\frmrule
+
+
+A \textit{Turing machine configuration} has the form $c = (q,u,v)$. 
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Left+Head Squares} $u$ are the symbols that are to the left of, 
+\textit{and including}, the symbol under the head.
+%
+\item \textbf{Right Squares} $v$ are the symbols that are to the right of, 
+\textit{not including}, the symbol under the head.
+\end{itemize}
+
+Notice that $u$ cannot be empty. The leftmost square the head can be on is 
+the first square which always non-empty and usually 
+contains the start symbol. In this case, 
+the configuration is $(q,>,\epsilon)$.
+
+\frmrule
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{1. Read Symbol} 
+\item \textbf{2. Check Instruction Table} 
+\item \textbf{3. Write Symbol} 
+\item \textbf{4. Update State} 
+\item \textbf{5. Move Head} 
+\end{itemize}
+
+\frmrule
+
+\begin{figure}[h]
+\begin{tikzpicture}[ 
+      node distance=0mm,
+      txt/.style={font=\small}
+  ]
+  %
+  % RULE
+  %
+  \node [fill=black!10] (rule) { \parbox{5.5cm}
+  {
+    \begin{prooftree}
+      \def\defaultHypSeparation{\hskip .01in}
+      \AxiomC{$u=u's$}\AxiomC{$(q,s) \mapsto (q',t,L)$}
+      \LeftLabel{\textsc{l}}\RightLabel{$q \in Q$}
+      \BinaryInfC{$(q,u,v) \rightarrow_M (q',u',tv)$}
+    \end{prooftree}
+  }};
+  %
+  \node[state] (q1) [below left= 0.5cm and -2cm of rule] {$q$};
+  \node[state] (q2) [right = 1cm of q1] {$q'$};
+  \path[->,>=stealth',shorten >=1pt] (q1) edge[above] node {$s,t,L$} (q2);
+  %
+  % TM1
+  %
+  \begin{scope}[start chain=1,xshift=4cm,
+      every node/.style={minimum height=0.65cm,  
+        minimum width=0.65cm, inner sep=4pt}]
+  {
+    \foreach \xx in {0,1,2,3,4,5,6} 
+    {
+      \ifthenelse{3 = \xx} 
+        {\node[on chain=1,fill=black!10] (\xx) {$s$};} 
+        {\node[on chain=1] (\xx) {};}
+      \ifthenelse{\NOT 0 = \xx}
+        {\draw[dashed, draw=black!50] (\xx.north west) -- (\xx.south west);}
+        {}
+    }
+  }
+  \end{scope}
+  \begin{pgfonlayer}{background} 
+      \node [draw=black, fill=white, drop shadow,
+      inner sep=1pt, outer sep=5pt, fit={(0) (6)}] {};
+  \end{pgfonlayer} 
+  \draw[->,>=stealth',shorten >=1pt,thick] ($(3)+(0.0cm,1.0cm)$) -- (3);
+  \draw[decorate,decoration={brace,mirror}]
+    ($(0.south west)+(0.0cm,-0.2cm)$) 
+    to node[midway,below,yshift=-0.1cm] {$u$}
+    ($(3.south east)+(-0.0cm,-0.2cm)$);
+  \draw[decorate,decoration={brace,mirror}]
+    ($(4.south west)+(0.0cm,-0.2cm)$) 
+    to node[midway,below,yshift=-0.1cm] {$v$}
+    ($(6.south east)+(-0.0cm,-0.2cm)$);
+  \draw[decorate,decoration={brace}]
+    ($(0.north west)+(0.0cm,0.2cm)$) 
+    to node[midway,above,yshift=0.1cm] {$u'$}
+    ($(2.north east)+(-0.0cm,0.2cm)$);
+  %
+  % TM2
+  %
+  \begin{scope}[start chain=2,xshift=4cm, yshift=-2cm,
+      every node/.style={minimum height=0.65cm,  
+        minimum width=0.65cm, inner sep=4pt}]
+  {
+    \foreach \xx in {0,1,2,3,4,5,6} 
+    {
+      \ifthenelse{2 = \xx} 
+      {
+        \node[on chain=2,fill=black!10] (t2\xx) {};
+      } 
+      {
+        \ifthenelse{3 = \xx} 
+        {
+          \node[on chain=2] (t2\xx) {$t$};
+        } 
+        {
+          \node[on chain=2] (t2\xx) {};
+        }
+      }
+      \ifthenelse{\NOT 0 = \xx} 
+        {\draw[dashed,draw=black!50] (t2\xx.north west) -- (t2\xx.south west);}
+        {}
+    }
+  }
+  \end{scope}
+  \begin{pgfonlayer}{background} 
+      \node [draw=black, drop shadow, fill=white,
+      inner sep=1pt, outer sep=5pt, fit={(t20) (t26)}] {};
+  \end{pgfonlayer} 
+  \draw[->,>=stealth',shorten >=1pt,thick] ($(t22)+(0.0cm,1.0cm)$) -- (t22);
+  \draw[decorate,decoration={brace,mirror}]
+    ($(t20.south west)+(0.0cm,-0.2cm)$) 
+    to node[midway,below,yshift=-0.1cm] {$u'$}
+    ($(t22.south east)+(-0.0cm,-0.2cm)$);
+  \draw[decorate,decoration={brace,mirror}]
+    ($(t23.south west)+(0.0cm,-0.2cm)$) 
+    to node[midway,below,yshift=-0.1cm] {$tv$}
+    ($(t26.south east)+(-0.0cm,-0.2cm)$);
+
+\end{tikzpicture}
+\end{figure} 
+
+
+
+
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$u=u's$}
+\AxiomC{$(q,s) \mapsto (q',t,-)$}
+\LeftLabel{\textsc{S}}
+\RightLabel{$q \in Q$}
+\BinaryInfC{$(q,u,v) \rightarrow_M (q',u't,v)$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$u=u's$}
+\AxiomC{$v=mv'$}
+\AxiomC{$(q,s) \mapsto (q',t,R)$}
+\LeftLabel{\textsc{R}}
+\RightLabel{$q \in Q$}
+\TrinaryInfC{$(q,u,v) \rightarrow_M (q',u'tm,v')$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$u=u's$}
+\AxiomC{$v=\epsilon$}
+\AxiomC{$(q,s) \mapsto (q',t,R)$}
+\LeftLabel{\textsc{R+}}
+\RightLabel{$q \in Q$}
+\TrinaryInfC{$(q,u,v) \rightarrow_M (q',u't\sqcup,\epsilon)$}
+\end{prooftree}
+
+
+
+
+
+\frmrule
+
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Initial Config} $c_0 = (q_0,>,\epsilon)$
+%
+\item \textbf{Computation} 
+A \textit{computation} of a TM, $M$ is a \textit{sequence of
+conﬁgurations}, $c_0, c_1, c_2,...$ (finite or infinite) 
+where $c_0$ is the initial configuration and 
+$c_{i} \rightarrow_M c_{i+1}$ for $i=0,1,...$.
+\end{itemize}
+
+
+\frmrule
+
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Input word} A word $w$ is the \textit{input} 
+is the initial data that we have
+provided for $M$ for computation. 
+\item \textbf{Output word} A word $w$ is the \textit{input} 
+is the output data $M$ has provided from its computation 
+based on the input given. This \textit{assumes $M$ halts}.
+To halt, the state must be any of $\textsc{yes}$, $\textsc{no}$
+or $h$. 
+\end{itemize} 
+
+
+
+\section{Turing Machines II}
+
+\begin{example}
+The empty function. 
+
+We can use the halting states $\textsc{yes}$ and
+$\textsc{no}$ to output.
+\end{example}
+
+\frmrule
+
+\begin{example}
+The shift right function. 
+
+\begin{tikzpicture}
+[->,>=stealth',shorten >=1pt,auto,node distance=2.8cm,
+                    semithick]
+  \node[initial,state] (A)                    {$q_a$};
+  \node[state]         (B) [above right of=A] {$q_b$};
+  \node[state]         (D) [below right of=A] {$q_d$};
+  \node[state]         (C) [below right of=B] {$q_c$};
+
+  \path (A) edge              node {0,1,L} (B)
+            edge              node {1,1,R} (C)
+        (B) edge [loop above] node {1,1,L} (B)
+            edge              node {0,1,L} (C)
+        (C) edge              node {0,1,L} (D)
+        (D) edge [loop below] node {1,1,R} (D)
+            edge              node {0,1,R} (A);
+\end{tikzpicture}
+
+
+\end{example}
+
+\frmrule
+
+\begin{example}
+The head function. 
+
+
+\end{example}
+
+\frmrule
+
+\begin{example}
+Write a TM that adds a blank symbol to the end of the input.
+\end{example}
+
+\begin{example}
+Write a TM that moves the symbol under the head 
+to the front by performing successive swaps. 
+\end{example}
+
+\begin{example}
+Write a TM that adds a blank to the start of the input. 
+Hint: add a blank symbol to the end of the input, then 
+swap it to the front. 
+\end{example}
+
+\begin{example}
+Append $<$ function. 
+\end{example}
+
+\frmrule
+
+\begin{example}
+The shift left function. 
+\end{example}
+\begin{example}
+The tail function. 
+\end{example}
+
+
+
+\section{Turing Machines III}
+
+\section{Turing Machines IV}
+
+\section{Multitape Turing Machines I}
+
+\highlightdef{\textbf{Multitape TM}: several heads that move independently}
+
+Formally a $k$-tape TM is $M_k = (Q,\Sigma,q_0,\delta)$ 
+where 
+
+Don't confuse a multitrack TM with a multitape TM.
+
+\frmrule
+
+Let $\Sigma' = \Sigma \cup \underline{\Sigma} \cup \{\triangleright', \underline{\triangleright'}\} \cup \{\triangleleft\}$
+
+\frmrule
+
+\begin{example}
+True or false. Explain your answer.\\
+\textbf{(a)} The symbol $\underline{\Box}$ is in $\Sigma'$.
+\textbf{(b)} The head of $M$ can move left of $\triangleleft$.
+\textbf{(c)} The head of $M$ can move left of $\triangleleft'$.
+\end{example}
+
+\begin{example}
+For the following $k$-tape TM configuration, give the
+corresponding simulation configuration.
+\end{example}
+
+
+\frmrule
+
+The simulation of $M_k$ by $M$.
+
+The initial configuraiton. 
+Recall that input $x$ will 
+be on the first tape of $M_k$. The corresponding input 
+will be on the tape of $M$. The idea is to
+(i) add tape 1 with input $x$
+then (ii) add $k-1$ blank tapes. Figure x shows the idea.
+
+We first shift input $x$ to the right. Then we precede it 
+with the new start symbol $\triangleright'$ 
+
+\frmrule
+
+\begin{example}
+\textbf{(a)} Write a parameterised flow-chart for a TM that shifts $x$ to the right.\\
+\textbf{(b)} Prove by induction over $|x| \geqslant 0$ that this machine computes $f(x) = \Box x$
+\end{example}
+
+
+
+
+
+
+
+For each step of $M_k$, $M$ will make two passes over its tape. 
+It will scan the tape left-to-right twice. 
+
+
+\section{Random Access Machines I}
+
+These are often called \textsc{ram}s. 
+This is not to be confused with random access \textit{memory}.
+We are talking about random access \textit{machines}

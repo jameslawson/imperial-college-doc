@@ -1,0 +1,346 @@
+
+\chapter{$\mathcal{L}_1$ Language II}
+
+
+
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+
+\section{Operational Semantics III}
+
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+
+In the final section for operational semantics, we look at errors, stuck 
+execution and exception propagation. 
+
+Deviations (dev) indicate abnormal termination due to null-pointer de-referencing,
+or an evaluation being stuck. As we shall show, well-typed expressions are
+never stuck, although they may throw null pointer exceptions.
+
+\highlightdef{\textbf{Deviations}:
+$dev = \{ \text{nullPtrExc}, \text{stuckErr} \}$ }
+
+
+
+Trying to access the fields or methods of a null objects gives null. 
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e,\phi, \chi) \leadsto (\text{null}, \chi')$}
+\LeftLabel{\textsc{null.field}}
+\UnaryInfC{$(\text{e.f}, \phi,\chi) \leadsto (\text{nullPtrExc}, \chi')$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e,\phi, \chi) \leadsto (\text{null}, \chi')$}
+\LeftLabel{\textsc{null.assign}}
+\UnaryInfC{$(e.f := e', \phi,\chi) \leadsto (\text{nullPtrExc}, \chi')$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e,\phi, \chi) \leadsto (\text{null}, \chi')$}
+\LeftLabel{\textsc{null.method}}
+\UnaryInfC{$(e.m(e1), \phi,\chi) \leadsto (\text{nullPtrExc}, \chi')$}
+\end{prooftree}
+
+We can also get stuck during execution for various reasons. 
+Our address for an object on the heap might give a mapping that is undefined.
+
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e,\phi, \chi) \leadsto (v, \chi')$}
+\LeftLabel{\textsc{objundef-field}}
+\RightLabel{
+$\chi'(v)$ is undefined
+}
+\UnaryInfC{$(e.f, \phi,\chi) \leadsto (\text{stuckErr}, \chi')$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e,\phi, \chi) \leadsto (v, \chi')$}
+\LeftLabel{\textsc{objundef-assign}}
+\RightLabel{
+$\chi'(v)$ is undefined
+}
+\UnaryInfC{$(e.f := e', \phi,\chi) \leadsto (\text{stuckErr}, \chi')$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e,\phi, \chi) \leadsto (v, \chi')$}
+\LeftLabel{\textsc{objundef-method}}
+\RightLabel{
+$\begin{smallmatrix}
+\chi'(v) \text{ is undefined} \\
+v \neq \text{ null}
+\end{smallmatrix}
+$ 
+}
+\UnaryInfC{$(e.m(e_1) := e', \phi,\chi) \leadsto (\text{stuckErr}, \chi')$}
+\end{prooftree}
+
+
+We might true to lookup a field or method that is not defined for that class. 
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e,\phi, \chi) \leadsto (\iota, \chi')$}
+\LeftLabel{\textsc{lookupundef-field}}
+\RightLabel{
+$\begin{smallmatrix}
+\chi'(\iota) \downarrow_1 = \text{c} \\
+F(P,c,f) \text{ is undef.}
+\end{smallmatrix}
+$ 
+}
+\UnaryInfC{$(e.f, \phi,\chi) \leadsto (\text{stuckErr}, \chi')$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e,\phi, \chi) \leadsto (\iota, \chi')$}
+\LeftLabel{\textsc{lookupundef-assign}}
+\RightLabel{
+$\begin{smallmatrix}
+\chi'(\iota) \downarrow_1 = \text{c} \\
+F(P,c,f) \text{ is undef.}
+\end{smallmatrix}
+$ 
+}
+\UnaryInfC{$(e.f := e', \phi,\chi) \leadsto (\text{stuckErr}, \chi')$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e_0,\phi, \chi) \leadsto (\iota, \chi')$}
+\AxiomC{$(e_1,\phi, \chi) \leadsto (v, \chi'')$}
+\LeftLabel{\textsc{lookupundef-method}}
+\RightLabel{
+$\begin{smallmatrix}
+\chi'(\iota) \downarrow_1 = \text{c} \\
+M(P,c,m) \text{ is undef.}
+\end{smallmatrix}
+$ 
+}
+\BinaryInfC{$(e_0.m(e_1) := e', \phi,\chi) \leadsto (\text{stuckErr}, \chi'')$}
+\end{prooftree}
+
+
+
+Another reason is that our if statement might not have a boolean value.
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e,\phi, \chi) \leadsto (v, \chi')$}
+\LeftLabel{\textsc{if-nobool}}
+\RightLabel{
+$\begin{smallmatrix}
+v \neq \text{true} \\
+v \neq \text{false}
+\end{smallmatrix}$
+}
+\UnaryInfC{$(\text{if } e \text{ then } e_1 \text{ then } e_2, \phi,\chi) \leadsto (\text{stuckErr}, \chi')$}
+\end{prooftree}
+
+
+How do deviations propagate through expressions. 
+Once a subexpression evaluates to a deviation, we want this result to 
+propagate up through the expression tree to the top so that the overall result is the error. 
+
+Every rule has a dev version that propagates the error upwards. 
+
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e,\phi, \chi) \leadsto (dv, \chi')$}
+\LeftLabel{\textsc{dev-field}}
+\UnaryInfC{$(e.f, \phi,\chi) \leadsto (dv, \chi')$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e,\phi, \chi) \leadsto (dv, \chi')$}
+\LeftLabel{\textsc{dev-assign1}}
+\UnaryInfC{$(e.f := e', \phi, \chi) \leadsto (dv, \chi')$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e,\phi, \chi) \leadsto (\iota, \chi')$}
+\AxiomC{$(e',\phi, \chi) \leadsto (dv, \chi')$}
+\LeftLabel{\textsc{dev-assign2}}
+\BinaryInfC{$(e.f := e', \phi, \chi) \leadsto (dv, \chi')$}
+\end{prooftree}
+
+For methods, an error can occur in the object, in parameter evaluation 
+or for the expression that represents the body of the method. 
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e_1,\phi, \chi) \leadsto (dv, \chi')$}
+\LeftLabel{\textsc{dev-method1}}
+\UnaryInfC{$(e_1.m(e_2), \phi, \chi) \leadsto (dv, \chi')$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e_1,\phi, \chi) \leadsto (\iota, \chi')$}
+\AxiomC{$(e_2,\phi, \chi') \leadsto (dv, \chi'')$}
+\LeftLabel{\textsc{dev-method2}}
+\RightLabel{$\chi'(\iota) \text{ is defined}$}
+\BinaryInfC{$(e_1.m(e_2), \phi, \chi) \leadsto (dv, \chi'')$}
+\end{prooftree}
+
+
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e_1,\phi, \chi_1) \leadsto (\iota, \chi_2)$}
+\AxiomC{$(e_2,\phi, \chi_2) \leadsto (v, \chi_3)$}
+\AxiomC{$(e_3,\phi, \chi_3) \leadsto (dev, \chi_4)$}
+\LeftLabel{\textsc{dev-method3}}
+\RightLabel{$\begin{smallmatrix}
+                    \chi_3(\iota) \downarrow_1 = \text{c} \\
+                    \mathcal{M}(\text{P},\text{c}, \text{m})\, = t_1 m (t_2 x) \{ e_3 \}
+                  \end{smallmatrix}$}
+\TrinaryInfC{$(\text{e}_1.\text{m}(\text{e}_2),\phi, \chi) \leadsto (v, \chi_4)$}
+\end{prooftree}
+
+
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{
+$
+\begin{smallmatrix}
+(e,\phi, \chi) \leadsto (dv, \chi') \\
+\text{or }[(e_1,\phi, \chi) \leadsto (\text{true}, \chi') \text{ and } (e_2,\phi, \chi') \leadsto (dv, \chi'')] \\
+\text{or }[(e_1,\phi, \chi) \leadsto (\text{false}, \chi') \text{ and } (e_2,\phi, \chi') \leadsto (dv, \chi'')]
+\end{smallmatrix}
+$
+}
+\LeftLabel{\textsc{dev-if}}
+
+\UnaryInfC{$(\text{if } e \text{ then } e_1 \text{ then } e_2, \phi,\chi) \leadsto (dv, \chi'')$}
+\end{prooftree}
+
+
+\frmrule
+
+\begin{example}
+What happens if two deviations occur? 
+If an expression has a nullPtrError and a stuckErr, 
+what determines which error is the overall result?
+\end{example}
+
+\frmrule
+
+\highlightdef{\textbf{Strong Normalisation}: }
+
+
+
+
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+
+\section{Proving Determinism}
+
+
+\highlightdef{\textbf{Determinacy}: }
+
+
+We will look at an example that motivates the need for equivalence \textit{up to address renaming}.
+
+\frmrule 
+
+\begin{example}
+The execution of: $(\text{new Book}, \phi_0, \chi_0)$. 
+\end{example}
+
+Recall that \textit{new} can put a newly created object at any unused 
+address on the heap. 
+
+\frmrule 
+
+We would execution of $\text{new Book}$ to do the same thing every time. 
+It is simply adding an object to the heap. However the object can 
+be in any location. Each time we rerun the program, we technically 
+have a different heap. 
+
+If we don't find some way to say these runs 
+are the same, then every expression with a new inside, could 
+potentially be different. However we can say these runs are the same when we introduce 
+the notion of equivalent stacks and heaps \textit{up to address renaming}.
+
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{}
+\LeftLabel{$\alpha$-\textsc{addr}}
+\UnaryInfC{$\iota =_{\alpha} \alpha(\iota)$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{}
+\LeftLabel{$\alpha$-\textsc{true}}
+\UnaryInfC{$\text{true} =_{\alpha} \text{true}$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{}
+\LeftLabel{$\alpha$-\textsc{false}}
+\UnaryInfC{$\text{false} =_{\alpha} \text{false}$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{}
+\LeftLabel{$\alpha$-\textsc{null}}
+\UnaryInfC{$\text{null} =_{\alpha} \text{null}$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{}
+\LeftLabel{$\alpha$-\textsc{obj}}
+\UnaryInfC{$\text{null} =_{\alpha} \text{null}$}
+\end{prooftree}
+
+
+
+
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+
+
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+
+\section{Type System}
+
+\begin{example}
+Explain what is meant by a \textit{sound} type system.
+
+A well-typed expression always coverges and returns either a value of the 
+same type as the expression, or nullPntrExc. However, it nevers get stuck.
+After execution, the types of objects on heap must be consistent 
+with program and the environment.
+\end{example}
+
+We \textit{cannot} have $r = \text{stuckErr}$. 
+
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%

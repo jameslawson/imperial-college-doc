@@ -1,0 +1,281 @@
+
+\chapter{Quantum Algorithms II}
+
+
+\section{Fourier Transform}
+
+
+\highlightdef{\textbf{Root of Unity}: $\omega^x_n = e^{2\pi i\frac{x}{n}}$}
+
+We can also think of this as a function $\omega_n(x) = e^{2\pi i\frac{x}{n}}$.
+But, what is nice about putting the $x$ on top as the superscript of omega, is that 
+the right hand side of omega looks like 
+the fraction that multiplies $2\pi i$ in the exponent of $e$.
+
+
+\highlightdef{\textbf{Phasor}: 
+$w^x_n = (\omega^0_n,\omega^x_n,\omega^{2x}_n,...,\omega^{(n-1)x}_n) 
+= \sum^{n-1}_{k=0} \omega^{kx}_n \ket{k}$}
+
+Again, this can be thought of as a function: $w_n(x) = (\omega^0_n,\omega^x_n,\omega^{2x}_n,...,\omega^{(n-1)x}_n) $.
+This function outputs a vector whose roots of unity form a sequence that rotate 
+with frequency $x$. 
+
+\highlightdef{\textbf{Vandermonde Matrix}: $V_{n \times n} = [w^0_n w^1_n \dotsm w^{n-1}_n]$}
+
+\begin{example}
+Determine the inner product of $w^{j_1}$ and $w^{j_2}$ for $j_1 \neq j_2$. 
+\end{example}
+
+\begin{example}
+Determine the inner product of $w^{j_1}$ and $w^{j_2}$ for $j_1 = j_2$. 
+\end{example}
+
+
+\begin{example}
+Prove that $V_{n \times n}$ is unitary.
+\end{example}
+
+
+\begin{example}
+Prove that $V_{n \times n}$ is unitary.
+\end{example}
+
+
+\highlightdef{\textbf{Quantum Fourier Transform}: $F = \frac{1}{\sqrt{2^n}}V_{2^n \times 2^n}$}
+
+\begin{example}
+What is the matrix for $F$ for $n = 1,2,3$?
+\end{example}
+
+\begin{example}
+Prove that $F$ is unitary.
+\end{example}
+
+\begin{example}
+What is $F\ket{\textsf{00..0}}$? How does this relate to $H^{\otimes n}\ket{\textsf{00..0}}$?
+\end{example}
+
+
+
+\begin{example}
+Determine $\sum_{\textsf{t}_1 \textsf{t}_2 \dotsm \textsf{t}_n \in \{0,1\}^n} 
+c^{\textsf{t}_1 \textsf{t}_2 \dotsm \textsf{t}_n} 
+\ket{\textsf{t}_1 \textsf{t}_2 \dotsm \textsf{t}_n} = ...$ 
+written in the form of a tensor product with $n$ factors.
+\end{example}
+
+\frameans{}{$\bigotimes^n_{l=1} (\ket{0} + c^{2^{n-l}} \ket{1} )$ }
+
+
+\begin{example}
+Determine $\sum_{\textsf{t}_1 \textsf{t}_2 \dotsm \textsf{t}_n \in \{0,1\}^n} 
+c^{d \textsf{t}_1 \textsf{t}_2 \dotsm \textsf{t}_n} 
+\ket{\textsf{t}_1 \textsf{t}_2 \dotsm \textsf{t}_n} = ...$ 
+written in the form of a tensor product with $n$ factors.
+\end{example}
+
+\frameans{}{$\bigotimes^n_{l=1} (\ket{0} + c^{d2^{n-l}} \ket{1} )$ }
+
+
+\frmrule
+
+\[ 
+\begin{array}{l >{\scriptstyle}l}
+F\ket{j} = \frac{1}{\sqrt{2^n}} V_{2^n \times 2^n} \ket{j} & \text{def of } F  \\
+         = \frac{1}{\sqrt{2^n}} w^{j}_{2^n} & \text{def of } V_{2^n \times 2^n}; j\text{th col} \\
+         = \frac{1}{\sqrt{2^n}} \sum^{2^n-1}_{k=0} \omega^{kj}_{2^n} \ket{k} & \text{def of } w^{j}_{n}\\
+         = \frac{1}{\sqrt{2^n}} \sum^{2^n-1}_{k=0} e^{2\pi i\frac{kj}{2^n}} \ket{k} & \text{def of } \omega^{j}_{n} \\
+         = \frac{1}{\sqrt{2^n}} \sum_{\textsf{k}_1 \textsf{k}_2 \dotsm \textsf{k}_n \in \{0,1\}^n} 
+                   e^{\frac{2 \pi ij}{2^n} \times \textsf{k}_1 \textsf{k}_2 \dotsm \textsf{k}_n} 
+                   \ket{\textsf{k}_1 \textsf{k}_2 \dotsm \textsf{k}_n} & \text{writing }k\text{ in binary} \\
+        %
+		= \frac{1}{\sqrt{2^n}} \bigotimes^n_{l=1} (\ket{0} + e^{\frac{2\pi i j}{2^n} 2^{n-l}} \ket{1})
+		& \text{prev ex with } c = e, d = \frac{2\pi i j}{2^n} \\
+		%
+		= \frac{1}{\sqrt{2^n}} \bigotimes^n_{l=1} (\ket{0} + e^{\frac{2\pi i j}{2^l}} \ket{1})
+		 & \text{cancelling }2^n 
+\end{array}
+\]
+
+
+
+\begin{figure}[h]
+\begin{tikzpicture}[
+      start chain=1 going right, start chain=2 going right,
+      node distance=0mm,
+      n/.style={draw, minimum height=0.65cm, text centered,inner sep=4pt},
+      txt/.style={font=\small}
+  ]
+  \node (n1) [n, on chain=1, minimum width=5cm] {$n-l$};
+  \node (n2) [n, on chain=1, minimum width=1.5cm] {$l$};
+  \node (n3) [n, on chain=1, minimum width=1.5cm, dashed, draw=black!40, color=black!40] {$l$};
+  \filldraw[black] (n2.east) circle(1.6pt);
+  %\node [below=0.3cm of n1.west,txt] {$1$};
+  %\node [below=0.3cm of n2.west,txt] {$n-l+1$};
+  %\node [below=0.3cm of n3.west,txt] {$n+1$};
+  %
+  \node (n4) [n, on chain=2, minimum width=1.5cm, dashed, draw=black!40, 
+  below left=0.1cm and -1.5cm of n1, color=black!40] {$l$};
+  \node (n5) [n, on chain=2, minimum width=5cm] {$n-l$};
+  \node (n6) [n, on chain=2, minimum width=1.5cm] {$l$};
+  \filldraw[black] (n5.east) circle(1.6pt);
+  %\node [below=0.3cm of n4.east,txt] {$1+l$};
+  %\node [below=0.3cm of n5.east,txt] {$n+1$};
+  %\node [below=0.3cm of n6.east,txt] {$n+l+1$};
+
+
+\end{tikzpicture}
+\end{figure} 
+
+
+
+\[ 
+\begin{array}{l >{\scriptstyle}l}
+		= \frac{1}{\sqrt{2^n}} \bigotimes^n_{l=1} (\ket{0} + e^{\frac{2\pi i}{2^l} \sum^{n}_{r=1} 2^{n-r}
+         \textsf{j}_r} \ket{1}) & \text{writing }j\text{ in binary} \\
+		%
+		= \frac{1}{\sqrt{2^n}} \bigotimes^n_{l=1} (\ket{0} + e^{\frac{2\pi i}{2^l} 
+		[\sum^{n-l}_{r=1} 2^{n-r} \textsf{j}_r + \sum^{n}_{r=n-l+1} 2^{n-r} \textsf{j}_r]}  \ket{1}) & 
+		\text{break up least sig } l \text{ bits} \\
+		%
+		= \frac{1}{\sqrt{2^n}} \bigotimes^n_{l=1} (\ket{0} + e^{2\pi i
+		[\sum^{n-l}_{r=1} 2^{n-r-l} \textsf{j}_r + \sum^{n}_{r=n-l+1} 2^{n-r-l} \textsf{j}_r]}  \ket{1}) & 
+		\text{binary shift right by } l \text{ bits} \\
+		%
+		= \frac{1}{\sqrt{2^n}} \bigotimes^n_{l=1} (\ket{0} + e^{2\pi i
+		[K + \sum^{n}_{r=n-l+1} 2^{n-r-l} \textsf{j}_r]}  \ket{1}) & \text{where } K\text{ is an integer} \\
+		%
+		= \frac{1}{\sqrt{2^n}} \bigotimes^n_{l=1} (\ket{0} + e^{2\pi i
+		\sum^{n}_{r=n-l+1} 2^{n-r-l} \textsf{j}_r}  \ket{1})  & e^{2\pi i K} = 1 \text{ for any integer } K \\
+        %
+        = \frac{1}{\sqrt{2^n}} \bigotimes^n_{l=1} (\ket{0} + e^{2\pi i
+        \sum^{l}_{r=1} 2^{-r} \textsf{j}_{(n-l)+r}}  \ket{1})  & \text{reindex summation }
+\end{array}
+\]  
+
+
+
+\highlightdef{\textbf{QFT Output}: $F\ket{\textsf{x}_1 \textsf{x}_2 \dotsm \textsf{x}_n} 
+= \frac{1}{\sqrt{2^n}} \bigotimes^n_{l=1} (\ket{0} + e^{2\pi i 
+\sum^{l}_{r=1} 2^{-r} \textsf{x}_{(n-l)+r}}  \ket{1})$}
+
+\frmrule
+
+The index of the tensor product, $l$ tells us how many binary places to the right we shift $\textsf{x}$. 
+Once we have $\textsf{x} \gg l$, we take the $l$ bits that went past the binary point.
+These $l$ bits represent the fraction of $2 \pi i$ and determine the relative phase of $\ket{1}$.
+
+\frmrule
+
+\begin{example}
+Suppose we have $\textsf{x} = \textsf{10110}$.
+
+We have \\
+$\textsf{x} \gg 1 = \textsf{1011}\cdot\textsf{0}$ \\
+$\textsf{x} \gg 2 = \textsf{101}\cdot\textsf{10}$ \\
+$\textsf{x} \gg 3 = \textsf{10}\cdot\textsf{110}$ \\
+$\textsf{x} \gg 4 = \textsf{1}\cdot\textsf{0110}$ \\
+$\textsf{x} \gg 5 = \cdot\textsf{10110}$ \\
+
+So by taking the fractional parts we have:
+\[ 
+\begin{array}{rl}
+    F\ket{\textsf{10110}} =&  \frac{1}{\sqrt{2^n}} [(\ket{0} + e^{2\pi i \times \cdot\textsf{0}}\ket{1})
+    \otimes (\ket{0} + e^{2\pi i \times \cdot\textsf{10}}\ket{1})
+    \\& \; \;
+    \otimes (\ket{0} + e^{2\pi i \times \cdot\textsf{110}}\ket{1})
+    \otimes (\ket{0} + e^{2\pi i \times \cdot\textsf{0110}}\ket{1}) 
+    \\& \; \;
+    \otimes (\ket{0} + e^{2\pi i \times \cdot\textsf{10110}}\ket{1})]
+\end{array}
+\]  
+
+
+
+
+\end{example}
+
+
+
+
+\frmrule
+
+
+To implement the circuit we need a new gate, the \textit{controlled phase shift} gate.
+This is a two qubit gate that adjusts the relative phase of $\ket{1}$ on the first qubit provided 
+the second qubit is $\ket{1}$.
+
+$$
+R_k = \begin{bmatrix}
+       1 & 0 & 0 & 0                        \\[0.3em]
+       0 & e^{2\pi i \frac{1}{2^k}} & 0 & 0 \\[0.3em]
+       0 & 0 & 0 & 0 \\[0.3em]
+       0 & 0 & 0 & 1
+     \end{bmatrix}
+$$
+
+In the \textsc{qft}, we are interested in adjusting the relative phase by factors of 
+$e^{2\pi i \frac{1}{2^k}}$. In other words doing bit shift right by some $k$. 
+The goal is to get  $e^{2\pi i \sum^{l}_{r=1} 2^{r} \textsf{j}_r }$ for each line in our 
+parallel circuit using our gate $R_k$.
+
+First line corresponds to $l = 1$. We need $\ket{\textsf{j}_1} \mapsto e^{2\pi i \sum^{1}_{r=1} 2^{r-1} \textsf{j}_1}$
+which simplifies to $\ket{\textsf{j}_1} \mapsto e^{2\pi i 2^{1-1} \textsf{j}_1}$
+
+\begin{example}
+Given that $F$ is unitary, what is the matrix for the inverse fourier transform.
+\end{example}
+
+
+%\section{Phase Estimation}
+
+
+
+
+%\section{Order Finding}
+
+\section{Period Finding}
+
+
+For $M$ inputs, the number of times the function completes a whole repetition is given by:
+\highlightdef{\textbf{Whole repetitions}: $R = \ceil*{\frac{M}{r}}$}
+
+
+\highlightdef{$f_{a,N}(x) = a^x \text{mod } N$}
+
+We want to find the order of $a$, the smallest 
+
+
+\highlightdef{$f$ is one-to-one for a single period}
+
+
+
+
+\section{Discrete Logarithms}
+
+
+
+A \textit{Discrete logarithm}, $dlog$, is borrowing the the idea of logarithm with real numbers 
+and applying them to \textit{multiplicative cyclic groups}. 
+They are sometimes called \textit{indexes}.
+
+\begin{example}
+Consider the group $\mathbb{Z}^{*}_{5}$ that has generator 2. \\ 
+The discrete log of 1, $dlog(1) = 4$ because $2^4 = 1 \text{mod } 5$.
+\end{example}
+
+\frmrule
+
+\section{Hidden Subgroup Problem}
+
+
+
+
+
+
+
+
+
+
+\section{Shor's Algorithm}

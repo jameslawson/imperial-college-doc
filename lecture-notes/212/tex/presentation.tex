@@ -1,0 +1,710 @@
+
+\chapter{Character Coding}
+
+
+\section{Introducing Character Coding}
+
+
+Terminology is a real problem in the area of Character Coding.
+
+
+\section{Characters vs Glyphs}
+
+There are several entities that need to be formally defined.
+First we will define the difference between a \textit{character} and a \textit{glyph}.
+Note that these a formal definitions used in Character Coding. 
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Character} We give a formal definition of the term \textit{character} for 
+encoding. Here, a \textit{character} is defined is an abstract name or description for a shape or form. A character has \textit{no concrete shape}. You cannot write a character down on paper.
+A character cannot be printed on a computer screen. It's independent of any specific rendered image or font.
+\item \textbf{Glyph} A \textit{glyph} is a concrete visual representation that we can assign
+to a character. The glyph is any visual medium (handwritten on paper, displayed on a computer screen).
+\end{itemize}
+
+
+A single character can have many glyphs associated.
+
+\frmrule
+
+\begin{example}
+We define the character: \textit{the letter a}. 
+It is just a name or description. A glyph is a concrete way of writing 
+that can be assigned to \textit{the letter a}. 
+\end{example}
+
+A single glyph can have many characters associated. 
+
+\frmrule
+
+
+\begin{example}
+We define two characters: \textit{the latin letter a}, \textit{the german letter a}. 
+As an example, the following glyph can be assigned to \textit{the latin letter a}
+or it can be assigned to \textit{the german letter a}. 
+\end{example}
+
+\frmrule
+
+We can think of glyphs as being the syntax and characters as being the semantics.
+Glyphs are the concrete written symbols whereas charactes are descriptions or names 
+that give a meaning to these symbols. 
+
+\highlightdef{\textbf{Characters vs Glyphs}: We distinguish an \textit{abstract element} of writing 
+from a particular \textit{graphical symbol} used in writing}
+
+Such a distinction is not intuitive at first. But it is indeed crucial for computers. 
+For example, take the concept of 9. We can write down 9. But some people like to 
+add a curl to the 9
+
+Such a distinction seperates handwriting from . 
+We seperate a concrete graphical form (see in reality) 
+from the abstract form (seen in our heads). 
+
+\highlightdef{\textbf{Font}: A \textit{font} $\mathcal{F}$ is a particular collection of glyphs}
+
+\highlightdef{\textbf{Character Set}: A \textit{character set} $\mathcal{S}$ is particular collection of characters}
+
+
+
+
+
+
+\section{Character Layouts}
+
+
+The mapping share common design features often sharing 
+the same size, weight and general style.
+
+
+\highlightdef{\textbf{Character Layout}: A particular mapping from a character set to the set of natural numbers }
+
+A Character Layout assigns each glyph a unique natural number.
+Each natural number is called a \textit{code point} or a \textit{code position}. 
+This can be thought of, informally as a chart on the wall. 
+
+\highlightdef{\textbf{Codepoint}: The \textit{natural number} assigned to a character by a character layout}
+
+
+\begin{example}
+ASCII is 
+\end{example}
+
+\frmrule 
+
+\begin{example}
+Codepage-1252 or CP-1252 is a character layout of the Latin alphabet, 
+used by Windows in certain components. Because of it's exclusive use on Windows, 
+it is often called  \textit{Windows-1252}. 
+CP-1252 is similar to Latin 9 (aka ISO 8859-1) except that different characters 
+are mapped to different code points. 
+\end{example}
+
+\frmrule
+
+
+\begin{example}
+Unicode is the largest character layout, containing all the characters for 
+all the major writing systems of the world, both ancient 
+and modern. 
+\end{example}
+
+\frmrule
+
+
+
+
+
+\frmrule
+
+
+\section{Character Encodings}
+
+
+\frmrule 
+
+\textit{Motivating the need to seperate codepoints from their storage}
+
+\highlightdef{\textbf{Layout vs Encoding}: We make a distinction between the \textit{numbers assigned} to 
+characters (layout assigning codepoints) and the way those \textit{numbers are stored} in computers (encoding)}
+
+
+\frmrule 
+
+\textit{Formally defining a character encoding}
+
+\highlightdef{\textbf{Character Encoding}: specify the storage for the binary of codepoints}
+
+In order to specify the character encoding, we need to determine two things, 
+the \textit{binary representation} and the \textit{binary serialization}. 
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$} 
+\item \textbf{Binary} Each glyph has a binary representation of the 
+code point.  
+\item \textbf{Serialization} byte stream. 
+Each glyph has a unique binary sequence or digits 
+assigned. This is not just the binary representation of the code point. 
+The binary encoding must also determine the number of leading zeros.
+Some glyphs may be given different length binary encodings. 
+\end{itemize}
+
+
+
+\begin{figure}[h]
+\begin{tikzpicture}[
+  title/.style={},
+  entity/.style={rectangle, draw, text centered}
+]
+
+\node[entity] (g) {Glyph};
+\node[entity, right = 1.5cm of g] (ch) {Character};
+\node[entity, right = 1cm of ch] (cp) {Code Point};
+\node[entity, right = 1cm of cp] (b) {Binary};
+\node[entity, below = 0.5cm of b] (s) {Serialization};
+
+\draw(g) -- (ch);
+\draw(ch) -- (cp);
+\draw(cp) -- (b);
+\draw(b) -- (s);
+
+% draw crowsfeet
+\node[right = 0.2cm of g] (cf1) {};
+\draw(cf1.west) -- (g.10);
+\draw(cf1.west) -- (g.0);
+\draw(cf1.west) -- (g.350);
+\node[left = 0.2cm of ch] (cf2) {};
+\draw(cf2.east) -- (ch.170);
+\draw(cf2.east) -- (ch.180);
+\draw(cf2.east) -- (ch.190);
+\node[above = 0.2cm of s] (cf3) {};
+\draw(cf3.south) -- (s.40);
+\draw(cf3.south) -- (s.90);
+\draw(cf3.south) -- (s.140);
+
+\end{tikzpicture}
+\end{figure} 
+
+\frmrule 
+
+\textit{A character layout can have several encodings}
+
+It can be mistakenly interpreted that the term \textit{ASCII} 
+unambiguously identifies a \textit{single} encoding. ASCII refers to the 
+character layout, which, by our definition need not have a particular fixed encoding.
+Indeed are \textit{many encodings} for the ASCII character layout. 
+
+\begin{example}
+ASCII is commonly encoded as 7 bits in an 8-bit byte with a leading zero. 
+\end{example}
+
+\begin{example}
+Unicode is not an encoding (at least, not following the definition of \textit{encoding} use here).
+There are several encodings of Unicode. 
+You can freely convert between them without losing information
+\end{example}
+
+
+
+There are many character layouts which just so happen to have a single 
+encoding using in industry. It is these layouts that unfortuntely 
+cause a blur between what is a layout and what is an encoding. 
+The same name is often using for the layout and the encoding. 
+
+\begin{example}
+ASCII is commonly encoded as 7 bits in an 8-bit byte with a leading zero. 
+\end{example}
+
+\frmrule 
+
+
+
+
+
+\section{UTF and UTF Encodings I}
+
+
+\frmrule
+
+\textit{Introducing UTF as a character layout}
+
+UTF is a popular character layout that supports 
+
+\highlightdef{\textbf{UTF} stands for \textit{Unicode Transfer Format}}
+UFT is sometimes caleld the Unicode \textit{Transformation} Format. 
+
+The Unicode code space is divided into seventeen planes of $2^{16} = 65536$. 
+Let $h_1 h_2$ be hex digits from ranging from 0h00 to 0h10. Then 
+each Unicode plane is uniquely identified by $h_1 h_2$.  
+The codepoints in plane $h_1 h_2$ have the hexadecimal values 0h$h_1 h_2 0000$ to 
+0h$h_1 h_2 0000$. 
+
+
+Some code points have not yet been assigned character. 
+Some are reserved for private use.
+Some are permanently reserved to never be assigned to a character. 
+
+\frmrule
+
+\begin{example}
+How many codepoints does Unicode have in total?\\ 
+\textit{Hint: How many planes are there? How many codepoints are there per plane?}
+\end{example}
+
+\frmrule
+
+\begin{example}
+In Unicode, characters are mapped to codepoints with values between 0h0, and 0h.......
+\end{example}
+
+\frmrule
+
+\textit{Basic Multilingual Plane}
+
+
+\highlightdef{\textbf{Basic Multilingual Plane} the first 65536 Unicode codepoints}
+That is, the basic multilingual plane is simply the \textit{first} Unicode plane.
+
+\frmrule
+
+\textit{Difference between UTF and a UTF encoding}
+
+
+\begin{figure}[h]
+\begin{tikzpicture}[
+  title/.style={},
+  entity/.style={rectangle, draw, text centered}
+]
+
+\node[entity] (g) {Glyph};
+\node[entity, right = 1.5cm of g] (ch) {Character};
+\node[entity, right = 1cm of ch] (cp) {Code Point};
+\node[entity, right = 1cm of cp] (b) {Binary};
+\node[entity, below = 0.5cm of b] (s) {Serialization};
+
+% Labels
+\coordinate (m) at ($(ch)!0.5!(cp)$);
+\node (uftlabel) [above=0.4cm of m] {\textbf{Character Layout} $=$ UFT};
+\node (enclabel) [below=0.2cm of s, text width=4cm] 
+{\textbf{Encoding} $=$ \\UFT32BE \textit{or} UFT32LE \textit{or}
+\\UFT16BE \textit{or} UFT16LE \textit{or} \\ UFT32 \textit{or} UFT16 
+\textit{or} UFT8 \\ \textit{or} ...
+};
+
+\begin{pgfonlayer}{background} 
+    \node [draw=black, dashed, inner sep=5pt, outer sep=5pt, fit={(ch) (cp)}] {};
+    \node [draw=black, dashed, inner sep=5pt, outer sep=5pt, fit={(b) (s)}] {};
+ \end{pgfonlayer}  
+
+\draw(g) -- (ch);
+\draw(ch) -- (cp);
+\draw(cp) -- (b);
+\draw(b) -- (s);
+
+% draw crowsfeet
+\node[right = 0.2cm of g] (cf1) {};
+\draw(cf1.west) -- (g.10);
+\draw(cf1.west) -- (g.0);
+\draw(cf1.west) -- (g.350);
+\node[left = 0.2cm of ch] (cf2) {};
+\draw(cf2.east) -- (ch.170);
+\draw(cf2.east) -- (ch.180);
+\draw(cf2.east) -- (ch.190);
+\node[above = 0.2cm of s] (cf3) {};
+\draw(cf3.south) -- (s.40);
+\draw(cf3.south) -- (s.90);
+\draw(cf3.south) -- (s.140);
+
+\end{tikzpicture}
+\end{figure} 
+
+
+\frmrule 
+
+\textit{Introducing UTF-16BE, UTF-16LE}
+
+Put \textit{basically} \footnote{We will see later, when we come to \textit{surrogate pairs}, that this relationship is 
+not strictly true}
+the UTF-16BE and UTF-16LE encodings are:
+\highlightdef{
+\textbf{UFT-16BE}: codepoint $\leftrightarrow$ 2 bytes, big-endian\\
+\textbf{UFT-16LE}: codepoint $\leftrightarrow$ 2 bytes, little-endian 
+}
+
+
+Two bytes to be precise. Computer systems have 
+made it is ambiguous as to how to store multibyte data in memory. 
+
+\begin{sidenote}{Big-endian vs Little-endian}
+
+We sometimes have multibyte data $[B_0, ..., B_n]$, 
+data whose meaning occupies several bytes. In UTF-16BE, UTF-16LE, 
+our data is a \textit{codepoint} and its meaning occupies \textit{two} bytes. 
+
+Recall from 113 Architecture that it is ambiguous as to how to 
+store multibyte data in main memory. 
+~\\~\\
+There are two ways.\\
+- Big-endian: $[B_0, ..., B_n] \rightarrow [\langle \text{littleend} \rangle ..., [B_0, ..., B_n], ...\langle \text{bigend} \rangle]$\\
+- Little-endian: $[B_0, ..., B_n] \rightarrow [\langle \text{littleend} \rangle ..., [B_n, ..., B_0], ...\langle \text{bigend} \rangle]$
+~\\~\\
+Recall that \textit{Big}-endian stores bytes moving towards the 
+\textit{big}-end of memory. 
+Whereas, \textit{Little}-endian stores our bytes
+moving towards the \textit{little}-end of memory.
+$\langle \text{littleend} \rangle$ denotes the smallest address of main memory, 
+$\langle \text{bigend} \rangle$ denotes the biggest address. 
+\end{sidenote}
+
+\frmrule 
+
+\begin{example}
+Show how $[\textsf{T},\textsf{E},\textsf{X},\textsf{T}]$ is encoded in (a) UFT-16BE (b) UFT-16LE,\\
+where \textsf{t}, \textsf{e}, \textsf{x} are characters with codepoints given by
+the UFT layout maps:\\ $\mathcal{L}: (\textsf{T} \mapsto 84,  \textsf{E} \mapsto 69, \textsf{X} \mapsto 88, ...)$.
+
+\begin{itemize}
+\item Codepoints: $[84,69,88,84]$. 2 bytes: $[[00, 84], [00, 69],[00, 88], [00, 84]]$\\
+(a) Big-endian: $[[00, 84], [00, 69],[00, 88], [00, 84]]$\\
+(b) Little-endian: $[[84, 00], [69, 00],[88, 00], [84, 84]]$
+\end{itemize}
+\end{example}
+
+\frmrule 
+
+\textit{Introducing encoding for codepoints outside BMP}
+
+Notice that UTF $7 \times 2^{16}$ codepoints but have, so far, used only 2 bytes = 16 bits for
+codepoint. Only the first 65536 $= 2^{16}$ will fit in $[B_0, B_1]$. 
+That is, \textit{only codepoints for characters in the Basic Multilingual 
+Plane will fit} in $[B_0, B_1]$. For characters outside the BMP, 
+we will develop a new encoding scheme. 
+
+
+Note that total number of codepoints outside the BMP is $(7 \times 2^{16}) - 2^{16} + 1$ $=6 \times 2^{16} +1$ and
+$\ceil{\log_2 (6 \times 2^{16} + 1)} = 19$. This tells us that there are $\leqslant 2^{19}$ 
+codepoints outside the BMP. It also tells us that we need at least 19 bits to uniquely 
+identify codepoints outside the BMP.  
+
+To encode characters \textit{outside} the Basic Multilingual 
+Plane, we exploit the existence of gaps in the Unicode map $\mathcal{L}$. By 
+\textit{gap}, we mean a set of contiguous codepoints $=[x,y]=\{z\in \mathbb{N} \;|\; x < z < y \}$. \\
+There are two gaps $G_1 = [s,t]$, $G_2=[v,w]$, that satisfy the following properties:\\
+(i) the gaps are \textit{non overlapping} \\
+(ii) the gaps are in the \textit{BMP}\\
+(iii) each gap has $2^{10}$ unused codepoints
+ 
+A pair $(g,g')$ where $g \in G, g' \in G'$ can uniquely identify $2^{10} \times 2^{10} = 2^{20}$ codepoints 
+which is more than enough 
+to identify the codepoints that lie outside the BMP. We know this 
+because we showed that there are $\leqslant 2^{19}$ codepoints outside the BMP. 
+We can therefore bijectively map between a number $c$ outside the BMP and the pair $(g,g')$.
+Knowing a codepoint in the first BMP gap, $G_1$ and knowing a codepoint in the second BMP gap $G_2$ 
+is equivalent to knowing any codepoint outside the BMP, $c$. 
+
+\frmrule 
+
+\textit{Finding a formula for the bijection}
+
+We now find a formula that relates the codepoint values of $g,g'$ and $c$. 
+Note that a bijective map between $c$ and $(g,g')$ is the same as 
+bijectively mapping between the \textit{offsets} $\beta$ and $(\alpha,\alpha')$ 
+where: $g = g_0 + \alpha$, $g' = g_0' + \alpha'$ and $c = 2^16 + \beta$.
+
+To find a bijection between $\beta$ and $(\alpha,\alpha')$, we use 
+two-dimensional array arithmetic. 
+
+If we draw a grid of numbers $2^{10}$ by $2^{10}$. Then, 
+there is a bijection between the number of squares that we need 
+to fill to reach a coordinate and the coordinates itself. 
+For us, the no of squares is $\beta$ and the coordinates are 
+$(\alpha,\alpha')$. 
+
+If we are given the codepoint offset $\beta$ we can find the pair of offsets $(\alpha,\alpha')$ via:
+\highlightdef{
+\textbf{Codepoint $\rightarrow$ Pair}: (\textit{with offsets}) \\
+$\alpha = \beta \text{ div } 2^{10}$ \\
+$\alpha' = \beta \text{ mod } 2^{10}$ 
+}
+
+And if we given the pair of offsets $(\alpha,\alpha')$ we can find 
+codepoint offset $\beta$ via:
+
+\highlightdef{
+\textbf{Pair $\rightarrow$ Codepoint}: (\textit{with offsets}) \\
+$\beta = \alpha \times 2^{10} + \alpha'$  
+}
+
+\begin{sidenote}{Number Theory}
+This result is more formally known as the \textit{Division Theorem} 
+or \textit{Division Algorithm} (even though it is not an algorithm). 
+\end{sidenote}
+
+We then substitute $ \alpha = g - g_0$  and $\alpha' = g' - g_0'$ and 
+rearrange to give:
+
+\highlightdef{
+\textbf{Codepoint $\rightarrow$ Pair}: \\
+$g = ((c-2^{16}) \text{ div } 2^{10}) + g_0$\\
+$g' = ((c-2^{16}) \text{ mod } 2^{10}) + g_0'$
+}
+
+and if we subtitute $\beta = c - 2^{16}$
+
+\highlightdef{
+\textbf{Pair $\rightarrow$ Codepoint}: \\
+$c = (g - g_0) \times 2^{10} + g' - g_0' + 2^{16}$  
+}
+
+
+\frmrule 
+
+\textit{Surrogate pairs}
+
+The pair $(g,g')$ is called a \textit{surrogate pair}. 
+
+It is standard terminology to call 
+$g$ the \textit{high} surrogates and to call $g'$ the \textit{low} surrogates.
+There is no important reason for this naming. 
+It certainly this does \textit{not} imply that we always $g > g'$. The gaps can 
+be arranged in any way so long as they are non overlapping, in the BMP 
+and have $2^{10}$ codepoints. 
+
+\highlightdef{
+\textbf{Surrogate pair}: a pair $(g,g')$ of 2 BMP codepoints gaps
+$g \in G$, $g' \in G'$ \\ that uniquely identify codepoints outside the BMP }
+
+
+
+
+\frmrule 
+
+\begin{example}
+How many surrogate codepoints are there?
+
+There are $2^10 + 2^10 = 2^11 = 2048$. \\
+\textit{Remark}: Out of all the $2^{16}$ codepoints in the basic multilingual plane, 
+$(2048/2^{16}) \times 100 = 3\%$ are surrogate codepoints.
+\end{example}
+
+\frmrule 
+
+\textit{The gaps $G$ and $G'$ used in practice }
+
+The gaps $G$ and $G'$ are fixed in UTF. 
+They are a feature of the character set and not the 
+encoding. They are fixed to be the following:\\
+
+\highlightdef{\textbf{UTF Gaps}:
+$G = [55296, 56319]$, $G' = [56320, 57343]$}
+
+What is interesting is that there is no gap inbetween
+$G$ and $G'$. This is strictly needed for a bijection to work,
+but the design of the character map put them together.  
+
+
+\frmrule 
+
+\begin{example}
+Show how the codepoint $\text{U+1D160}$ maps to its surrogate pair $(\text{U+D834},\text{U+DD60})$
+\begin{itemize}
+\item
+$c = 0h1D160 = 119136$. \\
+Now we find the surrogate pair $(g,g')$. \\
+Using the UFT gaps gives: $g_0 = 55296$, $g_0' = 56320$. And so: \\
+$g = ((c-2^{16}) \text{ div } 2^{10}) + g_0 = (119136-2^{16}) \text{ div } 2^{10}) + 55296 = 55348$\\
+$g' = ((c-2^{16}) \text{ mod } 2^{10}) + g_0' = (119136-2^{16}) \text{ mod } 2^{10}) + 56320 = 56672$\\
+So the surrogate pair is $(g,g') = (55348, 56672) = (0hD834, 0hDD60)$
+
+\end{itemize}
+\end{example}
+
+\frmrule 
+
+
+
+
+
+% We shall codepoints that are outside the BMP, \textit{surrogate codepoints}. 
+% That is codepoint is greater than 65536. 
+% let $\mathbf{c}$ be some codepoint whose 32bit $([B_0, B_1],[B_2, B_3])$
+
+% We shall now 
+
+% \highlightdef{There are no BMP codepoints of the form: $[110110b_1b_2,B_1]$ or $[110111b_1b_2, B_1]$}
+% That is, for code points $0 \leqslant u \leqslant 65536$, if we take the two-byte representation 
+% of $u$, $[B_0,B_1]$, then $B_0$ will never start with the bit sequences 110110 nor with 
+% the bit sequence 110111.
+% We can say that $\mathcal{L}$ is a partial function and that 
+% $\mathcal{L}(110110b_1b_2 \cdot B_1) \downarrow$, $\mathcal{L}(110110b_1b_2 \cdot B_1) \downarrow$ 
+% where $f(x)\downarrow$ denotes that partial function $f$ has no mapping for $x$.  
+
+
+% Let $u$ be some codepoint $0 < u < 65536$ such that there is no character 
+% where $\mathcal{L}(\mathbf{c}') = u$
+
+% Surrogate codepoints are in two ranges known as \textit{low surrogates} and \textit{high surrogates}.
+% Low surrogates are allowed at in the first of the pair $([B_0, B_1],...)$ \\
+% High surrogates are allowed at in the second of the pair $([B_0, B_1],...)$ \\
+
+\frmrule 
+
+\textit{Surrogate pairs Decoder Tables}
+
+
+
+
+\frmrule 
+
+\textit{The BMP contains the most common characters}
+
+Unicode was designed so that characters that occur the most in the computer 
+industry are in the BMP and those that are less common fall outside the BMP 
+and therefore require a surrogate pair for their encoding. This means 
+that most common characters will need less bytes for their storage
+whereas less common will need more bytes. 
+
+
+
+
+
+
+\section{UTF and UTF Encodings II}
+
+
+\frmrule 
+
+\textit{Introducing UTF-32BE, UTF-32LE}
+
+
+\frmrule 
+
+
+\textit{Introducing UTF-16 and UTF-32 and BOMs}
+
+
+
+
+
+The byte-order mark, if used, appears at the start of the text stream. Not all UTF encodings need a 
+byte order mark. In particular, UTF-16BE, UTF-16LE, UTF-32BE, UTF-32LE do not need 
+a byte-order mark. A BOM is only necessary for UTF-8, UTF-16, UTF-32 who do not fix the endianness.
+
+\highlightdef{\textbf{BOM}: used once to specify the endianness for a UTF encoded stream }
+
+UTF-16 and UTF-32 allow character streams of either byte order.  
+They rely on the use of the BOM specify the endianness.
+The endianness is fixed throughout (LE - little endian, BE- big endian).
+That is, encoded character streams use the same byte ordering. 
+
+When a BOM is used, the encoding of codepoint U+FEFF is used. 
+This the codepoint that Unicode maps \textit{Zero-width Non-breaking Space (ZWNBSP)} 
+character to. 
+
+\frmrule 
+
+\textit{Introducing UFT8}
+
+UTF-8 is a encoding that uses a \textit{variable number of bytes}, it depends 
+on the value of the codepoint, $c$. UTF-8 defines straightforward mapping.
+
+$0 \leqslant c < 2^7$:    $c_1 ... c_7 \rightarrow  [[0 c_1 ... c_7]]$\\
+$2^7 \leqslant c < 2^{11}$: $c_1 ... c_{11} \rightarrow  [[110 c_1 ... c_5], [10, c_6 ... c_{11}]]$\\
+$2^{11} \leqslant c < 2^{16}$: $c_1 ... c_{16} \rightarrow  [[1110 c_1 ... c_4], [10, c_5 ... c_{10}], [10, c_{11} ... c_{16}]]$\\
+$2^{16} \leqslant c < 2^{20}$: $c_1 ... c_{21} \rightarrow  
+[[11110 c_1 ... c_3], [10, c_4 ... c_9], [10, c_{10} ... c_{15}], [10, c_{16} ... c_{21}]]$
+
+As we can see, depending on how large the codepoint is, 
+the encoding chooses (i) many bytes to use and the (ii) layout. 
+Recall that Unicode codepoints lie in the range $0$ to $6 \times 2^{16}$, and 
+that $6 \times 2^{16} < 2^{19}$ - every Unicode codepoint can be represented with 19 bits. 
+So the very last Unicode codepoint falls into the last case. 
+
+\highlightdef{\textbf{UTF-8}: Encodes codepoints using up to 4 bytes}
+
+The pattern is that a codepoint always uses a multiple of 8 bits, hence the 8 in UTF-\textit{8}. 
+It is called a \textit{byte}-oriented encoding because a given UTF-8 encoded 
+stream can be seen as a \textit{stream of bytes} that from groups of 1,2,3 or 4 to give 
+corresponding codepoints.  
+
+\frmrule 
+
+
+\begin{example}
+What is the UTF-8 encoding of the following codepoint?
+% U+20AC
+% F0 A4 AD A2
+\end{example}
+
+\frmrule 
+
+\textit{No surrogate pairs in UFT-8}
+
+Codepoints outside the BMP are not represented with surrogate pairs in UFT-8.
+
+
+\frmrule 
+
+\textit{UFT-8 needs no byte-order mark. There is no endianess.}
+
+Officially, the Unicode Standard neither requires nor recommends 
+the use of the BOM for UTF-8. As a result, some programs add a BOM, 
+and some don't. This has thus caused some interoperability problems between 
+programs.  
+
+
+Unofficially, UTF-8-BOM or UTF-8-NOBOM are sometimes used to 
+refer to streams which contain or lack a BOM respectively. 
+In Japan especially, UTF-8 encoding without BOM is sometimes called "UTF-8N"
+
+
+
+\frmrule 
+
+\textit{UFT-8 uses the upper bits of each byte as control bits to help decoding.}
+
+\frmrule 
+
+\begin{sidenote}{The Popularity of UTF-8}
+UTF-8 is popular for web pages and documents because of its \textit{effiency in size} 
+and its \textit{compatibility with ASCII}.
+UTF-8 is also the default encoding used for xml files. 
+\end{sidenote}
+
+
+\frmrule
+
+\begin{example}
+True or false. \\
+\textbf{(a)} UTF16-BE and UTF16-LE are compatible with ASCII systems. %F
+\end{example}
+
+
+\frmrule
+
+% UTF-7
+
+
+\section{UTF Composed Characters*}
+
+
+
+\highlightdef{\textbf{Composed Character}: }
+
+
+\highlightdef{\textbf{Precomposed Character}: a character that has both a codepoint 
+and a equivalent \textit{decomposed sequences of other codepoints}}
+
+\highlightdef{\textbf{Canonical Equivalence}: decomposion sequences may differ, 
+but they will share a \textit{canonical equivalence}}
+
+\section{Encodings in Programming Languages}
+
+Java represents characters as UTF-16 code units.
+The length function on strings may be misleading. 
+It returns the returns the number of code units.
+
+
+\section{Line Endings} 
+

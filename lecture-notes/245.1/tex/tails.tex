@@ -1,0 +1,150 @@
+
+\chapter{Distribution Tails}
+
+
+
+\section{Introducing Variance}
+
+
+
+
+
+\highlightdef{
+\textbf{Quadratic Growth}: $(X-\overline{X})(\omega) = $ $y$-value of parabola given $x = X(\omega)$
+}
+drawn at $\overline{X}$ on the graph of $P(X=x)$ against $x$. 
+
+
+\highlightdef{
+\textbf{Variance}: The \textit{Variance} of $X$ is the Expected value of $(X - \overline{X})^2$
+}
+So we write $\text{Var}[X] = E[(X - \overline{X})^2]$
+
+
+
+
+\highlightdef{
+\textbf{Variance of Bell-shapes}: A \textit{larger} variance gives a \textit{wider}-shaped bell curve.
+}
+
+
+\frmrule
+
+Clearly, if $X$ takes values close to the mean $E[X]$ with high probability 
+then the variance $Var[x]$ is small. What is much less obvious is that 
+the converse of this assertion is also true. That is, if $Var[X]$ is small 
+then $X$ takes values close to $E[X]$ with high probability. 
+
+Let us choose a very small number, $\epsilon > 0$. Then $1 - Var[X]/\epsilon^2$ is 
+very large when $Var[X]$ is small. 
+$\prob{X \text{ and } E[X] \text{ being close}} \text{is } \textit{very large } \text{when } Var[X] \text{ small}$
+
+\highlightdef{\textbf{Chebyshev's Inequality}: $\prob{|X - E[X]| \leqslant \epsilon} \geqslant 1 - Var[X]/\epsilon^2$ }
+
+
+\frmrule
+
+\textbf{Proof} (\textit{via indicator random variable}): \\
+Consider the event $A = {|X - E(X)| < \epsilon}$ and let $I_A$ be the corresponding 
+indicator random variable. Then we claim:
+
+$$I_A \geqslant 1 - \frac{[X - E(X)]^2}{\epsilon^2}$$
+
+Either $A$ occurs or it does not. \\
+If $A$ occurs then LHS $= 1$. RHS is less than 1. Hence LHS $\geqslant$ RHS. \\
+If $A$ does not occur, LHS $= 0$. 
+For RHS, given that $A$ didn't occur, $|X - E(X)| \geqslant \epsilon$. 
+So $|X - E(X)||X - E(X)| \geqslant \epsilon^2$. That is $[X - E(X)]^2 \geqslant \epsilon^2$. 
+So the numerator of the fraction on RHS is bigger than denominator. So RHS $< 0$. Hence LHS $\geqslant$ RHS.
+
+Since taking the expectation of both sides, 
+(recall $E[I_A] = \prob{A}$) gives $\prob{A} \geqslant 1 - Var[X]/\epsilon^2$. $\square$
+
+\frmrule
+
+\begin{example}
+By Chebyshev's inequality, what happens when $Var[X] = 0$?
+\end{example}
+
+\frameans{Hint: $X$ must take a particular value when $Var[X] = 0$}{$X$ is a constant random variable with value $E[X]$}
+
+\frmrule
+
+\begin{example}
+What is the variance of a constant random variable?
+\end{example}
+
+
+
+
+
+\frmrule
+
+The quantity known as $E[X^2]$ is known as the \textit{second moment of $X$}. 
+The moments of random variables as a topic of their own. Under certain circumtances, 
+the distribution of a random variable can be found purely on its moments. But 
+this course will not look at moments. What is useful is 
+a formula for variance expressed in terms of $\ex{X}$ and 
+the \textit{second moment of $X$}. 
+
+\highlightdef{\textbf{Variance: Second Moment Formula}: $\var{X} = \ex{X^2} - [\ex{X}]^2$}
+
+\textbf{Proof}: (\textit{via Random Variable Algebra})
+
+\frmrule
+
+\textbf{Proof}: (\textit{Directly on Sample Space})
+
+
+\frmrule
+
+\begin{example}
+Which is larger, $\ex{X^2}$ or $[\ex{X}]^2$?
+\end{example}
+
+
+
+\section{Markov's Inequality}
+
+\frmrule
+
+\textbf{Proof} (\textit{via indicator random variable}): \\
+Let $X$ be a non-negative random variable and let $\epsilon > 0$. 
+Consider the event $A = \{X > \epsilon\}$. Let $I_A$ be the indicator 
+random variable for this event. We claim $I_A \leqslant X/\epsilon$. 
+
+Either A occurs or it does not. \\
+If A occurs, LHS $=1$. Since A occurred, $X > \epsilon$, so RHS$>1$. Hence LHS $\leqslant$ RHS.\\
+If A did not occur, LHS $=0$. Since A occurred, $X \leqslant \epsilon$, we have $0 < X \leqslant \epsilon$.
+So $0 < $ RHS. Hence LHS $\leqslant$ RHS.
+
+Hence $I_A \leqslant X/\epsilon$. So, by taking the expectation of both sides, 
+we have  $\prob{A} \leqslant E[X]/\epsilon$. $\square$
+
+\frmrule
+
+
+\section{Introducing Distribution Tails}
+
+
+
+
+\highlightdef{
+\textbf{Weak law of of Large Numbers: }
+$\prob{\left|X_{avg} - \overline{X_{avg}} \right| \geqslant \epsilon} \leqslant \frac{\text{Var}[X_{avg}]}{\epsilon^2}$
+}
+
+
+\section{The Union Bound and Murphy's Law}
+
+
+
+
+
+
+\section{Chernoff Inequalities}
+
+
+
+
+\section{Tails of the Binomial Distribution}

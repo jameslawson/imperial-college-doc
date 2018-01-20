@@ -1,0 +1,33 @@
+\documentclass[a4paper, draft, 10pt]{book}
+
+% BEGIN PACKAGE IMPORT
+% =============================================================================
+\usepackage{../docstyle}
+% =============================================================================
+
+\newcommand
+{\ratuple}[1]
+{
+\left[
+\begin{array}{>{\text\sffamily\color{black!60}}l|r}
+#1
+\end{array}
+\right]
+}
+
+\makeatletter
+\newcommand{\oset}[2]{%
+  {\mathop{#2}\limits^{\vbox to -.5\ex@{\kern-0.25ex\hbox{#1}\vss}}}}
+\makeatother
+
+\newcommand{\equaltimes}{\oset{=}{\times}}
+
+
+
+\begin{document}
+\input{./tex/relational-algebra.tex}
+\input{./tex/sql.tex}
+\input{./tex/datalog.tex}
+\input{./tex/functional-dependencies.tex}
+\input{./tex/normal-form.tex}
+\end{document}

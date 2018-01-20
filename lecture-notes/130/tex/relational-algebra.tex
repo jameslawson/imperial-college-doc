@@ -1,0 +1,149 @@
+
+\chapter{Relational Algebra}
+
+\section{Introducing Relational Model}
+
+
+
+\highlightdef{In the relational model, we have \textit{attributed tuples} rather than ordered tuples }
+
+
+\highlightdef{\textbf{Tables} provides merely a \textit{convenient pictorial representation} for relations}
+
+
+
+
+The \textit{tuple calculus} is a formalism of this idea 
+of using the set-builder notation to find relations. 
+A tuple calculus expression is of the form $\{t \;|\; P(t) \}$. 
+
+
+
+
+
+
+
+\section{Relational Algebra I}
+
+
+
+\highlightdef{\textbf{Intersection}: $A \cap B$}
+
+\highlightdef{\textbf{Union}: $A \cup B$}
+
+
+
+\highlightdef{\textbf{Projection}: $\pi_{\textsf{L}}(A)$}
+
+\highlightdef{\textbf{Selection}: $\sigma_{\textsf{Q}}(A)$}
+
+
+
+
+
+\section{Cartesian Products I}
+
+
+For intersecting attributes, 
+$\textsf{l}$ and $\textsf{l'}$
+
+
+\highlightdef{\textbf{Cartesian Product}: $A \times B$ }
+
+
+
+\section{Cartesian Products II}
+
+
+To work out the \textit{equality cross product}, 
+we take the \textit{cross product} of A and B but when we are forming the cross product, 
+we only consider pairs of tuples that have the \textit{same values} for attributes in $\textsf{L}$. 
+
+
+\highlightdef{\textbf{Equality Cartesian Product}: $A \equaltimes_{\textsf{L}}  B$ }
+
+Rather than using all $|A||B|$ tuples, the equality cartesian product filters 
+the tuples that are in the result based a comparison of the values for the attributes 
+$\textsf{L}$. A pair $(a',b')$ is in $R$ only if 
+$a\textsf{.l}_1 = b\textsf{.l}_1$, $a\textsf{.l}_2 = b\textsf{.l}_2$, ..., 
+$a\textsf{.l}_n = b\textsf{.l}_n$. That is, only if they agree on values 
+for all the attributes in $L$. 
+
+\frmrule
+
+\begin{example}
+Evaluate the following \textit{equality cross product}.
+
+$$\arraycolsep=2pt
+\left\{
+\ratuple {
+    \textsf{a} & 1 \\
+    \textsf{b} & 2
+}
+\ratuple {
+     \textsf{a} & 3 \\
+     \textsf{b} & 4
+}
+\ratuple {
+     \textsf{a} & 5 \\
+     \textsf{b} & 6
+}
+\right\}
+\overset{\times}{=}_{\textsf{\{b\}}}
+\left\{
+\ratuple {
+     \textsf{c} & 1 \\
+     \textsf{d} & 2
+}
+\ratuple {
+     \textsf{c} & 3 \\
+     \textsf{d} & 4
+}
+\ratuple {
+     \textsf{c} & 5 \\
+     \textsf{d} & 6
+}
+\ratuple {
+     \textsf{c} & 5 \\
+     \textsf{d} & 6
+}
+\ratuple {
+     \textsf{c} & 5 \\
+     \textsf{d} & 6
+}
+\ratuple {
+     \textsf{c} & 5 \\
+     \textsf{d} & 6
+}
+\right\}
+$$
+
+
+\end{example}
+
+
+\highlightdef{\textbf{Conditional Cartesian Product}: }
+
+
+To work out the equality cross product
+
+
+
+
+\section{Natural Joins I}
+
+
+\highlightdef{Attribute Intersection: $\underline{A} \cap \underline{B}$}
+
+
+
+\section{Natural Joins II}
+
+
+\section{Further Operations}
+
+\highlightdef{Division: $A \div B$}
+
+\highlightdef{Group By:}
+
+\highlightdef{Having:}

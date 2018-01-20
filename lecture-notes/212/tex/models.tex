@@ -1,0 +1,449 @@
+
+\chapter{Communication Models}
+
+
+
+\section{Open Systems and Standards}
+
+
+
+
+\section{URIs, URLs and URNs}
+
+
+
+\section{OSI Model: Introducing}
+
+
+\frmrule 
+
+\textit{Introducing the idea of converting a blackbox into layers}
+
+\frmrule 
+
+\textit{Introducing the OSI model}
+
+\highlightdef{OSI = Model. ISO = standard}
+
+
+
+\frmrule 
+
+\textit{Motivation for having a layered architecture}
+
+Modularity:
+Each layer can be built independently of other layers.\\
+May replace the implementation of just one layer without affecting 
+the others. 
+
+Abstraction: 
+
+
+\frmrule 
+
+\textit{Main disadvantage of a layered architecture}
+
+A given subtask repeated in more than one layer. 
+This causes confusing. There may be a higher communication 
+cost. This decreases efficiency. 
+
+A layered architecture therefore makes a compromise between:\\
+more layers to increase the modularity\\
+fewer layers so as to improves the efficiency\\
+
+
+\frmrule 
+
+\textit{Service Oriented Architectures}
+
+Each layer may provide one or more \textit{service elements}.\\
+A service element has one or more \textit{service primitives}.
+
+\highlightdef{\textbf{Syntax}: $\langle layer \rangle.\langle service element \rangle.\langle service primitive \rangle$}
+
+
+\frmrule 
+
+
+
+\begin{example}
+A simple example of a layer implementing a \textit{connectionless transport} layer, \textsf{T1}. \\
+This layer provides the service element \textsf{DATA} which has 
+service primitives \textsf{request}, \textsf{indication},
+\textsf{response} and \textsf{confirm}.
+\end{example}
+
+\frmrule 
+
+\begin{example}
+Here we give an example a layer is a \textit{connection-oriented transport} layer, \textsf{T2}. \\
+This layer provides the service element \textsf{CONNECT}, \textsf{DATA} and \textsf{DISCONNECT}, each 
+with primitives \textsf{request}, \textsf{indication},
+\textsf{response} and \textsf{confirm}.
+\end{example}
+
+\frmrule 
+
+Layers are ordered according to some partial ordering. \\
+
+\frmrule 
+
+\textit{The difference between a layer and a layer entity}
+
+Each layer has several \textit{entities}. 
+
+\highlightdef{\textbf{Layer Entity}:}
+
+\highlightdef{\textbf{Peer}: Two layers entities of the \textit{same layer} that reside \\
+on \textit{different machines} are called \textit{peers}}
+
+\frmrule 
+
+\textit{Services}
+
+A higher layer may provide a service to a lower layer. \\
+A lower layer requests the service of a higher layer. 
+We therefore call the higher layer a \textit{service provider}, 
+and a lower layer a \textit{service user}. 
+
+Each layer uses the services provided by the layer below 
+to provide services to the layer above.
+For any layer number $n$, we define:
+
+\highlightdef{$n$-\textbf{Service}: An \textit{$n$-service}, $s_n$ is a capability provided 
+by $L_n$ using the services of $L_{n-1}$ to provide 
+a service to entities of $L_{n+1}$  }
+
+Each layer is defined by the specific responsibilities assigned to it. 
+A layer fulfils its responsibilities by providing
+services to the layer above it using the services of the layer below. 
+Each layer should be modular: it should have a single well-defined 
+responsibility, and be able to change with affecting other layers. 
+
+\begin{sidenote}{Single Responsibility, Open-Closed Principle}
+Hopefully you can see a connection between the design of \textit{layers} in the OSI model 
+and the design of \textit{classes} in object-oriented programs. Notice how the
+the \textit{single-responsibility} and \textit{open-closed} principles 
+of software engineering design apply here to the design of layers. 
+\end{sidenote}
+
+\frmrule 
+
+\textit{Transitive access to services below}
+
+By definition, a given layer $L_n$ has access to the service immediately below $L_{n-1}$. 
+However, $L_{n-1}$ has access to the service immedaitely below, $L_{n-2}$. 
+By transitivity, we have that a given layer $L_n$ has access to 
+the services from \textit{all the layers below}, $L_n$, $L_{n-1}$, ..., $L_1$. 
+It is not necessarily limited to just the services \textit{immediately} below.
+
+
+
+\frmrule 
+
+\highlightdef{\textbf{Timing Diagrams}:}
+\highlightdef{\textbf{State Machines}:}
+
+
+% In order to provide a layer to provide service/request a service, 
+% a layer must go through an \textit{interface}. 
+
+% \highlightdef{\textbf{Layer Interfaces}: Allowing layer $\textsf{T1}$ to send data to layer $\textsf{T2}$}
+
+% For layer $\textsf{T1}$ to interface with $\textsf{T2}$. \\
+
+
+
+\section{OSI Model: Service Access Points}
+
+
+
+Each layer has one or more service access points (SAPs) to 
+a lower layer. 
+For an interaction of entities between layers to occur, an entities are connected via a 
+\textit{service access point}. 
+
+For a given point in time, an entity $e \in E_{n+1}$, may attached to one or more 
+service access points $s \in S_{n}$. Furthermore, for a given point in time, 
+an entity $e' \in E_{n+1}$ may be concurrently attached to one or more 
+service access point $s \in S_{n}$. Any given service access point $s \in S_{n}$
+is attached to exactly one $e \in E_{n+1}$ and exactly one $e \in E_{n}$, 
+for any point in time. This is a classic example of a \textit{many-to-many relationship} that 
+we saw in Databases. Here, we have 
+a many-to-many relationship between $n+1$ entities and $n$ entities. 
+The notion of a service access point acts as a relation (diamond) between them on 
+an ER-diagram. 
+
+
+\begin{figure}[h]
+\begin{tikzpicture}[
+  title/.style={},
+  entity/.style={rectangle, draw, text centered}
+]
+%
+\node[entity] (n1layer) {$n+1$-layer};
+\node[entity, right = 1.5cm of n1layer] (n1entity) {$n+1$-entity};
+\node[entity, below = 1cm of n1entity] (sap) {$n$-access point};
+\node[entity, below = 1cm of sap] (nentity) {$n$-entity};
+\node[entity, left = 2cm of nentity] (nlayer) {$n$-layer};
+%
+\draw(n1layer) -- (n1entity);
+\draw(n1entity) -- (sap);
+\draw(sap) -- (nentity);
+\draw(nentity) -- (nlayer);
+% draw crowsfeet
+\node[left = 0.2cm of n1entity] (crow1) {};
+\draw(crow1.east) -- (n1entity.170);
+\draw(crow1.east) -- (n1entity.180);
+\draw(crow1.east) -- (n1entity.190);
+%
+\node[above = 0.2cm of sap] (crow2) {};
+\draw(crow2.south) -- (sap.50);
+\draw(crow2.south) -- (sap.90);
+\draw(crow2.south) -- (sap.130);
+%
+\node[below = 0.2cm of sap] (crow3) {};
+\draw(crow3.north) -- (sap.310);
+\draw(crow3.north) -- (sap.270);
+\draw(crow3.north) -- (sap.230);
+%
+\node[below = 0.2cm of sap] (crow4) {};
+\draw(crow4.north) -- (sap.310);
+\draw(crow4.north) -- (sap.270);
+\draw(crow4.north) -- (sap.230);
+\end{tikzpicture}
+\end{figure} 
+
+A SAP is \textit{uniquely identified} by a URI. That is, 
+each $n+1$ entity can uniquely identify the service access points 
+it is connected to via some naming scheme. 
+Similarly, each $n$ entity can uniquely identify the service access points 
+it is connected to via some naming scheme. 
+
+
+
+
+\frmrule 
+
+\textit{Services are exchanged via the message exchange}
+
+\highlightdef{\textbf{Exchange of Messages}: to provide services we need \textit{communication} }
+
+We treat providing services as the sending and receiving of messages. 
+According to this definition, we can, perhaps unintuitively, 
+having messages send between entities \textit{on the same machine}. 
+
+We handle this difference by making the distinction between a \textit{Interface Data Unit}, 
+and a \textit{Protocol Data Unit}.  
+
+\highlightdef{
+\textbf{IDU}: unit of data exchanged between \textit{adjacent-layer} entities on \textit{the same machine}\\
+\textbf{PDU}: unit of data exchanged between \textit{same-layer} entities on \textit{different machines}
+}
+
+Recall that by \textit{adjacent layers entities} we mean that the entities 
+belong to layers whose layer numbers \textit{differ by one}.
+By \textit{same layer} entities, the layer numbers are the \textit{same}.
+
+
+\frmrule 
+
+\textit{Case-by-case}
+
+
+Allowed cases:\\
+different machines, same layer\\
+same layer, different machines\\
+Forbidden cases:\\
+same machines, same layer\\
+same layer, same machines\\
+
+\highlightdef{
+\textbf{interface send/receive}: same machines, different layer\\
+\textbf{protocol send/receive}: same layer, different machines
+}
+
+
+And in all allowed cases, if we send data across 
+a layer (interface-send), we use \textbf{I}DUs,
+and if we send data across the same layer (protocol-send), we use 
+\textbf{P}DUs. 
+
+
+
+
+\frmrule 
+
+
+
+
+
+\section{OSI Model: Efficiency}
+
+
+These two types of data exchange have a particular format. 
+They are made up of two parts. 
+One part is the actual information or \textit{payload}. This is 
+the data that helps provide the service. 
+We call this the \textit{Service Data Unit} or SDU.
+The second part is called \textit{Control Information}. This contains 
+additional information that is needed to send the payload. The Control 
+informaton may contain for example, addresses, lenghs, checksums. 
+
+\highlightdef{
+\textbf{I}DU = [\textbf{I}CI $|$ SDU]\\
+\textbf{P}DU = [\textbf{P}CI $|$ SDU] 
+}
+
+
+
+\highlightdef{
+\textbf{SDU}: data exchange to provide the service\\
+\textbf{CI}: control information added to a data unit
+}
+
+\frmrule 
+
+\textit{Revisiting Interface send/receives and Machine send/receives, 
+showing how control information is added on and stripped off SPUs}
+
+
+\textbf{interface send}: $n+1$ sends $IDU$. $n$ strips ICI and keeps SDU \\
+\textbf{interface receive}: $n$ sends $IDU$. $n+1$ strips ICI and keeps SDU\\
+\textbf{protocol send}: $M_1$ sends $PDU$. $M_2$ strips PCI and keeps SDU \\
+\textbf{protocol receive}: $M_1$ sends $PDU$. $M_2$ strips PCI and keeps SDU \\
+
+
+
+
+\frmrule 
+
+\textit{Efficiency of a single transfer}
+
+
+\highlightdef{\textbf{Efficiency}: $\rho=\frac{|SDU|}{|CI|+|SDU|}$}
+
+
+\frmrule 
+
+
+
+
+
+\textit{Total Efficiency}
+
+
+\highlightdef{\textbf{Transfer Efficiency}: $\rho_T = \frac{|SDU|}{N|PCI|+|SDU|}$}
+For sending a service message across $N$ layers. 
+
+\frmrule
+
+\begin{example}
+A particular OSI implementation with $N=7$ layers uses a $|PCI|$ of 4bytes. \\
+Calculate total transfer efficiency for $|SDU|$ equal to:
+(a) 4bytes, (b) 1000bytes.
+
+(a) $\rho_T = \frac{|SDU|}{N|PCI|+|SDU|} = \frac{4}{7 \times 4 + 4} = 0.13$ \\
+(b) $\rho_T = \frac{|SDU|}{N|PCI|+|SDU|} = \frac{1000}{7 \times 4 + 1000} = 0.97$ \\
+
+\end{example}
+
+\frmrule 
+
+\textit{Giving each layer a unique formats and sizes}
+
+
+\highlightdef{\textbf{Unique Sizes}: $|SDU_n|,|PDU_n|,|ICI_n|,|PCI_n|$}
+
+\frmrule 
+
+
+\textit{Segmentation}
+
+We need to perform segmentation when we send data over an interface
+(interface-send), we may find that our service data unit is \textit{too big}. 
+That is, we may have the case where $|SDU_{n+1}| > |SDU_{n}|$. 
+When this is the case, we break down the SDU into chunks of size $|SDU_{n}|$ 
+along with a remainder with size $< |SDU_{n}|$. 
+
+
+Each chunk and the remainder then become several service data unit for layer $n$.
+The total number of data units is given by the following expression.
+\highlightdef{\textbf{Segmentation}: no. SDUs $= \left\lceil |SDU_{n+1}|/|SDU_{n}|\right\rceil$}
+
+Notice that this segmentation problem cannot happen when we perform a protocol 
+send/receive. Recall that for a protocol send/receive, both entities involved are 
+using the same network layer. We will never have the case where 
+$|SDU_{n+1}| > |SDU_{n+1}|$.
+
+\frmrule
+
+\textit{Blocking and Concatenation}
+
+When we send over an interface
+(interface-send), we saw that we may need to perform segmentation. 
+when service data unit is \textit{too big}. But what if the serice data 
+is smaller. In fact it is \textit{very small}. In such a case, we may want to consider 
+\textit{blocking} or \textit{concatentation}. Doing so could \textit{improve efficiency}.
+
+Both Blocking and Concatentation are defined as the combination of 
+several level $n+1$ interface data units to form a single 
+service data unit for layer $n$. This difference between 
+blocking and concatentation is that blocking discards the ICIs of 
+the interface data units that we stuck together, where as 
+concatentation doesn't. 
+
+This is only possible when
+$|SDU_{n+1}| < |SDU_{n}|$.
+The number of interface data units of layer $n+1$ that can be packed together into a single SDU of layer $n$
+for is given the following expression. 
+We give the number for the case where blocking is used, and 
+for the case where concatentation is used. 
+
+\highlightdef{
+\textbf{Blocking}:       no. IDUs $= \left\lfloor |SDU_{n}|/|SDU_{n+1}|\right\rfloor$\\
+\textbf{Concatentation}: no. IDUs $= \left\lfloor |SDU_{n}|/|IDU_{n+1}|\right\rfloor$
+}
+
+
+Concatentation is more wasteful in that we have control 
+information in the payload that is serves no use. Concatentation 
+will therfore, in general, have a lower efficiency. However the processing cost is lower. 
+It is easier for a processor to perform concatentation that it is 
+for it to perform blocking. The tradeoff between blocking and concatenation 
+is the tradeoff between network efficiency and processor load. 
+
+
+\frmrule
+
+\begin{example}
+Suppose we have layers 3,2,1 with SDU sizes 64000, 1000, 3000. \\
+Determine:\\
+(a) the number of 3PDUs to send a 2PDU \\
+(b) the number of 1PDUs to send a 3PDU
+
+(a) Because $|SDU_2| < |SDU_3|$, we use \textit{fragmentation}. \\
+So we have no. SDUs $= \left\lceil |SDU_{n+1}|/|SDU_{n}|\right\rceil = \left\lceil 64000/1000\right\rceil = 64$. \\
+Hence 64 $n$-2PDUs are required to send a single 3SDU. \\
+(b) Because $|SDU_2| > |SDU_1|$, we can use \textit{blocking}. \\
+So we have no. of 2-SDUs per 1-SDU $= \left\lfloor |SDU_{n}|/|SDU_{n+1}|\right\rfloor = \left\lceil 3000/1000\right\rceil = 3$. \\
+So no. of 1-SDUs per 3-SDUs $=$ (2-SDU/3-SDUS)$/$(2-SDUS/1-SDU) $=\ceil{64/3} = 22$
+\end{example}
+
+
+\frmrule
+
+\textit{Connection Endpoints}
+
+Recall that each SAP is uniquely identified by a URI. 
+A SAP can contain one or more connection endpoint (CEP), each identiﬁed by a
+channel number.
+
+\frmrule
+
+\begin{example}
+In reference to the OSI model,\\
+(a) What is meant by a \textit{protocol send/receive} and a \textit{machine send/receive} \\
+(b) Explain what is meant by \textit{segmentation}\\
+(c) Explain why segmentation cannot happen on a machine send/receive
+\end{example}

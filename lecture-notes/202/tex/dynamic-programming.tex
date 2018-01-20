@@ -1,0 +1,304 @@
+
+\chapter{Dynamic Programming}
+
+
+\section{Recursive Decomposition}
+
+
+
+\textbf{SubsetSum Problem}
+
+
+
+
+
+
+
+
+
+\textbf{Independent Set Problem}
+
+
+\begin{itemize}  
+\renewcommand{\labelitemi}{$\Box$}
+\item Assume the $i$th node \textit{is not} in the independent set. Then we can still have 
+an independent set for $i+1$ nodes provided if $yn_{i}$ holds. 
+\item Assume $i$th node does form an independent set. The previous node is adjacent and 
+so cannot be in the independent set. 
+So we know $yn_{i}$ must be false. However can have $yn_{i-2}$. 
+\end{itemize} 
+Hence $\text{yn}_{i+2} = \text{yn}_{i+1}$ or  $\text{yn}_{i}$
+
+\textbf{Vertex Cover Problem}
+
+\frmrule
+
+\textbf{Scalar Product Problem}
+
+\frmrule
+
+\textbf{Knapsack Problem}
+
+Given $m$ items with valus $v_i$ and weights $w_i$, 
+and knapsack weight limit $W$, is there a knapsack of 
+value $\geqslant K$ that is not too heavy. 
+
+
+\textbf{CoinSum Problem}
+
+\frmrule
+
+\textbf{Clique Problem}
+
+\frmrule
+
+\textbf{Rod Cutting}
+
+Given a rod of positive length $L$, and length-to-price conversion 
+function $f: 1 \mapsto p_1, ..., L \mapsto p_L$, 
+is there a \textit{cutting} whose value is $\geqslant K$. 
+[A \textit{cutting} of a rod of length $L$ is a sequence $X = [l_1, ..., l_k]$ such 
+that $l_i \in \{1...L\}$ and $\sum_i l_i = L$. The \textit{value} of a cutting is $\sum_i f(l_i)$ ] 
+
+
+
+%Dependency graph is acyclic.
+%There are no infinitely decreasing chains.
+%There are $O(2^n)$ paths. 
+
+\frmrule
+
+
+\textbf{Maximum SubarraySum} 
+
+Given a sequence of N numbers $X = [x_0, ... ,x_{n-1}]$ 
+is a contiguous subsequence that has a sum $\geqslant K$?
+
+In other words, the goal is to find the contiguous subarray which has 
+the largest summation. Suppose we want to know $\text{dp}[i][s]$. 
+If we know that $\text{dp}[i-1][s] = Y$ then $\text{dp}[i][s] = Y$ must also be true. 
+Also, if $\text{dp}[i-1][s-x_i] = Y$ then $\text{dp}[i][s] = Y$. 
+
+\frmrule
+
+
+\textbf{Common Sequence Alignment Problem} 
+
+The sequencr alignment problem is more classically known as 
+the \textit{Longest Common Subsequence} problem or the LCS problem. 
+It should be noted that here, a subsequence is noncontiguous. 
+
+\highlightdef{We are looking at \textit{noncontiguous} subsequences}
+
+Given two sequences $X = [x_0, ... ,x_{n-1}]$ and 
+$Y = [y_0, ... ,y_{m-1}]$, is there a sequence $Z = [z_0, ... z_{l-1}]$ 
+of length $l \geqslant K$ where we can insert zero or more blanks/wilcards to $Z$ to recover $X$ 
+and insert zero or more blanks to recover $Y$.
+
+Idea: let $\text{dp}[m][n]$ denote using $X[0,m]$ and $Y[0,n]$. 
+To solve $\text{dp}[m+1][n+1]$ can we use $\text{dp}[m][n]$? 
+Can we decompose the problem $\text{dp}[m+1][n+1]$ 
+to a subprogram recurrence relation using by considering \textit{prefixes}? Unlike 
+previous problems, the substructure is two-dimensional. 
+
+
+\begin{figure}[h]
+\begin{tikzpicture} [node distance=0mm]
+  \begin{scope}[start chain=1, every node/.style={draw,on chain=1,minimum height=0.65cm}]
+  {
+    \node[minimum width=2cm] (r1) {};
+    \node[minimum width=4cm, fill=black!10] (r2) {$Z[i..i+l]$};
+    \node[minimum width=2cm] (r3) {};
+  }
+  \end{scope}
+  \node[anchor=north, below=0.1cm of r1.south west] {0};
+  \node[below=0.1cm of r1.south east] {$i$};
+  \node[below=0.1cm of r2.south east] {$i+l$};
+  \node[left=0.3cm of r1] {$X$};
+
+  \begin{scope}[start chain=1, yshift=-2cm, every node/.style={draw,on chain=1,minimum height=0.65cm}]
+  {
+    \node[minimum width=3cm] (y1) {};
+    \node[minimum width=4cm, fill=black!10] (y2) {$Z[j..j+l]$};
+    \node[minimum width=1cm] (y3) {};
+  }
+  \node[draw=none, anchor=north, below=0.1cm of y1.south west] {0};
+  \node[draw=none,below=0.1cm of y1.south east] {$j$};
+  \node[draw=none,below=0.1cm of y2.south east] {$j+l$};
+  \node[draw=none, left=0.3cm of y1] {$Y$};
+  \end{scope}
+\end{tikzpicture}
+\end{figure} 
+
+
+Suppose we are trying to solve $\text{dp}[m+1][n+1]$. 
+Consider $\text{dp}[m+1][n]$ and $\text{dp}[m][n+1]$. is Y for length $l$, clearly 
+$\text{dp}[m+1][n+1]$ must be Y for length $l$. Then if we know that $\text{dp}[m][n]$ is Y for 
+length $l$, and that $X[m] = Y[n]$, then $\text{dp}[m][n]$ must have a Y for length $l+1$, 
+and Y for length $l$. 
+
+\frmrule
+
+\textbf{Increasing Alignment} 
+
+Given a sequence of numbers $X = [x_0, ... ,x_{n-1}]$ 
+is there an \textit{increasing alignment}, of $X$ of length $\geqslant K$? 
+
+[An \textit{alignment} of $X$ is obtained by deleting some number of elements (possibly zero) of $X$, 
+leaving the remaining elements in their original order. 
+$X = [x_1, ... x_m]$ is \textit{increasing} when $x_1 < x_2 < ... < x_m$. ]
+
+\frmrule
+
+Suppose that we want to solve $\text{dp}[n][l]$, we know that 
+$\text{dp}[n-1][l]$ is Y, then $\text{dp}[n][l]$ is Y. 
+Also if we knew that $\text{dp}[n-1][l-1]$ is Y, and 
+that $x_{i-1} < x_i$ then $\text{dp}[n][l]$ is Y. 
+
+\frmrule
+
+
+\textbf{Zigzag Alignment Problem} (Top Coder: 4493/1259)
+
+For this problem, a sequence of numbers, $Z$, is called a \textit{zig-zag sequence} 
+iff the differences between successive numbers strictly alternate between positive and negative. 
+The first difference (if one exists) may be either positive or negative. 
+A sequence with fewer than two elements is trivially a zig-zag sequence.
+
+For example, $Z = [1,7,4,9,2,5]$ is a zig-zag sequence because the differences (6,-3,5,-7,3) are alternately positive and negative. In contrast, $[1,4,7,2,5]$ and $[1,7,4,5,5]$ are not zig-zag sequences. 
+The first is not because its first two differences are positive. 
+The second is not because its last difference is zero.
+
+Given a sequence of integers, $X$, return true iff there is a alignment of $X$ of length $\geqslant K$
+that is a zig-zag sequence.  
+[An \textit{alignment} of $X$ is obtained by deleting some number of elements (possibly zero) of $X$, 
+leaving the remaining elements in their original order.]
+
+\frmrule
+
+% Zigzag Subarray (not alignment) Solution
+% Suppose we want to solve $\text{dp}[n][l]$. 
+% If we know that $\text{dp}[n-1][l]$ = Y, then clearly $\text{dp}[n][l]$ = Y. This is 
+% the simple case where we do not include $x_i$ and can still say the answer is Y.
+
+% Now the harder case. If we know that $\text{dp}[n-2][l-1]$ = Y,
+% and that either:
+% $x_{i-2} - x_{i-1} < 0$ and $x_{i-1} - x_{i} > 0$ (the last difference was negative and adding $x_i$ gives a positive 
+% difference) or: $x_{i-2} - x_{i-1} > 0$ and $x_{i-1} - x_{i} < 0$ (the last difference was positive and adding $x_i$ gives 
+% negative difference) - then $\text{dp}[n][l]$ = Y. 
+
+
+\frmrule
+
+
+
+
+\textbf{Shortest Path} 
+
+Given an undirected weighted graph $G$ that has strictly positive weights, 
+is there a path of length $\leqslant K$ from vertex 1 to vertex $n$?
+
+\frmrule
+
+
+
+
+\section{Optimal Solutions}
+
+
+
+\textbf{Knapsack Problem}
+
+Let $V^{*}(i,W)$ is value of the best knapsack 
+given only the first $i$ items, and knapsack weight limit, $W$. 
+\begin{itemize}  
+\renewcommand{\labelitemi}{$\Box$}  
+\item Assume item $i$ included, then $v^{*}_{[i,x]} = v^{*}_{[i-1,x-w_i]} + v_i$
+\item Assume item $i$ excluded, then $v^{*}_{[i,x]} = v^{*}_{[i-1,x]}$
+\end{itemize} 
+Hence $v^{*}_{[i,x]} = \text{max}(v^{*}_{[i-1,x-w_i]} + v_i, v^{*}_{[i-1,x]})$
+This is assuming, $w_i \leqslant x$. If we have $w_i > x$, then 
+we must exclude it, $v^{*}_{[i,x]} = v^{*}_{[i-1,x]}$.
+
+
+\highlightdef{
+\textbf{Y/N Solutions $\rightarrow$ Optimum Solutions}:\\ 
+Instead of using $\text{dp}[i][j]$ to store $YN(i,j)$, use it to store $V^{*}(i,j)$\\
+Instead of using booleans to relate subproblems, use min/max 
+}
+
+
+
+\textbf{Coin Sum Problem}
+
+Suppose we have coins $c_1, c_2, ..., c_G$, each are worth $w_1, w_2, ..., w_G$, 
+You are given a target value $T$. Find the set of coins $C$ that has a 
+total worth that sums to $T$ that uses the least number of coins. 
+
+
+Let $S(C_T, T, v^{*}_{[C,T]})$. 
+Take coin $c_1$
+\begin{itemize}  
+\renewcommand{\labelitemi}{$\Box$}  
+\item Assume $c_1 \in C_T$ \\let $S(C_{T}-{c_1}, T-v(c_1), v^{*}_{[C_{T}-{c_1},T-v(c_1)]})$ 
+then $v^{*}_{C,T} = v^{*}_{C_{T}-{c_1},T-v(c_1)} + 1$
+\item Assume $c_1 \notin C_T$ \\let $S(C_{T}-{c_1}, T, v^{*}_{[C_{T}-{c_1},T]})$ 
+then $v^{*}_{C,T} = v^{*}_{C_{T},T}$
+\end{itemize} 
+Take coin $c_2$
+\begin{itemize}  
+\renewcommand{\labelitemi}{$\Box$}  
+\item Assume $c_1 \in C_T$ \\let $S(C_{T}-{c_2}, T-v(c_2), v^{*}_{[C_{T}-{c_2},T-v(c_2)]})$ 
+then $v^{*}_{C,T} = v^{*}_{C_{T}-{c_2},T-v(c_2)} + 1$
+\item Assume $c_1 \notin C_T$ \\let $S(C_{T}-{c_1}, T, v^{*}_{[C_{T}-{c_2},T]})$ 
+then $v^{*}_{C,T} = v^{*}_{C_{T}-{c_2},T-v(c_2)}$
+\end{itemize} 
+
+
+Hence $v^{*}_n = \text{min}()$
+
+
+There is a factor of $2G$ with lengths of at most $T$. 
+So there are $O(T^{2G})$ paths. 
+
+
+
+\section{Functional Solutions}
+
+
+
+\section{Dynamic Programming}
+
+% We may perform an exponential number of calls but we only solve the problem O(n)-times
+
+ 
+
+
+\highlightdef{\textbf{Memoization}: first time you solve a subproblem,
+\textit{cache its solution} in a global table}
+
+this will give an O(1) lookup time later. 
+
+
+\highlightdef{\textbf{Dynamic Programming}: solve a problem with a recursive optimum solution, 
+using \textit{memoization} to prevent recomputating}
+
+If we recompute over and over again, then we are essentially, 
+doing a bruce-force. 
+
+\begin{enumerate}
+\item \textbf{Thought Experiment 1}: Find a recursive solution. 
+Idea: assume the Y/N answer for the smaller problems, find 
+the Y/N for the main problem. What to think: 
+what exactly defines a smaller problem (what is our partial order)? 
+Precisely cases of the smaller problems do we need? 
+What is the relationship between the smaller problem cases to our main problem?
+\item \textbf{Optimal Solution}: If we can solve a decision problem (Y/N problem)
+that encodes an optimisation problem using DP, then it is likely 
+we can solve the optimisation problem using DP. Can the problem be solved 
+using an optimal subsolutions. Can we take max/min of the problem cases? 
+\item \textbf{Function Solution}: Can we actually solve the functional 
+problem. Can we find the items, nodes, coins, etc that yield the optimum?
+Does the dp table implicitly give the items? Can we walk back through 
+the table and recover the items?
+\end{enumerate}

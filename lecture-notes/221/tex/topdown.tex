@@ -1,0 +1,708 @@
+
+\chapter{Parsing II: Top-Down}
+
+
+\section{First Sets}
+
+
+
+We define the \textit{first set} of a non-terminal $X$. 
+\highlightdef{\textbf{First set}: $\textsc{first}(X)$ is the set of all possible terminals that appear 
+as a first terminal, when we look at all derivation strings of $X$.  }
+
+$$\textsc{first}(X) = \{a: X \Rightarrow^{+} a\beta \}$$
+
+Although a non-terminal can be rewritten to posssibly infinite derivations, 
+we only need to care about the first symbol of each derivation. And as a result, 
+first set can be computed quite easily.
+Below gives a funtional program to compute the first set of a non-terminal $X$.
+Assume $X \rightarrow \beta_1 | \beta_2 | ... | \beta_n$. 
+
+\begin{itemize}
+\item $\textsc{f}(\epsilon) = \{\}$
+\item $\textsc{f}(a\beta) = a$
+\item $\textsc{f}(X\beta) = \textsc{f}(X)$ when not $X \Rightarrow^{*} \epsilon$. 
+\item $\textsc{f}(X\beta) = \textsc{f}(X) \cup \textsc{f}(\beta)$ when $X \Rightarrow^{*} \epsilon$. 
+\item $\textsc{f}(X) = \textsc{f}(\beta_1) \cup \textsc{f}(\beta_2) \cup ... \cup \textsc{f}(\beta_n)$
+\end{itemize}
+
+\frmrule 
+
+\begin{example}
+Given the grammar $(\{E',E,T,F\}, \{a,b,c,+,*,(,)\}, R, E')$ with $R'$ as below, 
+the first set of $E$, $\textsc{first}(E)$.
+
+$E' \rightarrow E$;\\
+$E \rightarrow T E_2$;\\
+$E_2 \rightarrow + T E_2 | \epsilon$;\\
+$T \rightarrow F T_2$;\\
+$T_2 \rightarrow * F T_2 | \epsilon$;\\
+$F \rightarrow ( E ) | a | b | c$;
+
+Below shows the recursive calls: \\
+$\textsc{f}(E) = \textsc{f}(E) $
+
+
+\end{example}
+
+
+\frmrule 
+
+\frmrule 
+
+% We now extend the first set to possibly include $\epsilon$. For this, 
+% we need to define what it means for $\epsilon \in \textsc{first}(E)$. 
+% Here, $\epsilon \in \textsc{first}(E)$ \textit{does not} express the notion that 
+% $\epsilon$ is a possible first terminal when we look at all derivations of $E$. 
+% This is, in a way true for all strings. So such a notion would be trivial/of no use/give no new info. 
+% Instead, it expresses (perhaps counter-intuitively) that $E \Rightarrow \epsilon$.
+
+% We call this find of first-set an \textit{epsilon-first-set}. 
+% To find an epsilon-first set, we can find a normal first-set as before, then, 
+% check whether or not $E \Rightarrow \epsilon$ seperately, and then add $\epsilon$ accordingly. 
+
+\frmrule 
+
+\begin{example}
+
+
+\end{example}
+
+
+\section{Introducing Predictive Parsing}
+
+
+
+Predictive Parsing Problem:
+When we have $X \rightarrow \beta_1 | \beta_2 | ... | \beta_n$, 
+we would like to know which $\beta$ to use when we replace $X$ in a top-down parse.
+
+Suppose the first sets form a \textit{partition}, that is: \\
+for $i \neq j$: $\textsc{first}(\beta_i) \cap \textsc{first}(\beta_j) = \emptyset$ \\
+for all $i$: $\textsc{first}(\beta_i) \neq \emptyset$ \\
+$\textsc{first}(\beta_1) \cup ... \cup \textsc{first}(\beta_n) = \textsc{first}(X)$
+If the first sets do indeed form a partition, then given 
+any $a \in \textsc{first}(X)$, there is a unique $\textsc{first}(\beta_i)$ 
+that $a$ belongs to. 
+
+If our parser is scanning ahead by one symbol (looking at some $a \in \textsc{first}(X)$), 
+then our parser can always make the correct choice 
+in the Predictive Parsing Problem. 
+Because the first sets partition $\textsc{first}(X)$, there is a unique $\textsc{first}(\beta_i)$ 
+that $a$ belongs to. And so we should apply $X \rightarrow \beta_i$, for we know that 
+the only suitable match for the string ahead is $\beta_i$. 
+
+
+
+\highlightdef{\textbf{Common Error}: \textit{pairwise disjuction} is not equivalent \textit{total disjuction}}
+
+That is, $A \cap B = \emptyset$, $B \cap C = \emptyset$ implies 
+$A \cap B \cap C = \emptyset$.
+But the converse does not necessarily hold. 
+So it may be that $A \cap B \cap C = \emptyset$ implies not 
+$A \cap B = \emptyset$, $B \cap C = \emptyset$. 
+So checking  $A \cap B \cap C = \emptyset$
+is \textit{not} a guaranteed check that 
+grammar is predictable. 
+
+If we take:
+$A \cap B = \emptyset$, $B \cap C = \emptyset$ implies 
+$A \cap B \cap C = \emptyset$, 
+and rewrite it in its \textit{contrapositive form}, 
+we have:
+$A \cap B \cap C \neq \emptyset$ implies not($A \cap B = \emptyset$, $B \cap C = \emptyset$).
+From this, we conclude that
+if we observe that 
+$A \cap B \cap C \neq \emptyset$, 
+then we can be sure that the grammar is \textit{not} predictable. 
+
+Summary:\\
+$A \cap B \cap C = \emptyset$: may or may not be predictable. \\
+$A \cap B \cap C \neq \emptyset$: definitely not predictable. \\
+$A_i \cap B_i = \emptyset$ for $i \neq j$: definitely predictable.
+
+\frmrule
+
+\begin{example}
+Show that the following grammar is \textit{predicable}. 
+\end{example}
+
+\begin{example}
+Show that the following grammar is \textit{predicable}. 
+\end{example}
+
+
+\frmrule
+
+
+
+
+\section{Left Recursion is Unpredictable}
+
+Direct left-recursion: \\
+$A \rightarrow A\alpha$\\
+
+Indirect left-recursion (2-steps): \\
+$A \rightarrow B\alpha$.\\
+$B \rightarrow A\beta$.\\
+
+Indirect left-recursion (3-steps):  \\
+$A \rightarrow B\alpha$.\\
+$B \rightarrow C\beta$.\\
+$C \rightarrow A\gamma$.\\
+
+
+\section{Transforming CFGs to Predicable CFGs}
+
+
+What if a grammar is not predicable?
+Sometimes (but as we will see, not \textit{always}), 
+we can transform a not predicatable grammar to a predicable grammar.
+Such a transformation \textit{does not} change the underlying language of the grammar. 
+
+We actually use a combination of two transformations.
+One is called \textit{left factorisation} (also called: \textit{left factoring})
+and the other is called \textit{left recursion elimination}  
+(or more precisely: \textit{direct} left recursion elimination). 
+
+\textit{left factorisation}:
+if $B$ appears on the left of all $\beta_i$, we can factorise it: \\
+
+$A \rightarrow B C | B D$ \\
+becomes \\
+$A \rightarrow B (C | D)$ \\
+becomes \\
+$A \rightarrow B X, X \rightarrow C | D$ \\
+
+
+$A \rightarrow B C | B$ \\
+becomes \\
+$A \rightarrow B [C]$ \\
+becomes \\
+$A \rightarrow B X, X \rightarrow C | \epsilon$ \\
+
+
+\textit{direct left recursion elimination}:
+
+$A \rightarrow AY | X$\\
+becomes \\
+$A \rightarrow X \{Y\}$ \\
+becomes \\
+$A \rightarrow X Z; Z \rightarrow YZ | \epsilon $ \\
+
+
+
+Thinking in terms of EBNF can help simplify the 
+transformation of context-free grammars into predictive grammars. 
+Recall that $\{\alpha\}$ denotes zero or more occurences of $\alpha$, 
+$[\alpha]$ denotes zero or one occurences of $\alpha$, and 
+$()$ denotes grouping of alternates \textit{within} an alternate $\beta_i$. 
+We first transform to EBNF, then transform the EBNF to standard BNF rules 
+(normal CFG rules, that follow the formal definition). 
+
+Be careful, $[\alpha]$ denotes zero or one occurences. 
+It does not denote one or more occurences. 
+
+\frmrule
+
+\begin{example}
+The following grammar is not predicable. 
+$$A \rightarrow Ay | x$$
+This is because $\textsc{first}(A) = \{ x \}$, 
+but $\textsc{first}(Ay) = \{ x \}$ and  $\textsc{first}(y) = \{ x \}$. 
+So the $\textsc{first}(\beta_i)$'s do not paritition $\textsc{first}(A)$ (we have overlapping chunks). 
+This is not surprising because the grammar is left-recursive (or more precisely, it 
+is directly left-recursive). Any left-recursive grammar will \textit{not} be predicable. 
+Let us remove the direct left recursion 
+by applying \textit{direct left recursion elimination}. 
+
+First we write the rule in EBNF. 
+$$A \rightarrow x\{y\}$$
+This says that $A$ rewrites to a $x$ followed by zero or more $y$'s.\\
+Then we convert the EBNF to BNF.
+To do this, we express zero or more $y$'s as $Z \rightarrow yZ | \epsilon$
+(also note that the recursion is on the \textit{right}). 
+Hence our final grammar is:
+$$A \rightarrow xZ; Z \rightarrow yZ | \epsilon$$
+\end{example}
+
+\frmrule
+
+\begin{example}
+The following grammar is not predicable. 
+$$F \rightarrow i E t S | i E t S e E $$
+
+This is because $\textsc{F}(A) = \{ i \}$, 
+but $\textsc{first}(\beta_1) = \{ i \}$ and  $\textsc{first}(\beta_2) = \{ i \}$. \\
+So the $\textsc{first}(\beta_i)$'s do not paritition $\textsc{first}(F)$.
+
+This is not surprising considering that the two rules start with $i$.
+In fact they share a common prefix of $i E t S$. 
+The best strategy to apply here is to use \textit{left factorisation} to remove this common prefix. 
+
+First we can apply grouping in EBNF. 
+$$F \rightarrow i E t S [eE]$$
+This says that $F$ rewrites to $i E t S$ followed by zero or exactly one $eE$.\\
+Then we convert the EBNF to BNF by noting 
+that we can express zero or one $eE$'s as $Z \rightarrow eE | \epsilon$.
+Hence our final grammar is:
+$$F \rightarrow i E t S Z; Z \rightarrow eE | \epsilon$$
+\end{example}
+
+
+
+\frmrule
+
+\textit{Deriving the General Left Recursion Elimination Rule}:
+
+We now derive a general rule for eliminating direct left recursion. 
+If we have 
+$$X \rightarrow  \beta_1 | ... | \beta_n | X\alpha_1 | ... | X\alpha_m $$
+For $m \geqslant 1, n \geqslant 0$, we can remove the direct left recursion of $X$ 
+via the following transformation. 
+First write this in EBNF. We group 
+the base case alternatives (the ones that do not have $X$ in):
+$$ X \rightarrow (\beta_1 | ... | \beta_n) | X\alpha_1 | ... | X\alpha_m $$
+So that now we treat $(\beta_1 | ... | \beta_n)$ as a single alternative of $X$. 
+Then we can factorise the $X$ out of the other alternatives to give:
+$$X \rightarrow (\beta_1 | ... | \beta_n) |  X(\alpha_1 | ... | \alpha_m)$$
+Now $X$ only has two alternatives and we have a familiar form. 
+It's the same form as the one we used when we first introduced 
+direct left recursion elimination. And so, it is now clear that
+$X$ produces $(\beta_1 | ... | \beta_n)$ followed by 
+zero or more $(\alpha_1 | ... | \alpha_m)$'s. 
+If we write this in EBNF we have:
+$$X \rightarrow (\beta_1 | ... | \beta_n) \{(\alpha_1 | ... | \alpha_m)\}$$
+To convert this to BNF, we reason that 
+zero or more $(\alpha_1 | ... | \alpha_m)$'s
+can be written as $Z \rightarrow (\alpha_1 | ... | \alpha_m) Z | \epsilon$. 
+(being careful to put the recursion on the \textit{right}). 
+So our grammar with left recursion removed is:
+$$X \rightarrow (\beta_1 | ... | \beta_n)Z; Z \rightarrow (\alpha_1 | ... | \alpha_m) Z | \epsilon$$
+But we still have some EBNF left over. If we remove the groupings, we finally have:
+$$X \rightarrow \beta_1Z | ... | \beta_nZ; Z \rightarrow \alpha_1Z | ... | \alpha_mZ | \epsilon$$
+
+\frmrule
+
+
+
+To summarise the results of the previous frame:
+\highlightdef{\textbf{General Left Recursion Elimination}: \\
+If $X \rightarrow  \beta_1 | ... | \beta_n | X\alpha_1 | ... | X\alpha_m$, \\
+then we can replace all these $X$-productions with: \\
+$X \rightarrow \beta_1Z | ... | \beta_nZ; Z \rightarrow \alpha_1Z | ... | \alpha_mZ | \epsilon$  }
+
+This assumes that (i) the above represents \textit{all} the $X$-productions of the grammar 
+(ii) that none of the $\beta_i$'s begin with $X$ (iii) none of the $\alpha_i$'s are empty.
+
+\frmrule 
+
+\begin{example}
+Given that all the productions of $S$ are: $S \rightarrow ST | SSb | TS | a$ 
+Apply the \textit{general left recursion elimination rule} to remove the direct 
+left recursion of $S$.
+
+\frameans{This grammar is left-recursive on $S$. Apply the rule to remove the recursion.}
+{$S \rightarrow TSZ  aZ; Z \rightarrow TZ  SbZ  \epsilon$}
+
+\end{example} 
+
+\frmrule 
+
+\textit{Points about the general left recursion elimination rule}:
+
+\begin{itemize}
+\item The rule doesn't work when we have $A \rightarrow A$.  \\
+If we have the production $A \rightarrow A$ anywhere in grammar, then 
+the general left recursion removal will fail. If one of the alpha's are empty, then 
+$Z \rightarrow \alpha_1Z | ... | \alpha_mZ | \epsilon$ becomes 
+$Z \rightarrow \alpha_1Z | ... | Z | ... | \alpha_mZ | \epsilon$ and the replacement grammar will \textit{also}
+have a left recursion (recursion on $Z$). If we try to remove the left recursion on $Z$, 
+the replacement will again have a left recursion. 
+So overall, the rule fails to remove left recursion for this case. 
+\item The rule doesn't work for $n = 0$ (no base cases) \\
+This case completely breaks all the steps in the derivation of the general Left Recursion removal.
+It makes no sense to say $X \rightarrow (\beta_1 | ... | \beta_n) \{(\alpha_1 | ... | \alpha_m)\}$ 
+when $n = 0$. 
+\item The rule doesn't work for \textit{indirect} left recursions\\
+But an algorithm can be written that can remove indirect left recursions under certain 
+conditions \footnote{Conditions: CFG without $\epsilon$-productions, and without cycles.}. 
+This algorithm and these conditions are beyond the scope of material 
+covered here. Only take the point that rule doesn't work for \textit{indirect} left recursions.
+\end{itemize}
+
+\frmrule 
+
+\textit{Concluding remarks about transforming CFGs to predictable CFGs}:
+
+
+We are certain that not all CFGs can be transformed, 
+for there are some grammars which have \textit{formal proofs} that there can be no 
+predictable CFG with the same language. These kind of proofs are beyong the scope 
+of this material.
+
+\highlightdef{There is no algorithm such that:\\ 
+for given any unpredictable CFG,  $G$, it can 
+that can give us\\ 
+a predictable CFG $G'$ with the same language $L(G) = L(G')$. }
+
+In fact it is
+\textit{undecidable} whether an equivalent grammar exists that is predictable. 
+That is, it is impossible for a yes/no algorithm to answer (decide)
+whether an equivalent grammar exists, 
+let alone find the grammar itself. This means that we can, in general, 
+never be sure when our unpredictable CFG will be made predictable 
+via our transformations. But we can still \textit{try}. 
+If we whether a grammar is predictable is easily computable. 
+So if we do find one, then we know we have found it. Just knowing 
+whether or not we can find one is impossible. 
+
+To summarise:
+\begin{itemize}
+\item For \textit{some} (but not all) unpredictable CFGs, we can find 
+a CFG $G'$ with the same language $L(G) = L(G')$ that \textit{is} predictable. 
+\item We may find such $G'$ by taking $G$ and apply the \textit{left-factorisation rule} 
+and \textit{direct left-recursion elimination rule}
+\item The \textit{left-factorisation rule} (basic form):
+\item The \textit{direct left-recursion elimination rule} (basic forms):
+\item The \textit{left-factorisation rule} (general form):
+\item The \textit{direct left-recursion elimination rule} (general form):
+\end{itemize}
+
+
+
+\section{Recursive Descent Parsing}
+
+\textit{Introducing Recursive Descent Parsing}:
+
+Given a predictive grammar, we can \textit{systematically}
+build a procedural program that top-down parses the language.
+These procedural programs that we will build systematically for top-down 
+parsing are usually called \textit{resursive descent parsers}. 
+
+Below shows an example of such a \textit{resursive descent parsers} 
+build systematically from a grammar. 
+
+We highlight some distinctive features of this program that make it 
+a \textit{resursive descent parser}.
+\begin{itemize}
+\item The procedures are called \textit{mutually recursive}. 
+\item For each non-terminal $X$ of the grammar, there is a single corresponding procedure \lstinline{parse_X}.
+\item We have a global \lstinline{token} variable. For each terminal $a$ we match, we advance to the next 
+token in the stream via \lstinline{token = next_token()}. 
+\end{itemize}
+
+Each non-terminal in the grammar is translated into a procedure. 
+Inside each procedure we use our lookahead to workout which $\beta_i$. 
+If  we find a matching case, we continue.
+If we don't, then we have an error. We stop and attempt to recover. 
+We handle error recovery in the next section. For now we will write 
+recursive descent parsers that do not do error handling. 
+
+\frmrule
+
+\textit{Building a Recursive Descent Parser}:
+
+We define function $P$ that builds a recursive descent parser from a grammar. 
+
+\begin{itemize}
+\item 
+$P[X \rightarrow \beta_1 | ... | \beta_n]=$ 
+\begin{lstlisting}
+parseX() {
+	if(token==T[f1]) P[beta1]
+	else if(token==T[f2]) P[beta2]
+	...
+	else if(token==T[fn]) P[betan]
+}
+\end{lstlisting}
+where $f_i$ is some element in the first set of $\beta_i$, $f_i\in \textsc{first}(\beta_i)$.
+\item $P[\alpha_1 \alpha_2]= P[\alpha_1]P[\alpha_2]$
+\item For any non-terminal $A$, $P[A]=$ \lstinline{parseA()}
+\item For any terminal $a$, $P[a]=$ \lstinline{if(token=T[a])} \lstinline{token=next_token()}
+\item For epsilon, no code is generated: $P[\epsilon]=\epsilon$ 
+\item For any token, $T[a]=$ \lstinline{TOKEN_a}
+\end{itemize}
+
+The parser begins by called $P[S]=$\lstinline{parseS()} where $S$ is the start-non terminal 
+of the CFG.
+
+\frmrule 
+
+\begin{example}
+For the grammar: \\
+$S \rightarrow F|B|P$ \\
+$F \rightarrow i E t S Z; Z \rightarrow eE | \epsilon$ \\
+$B \rightarrow b S Z' s; Z' \rightarrow ;SZ' | \epsilon$ \\
+$P \rightarrow p E$ \\
+
+The code generated (without any simplication) is:
+\begin{lstlisting}
+parseS() {
+	if(token==TOKEN_i) parseF();
+	else if(token==TOKEN_i) parseB();
+	else if(token==TOKEN_p) parseP();
+}
+parseF() {
+	if(token==TOKEN_i) token=next_token();
+	parseE();
+	if(token==TOKEN_t) token=next_token();
+	parseS();
+	parseZ();
+}
+parseZ() {
+	if(token==TOKEN_e) {
+		if(token==TOKEN_e) token=next_token();
+		parseE();
+	}
+	else {
+
+	}
+}
+parseB() {
+	if(token==TOKEN_b) token=next_token();
+	parseS();
+	parseZPrime();
+	if(token==TOKEN_s) token=next_token();
+}
+parseZPrime() {
+	if(token==TOKEN_semicolon) {
+		if(token==TOKEN_semicolon) { token=next_token(); }
+		parseZPrime();
+	}
+	else {
+
+	}
+}
+parseP() {
+	if(token==TOKEN_p) token=next_token();
+	parseE();
+}
+\end{lstlisting}
+
+\end{example}
+
+
+\frmrule 
+
+\textit{Making Our Recursive Descent Parser Build ASTs}:
+
+
+
+\frmrule 
+
+
+
+\begin{example}
+For the grammar $A \rightarrow xZ; Z \rightarrow yZ | \epsilon$.
+
+The code generated (without any simplication) is:
+\begin{lstlisting}
+parseA() {
+	if(token==TOKEN_x) if(token==TOKEN_x) {token=next_token()} parseZ();
+}
+parseZ() {
+	if(token==TOKEN_y) if(token==TOKEN_y) {token=next_token()} parseZ();
+	else {}
+}
+\end{lstlisting}
+
+\end{example}
+
+
+\frmrule 
+
+\textit{Making Our Recursive Descent Parser Handle Errors}:
+
+
+\frmrule 
+
+
+
+
+\section{Allowing one nullable alternative}
+
+What happens if there is a $\beta_i$ that is nullable: $\beta_i \Rightarrow^{*} \epsilon$. 
+If this is the case, 
+then we have a potential problem. The token we reach ahead, 
+may not necessarily belong to a first set. 
+
+
+% \highlightdef{Epsilon is never allowed in the follow set }
+
+
+We define the \textit{follow set} of a non-terminal $X$. 
+\highlightdef{\textbf{Follow set}: $\textsc{follow}(X)$ is the set of all possible terminals that could 
+appear immediately after a derivation strings of $X$.  }
+
+$$\textsc{follow}(X) = \{a: S \Rightarrow^{+} \alpha X a \beta \}$$
+
+That is to say, the follow set is the set of 
+all possible terminals that appear 
+as a follow-up terminal, when we look at all derivation strings of $X$.
+To compute the follow set, we cannot just look at $X$, we need to see where $X$ is used 
+in other rules and look for cases like $XY$, $Xa$, etc.. 
+
+Although a non-terminal can be rewritten to posssibly infinite derivations, 
+we only need to care about the symbols that follow each derivation. And so, like the first set, 
+the follow set can be computed easily.
+Below gives a functional program, \textsc{flw}, that computes the follow set of a non-terminal $X$.
+
+\begin{itemize}
+\item $\textsc{flw}(X) = \cup_{i} \textsc{flw}'(X,Y_i \rightarrow \alpha_i X \beta_i)$\\
+for all rules $Y_i \rightarrow \alpha_i X \beta_i \in R$ where $X$ occurs only on RHS of the rule.
+%\item $\textsc{flw}'(X,A \rightarrow \alpha X \beta \in R) = \textsc{fst}(\beta)$ if 
+\item $\textsc{flw}'(X,A \rightarrow \alpha X) = \textsc{flw}(A)$ 
+\item $\textsc{flw}'(X,A \rightarrow \alpha X B) = \textsc{fst}(B)$ if not $B \Rightarrow^{*} \epsilon$. 
+\item $\textsc{flw}'(X,A \rightarrow \alpha X B) = \textsc{fst}(B) \cup \textsc{flw}(A) $ if $B \Rightarrow^{*} \epsilon$. 
+\end{itemize}
+
+\frmrule
+
+\begin{example}
+For the following grammar, compute the follow set of $F$, $\textsc{follow}(F)$.
+
+$E' \rightarrow E$;\\
+$E \rightarrow T E_2$;\\
+$E_2 \rightarrow + T E_2 | \epsilon$;\\
+$T \rightarrow F T_2$;\\
+$T_2 \rightarrow * F T_2 | \epsilon$;\\
+$F \rightarrow ( E ) | a | b | c$; \\
+
+First we call $\textsc{flw}(F)$ which gives $\textsc{flw}'(F,T \rightarrow FT_2) \cup \textsc{flw}'(T_2 \rightarrow *FT_2)$.\\
+By case 3, $\textsc{flw}'(F,T \rightarrow FT_2) = \textsc{flw}'(F,T \rightarrow FT_2) = \textsc{fst}(T_2) \cup \textsc{flw}(T)$. 
+
+We call $\textsc{flw}(T)$ which gives $\textsc{flw}'(T,E \rightarrow TE_2) \cup \textsc{flw}'(T, E_2 \rightarrow +TE_2)$.\\
+By case 3, $\textsc{flw}'(T,E \rightarrow TE_2) = \textsc{flw}'(T, E_2 \rightarrow +TE_2) = \textsc{fst}(E_2) \cup \textsc{flw}(E_2) $.
+
+We call $\textsc{flw}(E_2)$ which gives $\textsc{flw}'(E_2,E \rightarrow TE_2)$.\\
+By case 1, $\textsc{flw}'(E_2,E \rightarrow TE_2) = \textsc{flw}(E)$.
+
+We call $\textsc{flw}(E)$ which gives $\textsc{flw}'(E,F \rightarrow (E))$.\\
+By case 0, $\textsc{flw}'(E,F \rightarrow (E)) = \{)\}$. 
+
+Hence $\textsc{flw}(F) =  \textsc{fst}(T_2) \cup \textsc{fst}(E_2) \cup \{)\} = \{*\} \cup \{ + \} \cup \{)\} = \{*,+,)\}$
+\end{example}
+
+\frmrule
+
+\begin{example}
+For the following grammar, compute the follow set of $E$, $\textsc{follow}(E)$.\\
+$S \rightarrow ES'$;\\
+$S' \rightarrow +S | \epsilon$;\\
+$E \rightarrow a | b | c | ( S )$;\\
+
+First we call $\textsc{flw}(E)$ which gives $\textsc{flw}'(E,S \rightarrow ES')$\\
+By case 3, $\textsc{flw}'(E,S \rightarrow ES') = \textsc{fst}(S') \cup \textsc{flw}(S)$. 
+
+We call $\textsc{flw}(S)$ which gives $\textsc{flw}'(S,S' \rightarrow +S) \cup \textsc{flw}'(S,E \rightarrow (S))$\\
+By case 1, $\textsc{flw}'(S,S' \rightarrow +S) = \textsc{flw}(S')$. \\
+By case 0, $\textsc{flw}'(S,E \rightarrow (S)) = \{)\}$.
+
+We call $\textsc{flw}(S')$ which gives $\textsc{flw}'(S',S \rightarrow ES')$\\
+By case 1, $\textsc{flw}'(S,S \rightarrow ES') = \textsc{flw}(S)$. \\
+Notice that we have already called $\textsc{flw}(S)$. If we continue,
+we will only be stuck in a loop 
+that flips between $\textsc{flw}(S)$ and $\textsc{flw}(S')$. 
+We compute that $\textsc{flw}(S) = \{)\} \cup \textsc{flw}(S') = \{)\} \cup \textsc{flw}(S) = \{)\} \cup \{)\} \cup \textsc{flw}(S') = ...$
+So now stop
+and conclude that  $\textsc{flw}(S) = \textsc{flw}(S') = \{)\}$
+
+Hence $\textsc{flw}(E) = \textsc{fst}(S') \cup \{)\} = \{+, )\}$
+\end{example}
+
+
+
+\frmrule 
+
+\textit{Introducing Select Sets to handle the nullable case in LL(1) parsing}
+
+$$
+\textsc{select}(A \rightarrow \alpha) = 
+\left\{ 
+\begin{array}{ll} 
+\textsc{first}(\alpha) & \text{if }\alpha \text{ not nullable} \\   
+\textsc{first}(\alpha) \cup \textsc{follow}(A) & \text{if } \alpha \text{ nullable} \\   
+\end{array}
+\right
+$$
+
+
+\begin{example}
+Prove that if $\beta_1$ nullable and $\beta_2$ nullable, 
+then $\textsc{select}(X \rightarrow \beta_1)$ and $\textsc{select}(X \rightarrow \beta_2)$ 
+\textit{cannot} be disjoint.
+\end{example}
+
+
+\begin{example}
+Give a grammar that has a non-terminal $X$ such that a 
+terminal $a \in \textsc{first}(X)$ and $a \in \textsc{follow}(X)$
+\end{example}
+
+
+
+\frmrule
+
+
+A grammar $G = (N,T,R,S)$ is LL(1) iff \\
+for all non-terminals $X \in N$
+where $X \rightarrow \beta_1 | \beta_2 | ... | \beta_n$:
+
+For all $i \neq j$:
+$\textsc{select}(X \rightarrow \beta_i) \cap \textsc{select}(X \rightarrow \beta_j) = \emptyset$
+
+\frmrule 
+
+
+A grammar $G = (N,T,R,S)$ is LL(1) iff \\
+for all non-terminals $X \in N$
+where $X \rightarrow \beta_1 | \beta_2 | ... | \beta_n$:
+
+\textit{condition 1}:
+For all $i \neq j$: $\textsc{first}(\beta_i) \cap \textsc{first}(\beta_j) = \emptyset$ . 
+
+\textit{condition 2}:
+For all $i$: $\beta_i$ nullable implies $\beta_j$ not nullable for all $j \neq i$. 
+
+\textit{condition 3}:
+if $X$ is nullable, $\textsc{first}(\beta_j) \cap \textsc{follow}(X) = \emptyset$ for $j \neq i$. 
+
+\frmrule 
+
+\begin{example}
+Show that the following grammar \textit{is not} a LL(1) grammar.
+\end{example}
+
+
+\frmrule 
+
+
+\highlightdef{The first sets \textit{form a partition}}
+
+
+\frmrule 
+
+
+\highlightdef{LL1 rules have must have at most one nullable alternative}
+
+
+
+
+
+\begin{sidenote}{$\textsf{LL}(k)$ Grammars}
+The ideas of being able to predict using \textit{one} lookahead terminal, 
+can, of course, be extended to using $k$ lookahead terminals.
+Let us define:\\
+%$\textsc{first}_k(\alpha) = \{w | \alpha \Rightarrow^{*} w\beta \text{ and } |w| \leqslant k  \}$\\
+%$\textsc{follow}_k(X) = \{w \;|\; S \Rightarrow^{*}\alpha X \beta \text{ and } w \in \textsc{first}_k(\beta) \}$\\
+
+Then a grammar is $k$-predictive iff \\
+$S \Rightarrow^{*} wX\alpha \Rightarrow w\beta_i \alpha$ \\
+$S \Rightarrow^{*} wX\alpha \Rightarrow w\beta_j \alpha$ \\
+implies\\
+$\textsc{first}_k(\beta_i\alpha) \neq \textsc{first}_k(\beta_i\alpha)$   \\
+
+And a grammar is $\textsf{LL}(k)$ iff 
+\end{sidenote}
+

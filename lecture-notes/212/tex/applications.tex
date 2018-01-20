@@ -1,0 +1,828 @@
+\chapter{Applications}
+
+
+\section{DNS I}
+
+
+\frmrule 
+
+\textit{Motivation for a directory service}
+
+\frmrule 
+
+\textit{Problems with a flat file}
+
+Until 1984 there was one central file 
+called hosts.txt that had a flat structure. 
+It was simply a list of pairs $[(n,\nu)]$ 
+that everybody could download it and update locally. 
+To update it globally, an email would be 
+sent to a central file administrator. 
+
+This flat file approach has problems with 
+with coordination, updating, access. The names used
+lacked a tree structure whereas IP addresses 
+do have a tree structure.
+After 1984 a new system was implemented called 
+the \textit{Domain Name Service} (DNS) that would 
+solve the issues of using the flat file structure. 
+
+\frmrule 
+
+\textit{Namespace tree.}
+
+
+\frmrule 
+
+\textit{Using URNs to uniquely name tree nodes.}
+
+
+\frmrule 
+
+\textit{Domains}
+
+A domain is a subtree in the namspace tree.
+Recall that a subtree is uniquely identified by 
+a single namespace node or by its URN. 
+
+\highlightdef{\textbf{Domain}: a \textit{domain} is a \textit{subtree} $T'$ of the namespace tree $T$}
+
+\frmrule 
+
+
+\highlightdef{
+\textbf{Domain name}: the name $n$ that uniquely identifies a domain $T'$:
+$\langle label_n \rangle \cdot ... \cdot \langle label_2 \rangle \cdot \langle label_1 \rangle$ 
+}
+
+To uniquely identify a domain, $T'$ we use there is a unique path from the 
+root of $T'$ to the root of the namespace tree, $v_1 \rightarrow ... \rightarrow v_n$, where 
+$v_1 = root(T')$ and $v_n = root(T)$. 
+Recall that for each node, we associate a label, $n$, unique for that level: $L(v) = n$. 
+Hence the path is uniquely 
+identified by the string: $l(v_1) \rightarrow ... \rightarrow l(v_n)$ 
+which equals $label_1 \rightarrow ... \rightarrow label_n$. 
+We often \textit{replace the arrows with dots}. 
+The result is string of labels that uniquely identifies the path (and thus the domain). 
+It is this string that is our \textit{domain name}: 
+$\langle label_n \rangle \cdot ... \cdot \langle label_2 \rangle \cdot \langle label_1 \rangle$.
+
+There are two uses of the term \textit{domain}. \\
+\textbf{Use 1} The term \textit{domain} is used 
+to refer to all the nodes $v \in T$ or all the names of 
+the nodes in $T$, $L(v), v \in T$. \\
+\textbf{Use 2} Sometimes, the term \textit{domain} is used 
+to refer to a \textit{single name}. This name may refer to the 
+label assigned to the root of the tree $l(root(T))$ or the 
+name associated with the root of the tree $L(root(T))$.
+
+By convention, we $l(root(T)) = \epsilon$, the \textit{empty string}.
+As a result, all domain names will be of the form: 
+$\langle label_n \rangle \cdot ... \cdot \langle label_2 \rangle \cdot$, 
+and will \textit{end with a dot}.  
+
+\frmrule
+
+\textit{Domains vs Subdomains}
+
+Technically   speaking,  every  node  in  the  DNS  tree  is  a
+``domain'', even if it is ``terminal'', that is,  has  no
+``subdomains''.  Technically speaking, every subdomain is
+a domain and every domain except the root is also a sub-
+domain.   
+   
+The  terminology is not intuitive and you would do well to read 
+RFC's 1033, 1034, and 1035 to gain a complete understanding of 
+this difficult and subtle topic.
+
+
+\frmrule 
+
+\begin{example}
+\end{example}
+
+\frmrule 
+
+
+\textit{Partially Qualified vs Fully Qualified}
+
+Sometimes we would like to identify where a subtree $T''$ is 
+that is nested inside some subtree $T' \neq root(T)$. 
+To do this, we can use a \textit{partially qualified} domain name. 
+
+Relative to $T'$, there is a unique path to $T''$, 
+$v' \rightarrow ... \rightarrow v''$. Recall that
+for each level of the namespace tree, 
+we associate a label, $n$, unique for each node in that level: $l(v) = n$. 
+Hence the path is uniquely 
+identified by the string: $l(v') \rightarrow ... \rightarrow l(v'')$ 
+which equals $label_1 \rightarrow ... \rightarrow label_n$. 
+Again we \textit{replace the arrows with dots}. 
+This string that is a \textit{partially qualified} domain name. 
+
+Partially qualified domain names identify unique paths from $v'' = root(T'')$ up to $v' = root(T') \neq root(T)$, 
+where as \textit{fully qualified} domain names (or just \textit{domain names}) 
+identify unique paths from $v' = root(T')$ up to $v = root(T)$. 
+
+\frmrule 
+
+
+\frmrule 
+
+Notice that with the convention that $L(root(T)) = \epsilon$, 
+it is quite easy to see that 
+
+
+\highlightdef{
+Partially qualified \textit{never} end in a dot, \\
+Fully qualified \textit{always} end in a dot
+}
+
+
+
+\begin{example}
+\end{example}
+
+\frmrule 
+
+
+\textit{Zones}
+
+We partition the nodes of the namespace tree into \textit{zones}. 
+if two nodes are in the same zone, we require that there is a unique 
+path connecting them - \textit{and} that every node along 
+such a path is in the zone. Notice that this constaint tells 
+us that \textit{every zone is a tree}. More formally:
+
+
+
+\highlightdef{
+\textbf{Zone Partition}: a partition $\mathcal{Z}$ of a namespace nodes $N$ \\
+where each block, or \textit{zone}, $Z \in \mathcal{Z}$ satisfies:\\
+(i) $n,n' \in Z$ implies unique path from $n$ to $n'$\\
+(ii) every node along this unique path is in $Z$
+}
+
+A \textit{zone partition} is a normal set partition, except that we add a further 
+constraint. Here, by parititioning a set of nodes, 
+we have that block is a set of nodes. Our constraint is that 
+each block is a \textit{tree}. We split the namespace tree into blocks, and require 
+that each block is, by itself, a tree.
+A \textit{zone} is simple a \textit{block} in such a partition. 
+\highlightdef{
+\textbf{Zone}: a block of a namespace node set \textit{zone partition}
+}
+The point is that taking just any old partition of the namespace tree may not be acceptable. 
+We need to make sure that each block in the partition is itself a \textit{tree}. 
+We will later see that this constraint means that delegating names 
+to servers becomes much easier.
+
+\begin{sidenote}{Set Partitions} 
+Recall from Discrete Maths that, a \textut{partition} $\mathcal{P}$ of a finite set $S$ is a set of sets 
+that satisfies the following:\\
+(i) $X \in \mathcal{P}$ implies $X \neq \emptyset$ (\textit{no block is empty})\\
+(ii) $X,Y \in \mathcal{P}$ and $X \neq Y$ implies $X \cap Y = \emptyset$ (\textit{the blocks don't overlap})\\
+(ii) $\cup_{X \in \mathcal{P}} = S$ (\textit{the blocks join to make $S$})
+\end{sidenote}
+
+\frmrule 
+
+\begin{example}
+For the following namespace tree, explain whether the following partitions 
+are \textit{zone partitions}. \\
+(a) $\mathcal{Z} = \{\{a,b,c\},\{d,e\},\{f\}\}$
+\end{example}
+
+
+\frmrule
+
+\textit{More about zones}
+
+Notice that the space occupied by zones is \textit{contiguous} in some sense. 
+We cannot have a zone that occupies bits dotted around the namespace 
+tree. Also note that if a zone has two nodes, then the 
+least common ancestor must also be in the zone. 
+Note that for each namespace node, there is exactly 
+one zone it belongs to. 
+
+\begin{sidenote}{Equivalence Relations} 
+Recall from Discrete Maths that for any partition, 
+there is a corresponding \textit{equivalence relation}.
+\end{sidenote}
+
+Using the idea of an equivalence relation, we define the root zone.
+Here our equivalence relation is the one that corresponds to the 
+zone partition.
+
+\highlightdef{\textbf{Root Zone}: the \textit{root zone} is the zone $Z$ such that $Z = [root(T)]$}
+where $[v]$ denotes the \textit{equivalence class} of $v$. 
+
+
+
+\frmrule 
+
+\textit{Domain name of a zone}
+
+Because each zone is a tree, there is a root node of the zone $root(Z)$. 
+But this is just a namespace node that belongs to the 
+original namespace tree. This means that $root(Z)$ actually 
+identifies a \textit{subtree} of the namespace tree.
+And so, it can be uniquely 
+identified by a fully qualified domain name. As a result, 
+\textit{we can uniquely identify zones by domain names}. 
+
+Assume that the namespace tree has been partitioned by some zone partition $\mathcal{Z}$, then
+we define a \textit{zone domain name} by the following.
+\highlightdef{
+\textbf{Zone Domain Name}: 
+the string that uniquely identifies a zone $Z$:
+$\langle label_n \rangle \cdot ... \cdot \langle label_2 \rangle \cdot \langle label_1 \rangle$ \\
+where $L(root(Z)) = label_n$
+}
+we write $dn(Z)$ to denote this string
+
+\frmrule 
+
+\begin{example}
+\end{example}
+
+\frmrule
+
+\textit{Domains vs zones}
+
+Now that we have introduced the idea of \textit{domains} and \textit{zones}, 
+let's think about the relationship between the two.
+
+\textbf{Fact 1}: Every node of a zone has a subtree associated. 
+Thus every node of a zone corresponds to a domain. 
+So in a way, because a zone has many nodes, 
+it has many domains associated. 
+
+\textbf{Fact 2}: A given domain may have nodes that belong to one 
+or more zones. So a domain may have several zones associated.
+
+
+\frmrule
+
+\textit{Delegates}
+
+Because the zones form a partition, then we know from Discrete Maths that 
+there is a corresponding equivalence relation. 
+But for zone paritions, we like to define \textit{another} relation 
+called the \textit{delegation relation}.
+The \textit{delegation relation} is is a 
+relation $D \subseteq Z \times Z$ chosen by 
+us, the namespace manager.  
+This relation has a constraint. If 
+we have $(Z_1,Z_2) \in D$ then we require that
+all the namespace nodes in $Z_2$ are children of namespace nodes in $Z_1$. 
+That is for each $n \in Z_1$, there is a unique path to every $n' \in Z_2$. 
+
+\highlightdef{\textbf{Delegate Relation}: $(Z_1,Z_2) \in D$ iff \\
+for each $n \in Z_1$, there is a unique path to every $n' \in Z_2$ }
+
+This constraint forces the delegations relation to itself \textit{form a tree}. 
+Thus can call the delegation relation, a \textit{delegation tree}, with nodes $Z$ and 
+edges $D$. The zone at the root of the delegation tree $(Z,D)$ is called the \textit{root zone}.  
+
+
+\frmrule 
+
+
+\begin{example}
+For the following namespace tree\\
+(a) show that the given following partitions is a \textit{zone partitions}. \\
+(b) find the underlying delegation relation\\
+(c) state which zone is the root zone\\
+\end{example}
+
+
+\frmrule 
+
+\textit{More about delegations}
+
+
+\highlightdef{For any given zone partition, there is \textit{exactly one} delegate relation }
+
+
+\highlightdef{\textbf{Delegation Edge}: Each $(Z_1,Z_2) \in D$ corresponds to edge an $e = (v_1,v_2) \in E$ 
+of the namespace tree: $(V,E)$.
+These edges, $(v_1,v_2)$, are called \textit{delegation edges}.  }
+
+We can prove this via the following argument:\\
+
+Recall the definition of a well-defined function. 
+There is a function from $(Z_1,Z_2)$ to $(root(Z_1),root(Z_2))$. \\
+There is a function from $(root(Z_1),root(Z_2))$ to $([root(Z_1)],[root(Z_2)])$. \\
+Hence there is a function from $(Z_1,Z_2)$ to $([root(Z_1)],[root(Z_2)]) = (v_1,v_2)$. \\
+And so we have shown that each pair in the delegate relation $(Z_1,Z_2) \in D$ 
+there is a unique output edge in the namespace tree $e = (v_1,v_2) \in E$. 
+
+
+\frmrule 
+
+\highlightdef{A set of authoritative name servers has to be assigned for every DNS zone. }
+
+We add NS (name server) resource records. 
+We add one NS record for each name server authoritative for our zone.
+
+
+% \textit{Introducing Lookups}
+%
+% \frmrule
+%
+% \textit{Primary servers and secondary servers}
+%
+% Each zone $Z$ has a non-empty set of nameservers $S = servers(Z)$.
+% The servers are responsible for maintaining the resource record as well as
+% handling requests to read the record.
+%
+% One server $s_P \in S$ is chosen to be the \textit{primary server}.
+% All the remaining servers are in $S - \{S_P\}$ and are called \textit{secondary servers}.
+%
+% \highlightdef{Each zone $Z$ has exactly one server chosen to be the
+% primany server, $server$($Z$)}
+%
+% Note that two distinct zones $Z_1$ and $Z_2$ may have overlapping server sets:
+% $servers(Z_1) \cap servers(Z_2) \neq \emptyset$. Furthermore,
+% they may have identical primary servers $server(Z_1) = server(Z_2)$. It may also be the case
+% that
+% a single server can be a primary
+% server for $Z_1$ and and a secondary server
+% for another zone $Z_2$.
+%
+% \highlightdef{For each zone $Z$, $server$($Z$) stores the IP address
+% of each server $S$ such that (i) $(Z,Z') \in D$ (ii) $server(Z') = S$}
+%
+%
+% \frmrule
+%
+% \textit{Iterative Lookups}
+%
+% $Ask(dn_1,S_1) \rightarrow Ask(dn_2, S_2)$ \\
+% when $dn(v) = dn_1$ and $[v] = Z_1$  \\
+% and $(Z_1,Z_2) \in D$ and $dn(root(Z_2)) = dn_2$ \\
+% and $S_2 = server(Z_2)$ \\
+%
+% \frmrule
+%
+% \begin{example}
+% Given the following namespace tree,  \\
+% \\
+% with zones and delegations:
+% $Z = \{\{a,b,c\},\ \{d,e,f,g\},\ \{h,i,j\}, \{j,k,l,m,n\}\}$\\
+% $D = \{(Z_1, Z_2),(Z_1, Z_3), (Z_3, Z_4)}$\\
+% Show how foo.bar.gat.mic is resolved using an iterative lookup.
+% \end{example}
+%
+% \frmrule
+%
+% \highlightdef{
+% $S_1 = server(Z_1)$
+% delegates a DNS query to $S_2 = server(Z_2)$ when
+% $(Z_1, Z_2) \in D$
+% }
+% we send back to the DNS client the domain name of $Z_2$
+% The DNS will return a list.
+% For each $(Z_1, Z_2)$ there will be a server
+% $server(Z_2)$ in the returned list.
+
+%
+% \highlightdef{We assume we know $\nu_R$, the IP address of a root server }
+%
+% The idea is that:\\
+% (i) we follow the delegation edges $root(Z_{i}) \rightarrow root(Z_{i+1})$ \\
+% (ii) $root(Z_{n}) \rightarrow n$
+%
+%
+% \highlightdef{
+% Base case: $n = N(v',v)\cdot N(v,root(T))$ where $v' \in Z$\\
+% Recursive case: $n = s \cdot N(v',v)\cdot N(v,root(T))$ where $v' \in leaves(Z)$
+% }
+% where $s$ is a nonempty string and $\cdot$ here denotes concatenation
+% (not to be confused with the dots in the domain name).
+%
+% % let $U$ be the set $\{n' \;|\; (n,n') \in E, n \in Z\}$.
+% % These are the nodes at the end of the delegate edges for the zone.
+%
+% Each server $S_i$ stores its own IP address, $\nu_i$ as well as three partial functions. \\
+% ip addresses for nodes inside zone: $Z_{\nu} : Z \rightarrow IP_z$\\
+% ip addresses of delegates: $D_{\nu} : leaves(Z_i) \rightarrow IP_U$\\
+% the domain names of delegates: $D_i : leaves(Z_i) \rightarrow U$\\
+%
+% DNS uses the services of the transport layer.
+% For each query, we use a UDP application-to-application connection.
+%
+% $$\frac{\textsf{receiveDatagram}([n,...])}{\textsf{receiveQuery}(n)}$$
+%
+% $$\frac{\textsf{sendQuery}(\nu,n)}{\textsf{sendDatagram}([\nu,n,...])}$$
+%
+%
+%
+% Each server follows:\\
+% \textsf{receiveQuery}($n$)\\
+% ~~~case $n=\mathcal{N}(v',v)\cdot \mathcal{N}(v,root(T))$, $v' \in Z$:  $= Z_{\nu} (v')$   \\
+% ~~~case $n = s \cdot \mathcal{N}(v',v)\cdot \mathcal{N}(v,root(T))$, $v' \in leaves(Z)$:  \textsf{sendQuery}($D_{\nu}(v')$,$D_{i}(v')$)  \\
+% ~~~otherwise fail
+%
+%
+% \frmrule
+%
+% \begin{example}
+% Show how to resolve the domain name \textsf{a.b1.c.} to an IP address. \\
+% You are given the IP address $\nu_R$ of a server that manages the root zone.
+%
+% \begin{itemize}[nosep]
+% \renewcommand{\labelitemi}{$\Box$}
+% \item We use $\textsf{sendQuery}(\nu_R,\textsf{a.b1.c.})$.
+% \item $S_R$: does not know the answer, but knows delegate $v_2$ with FQDN $n_2$ and ip $\nu_2$.
+% $\textsf{sendQuery}(\nu_2,n_2)$
+% \item $S_2$: does not know the answer, but knows delegate $v_3$ with FQDN $n_3$ and ip $\nu_3$.
+% $\textsf{sendQuery}(\nu_3,n_3)$
+% \end{itemize}
+%
+% \end{example}
+%
+% \frmrule
+%
+% \begin{example}
+%
+% \end{example}
+%
+% \frmrule
+%
+%
+% \textit{A Records}
+%
+% $(z_1,z_2) \in D$ means that $z_2$ was created
+% by $z_1$ to take the delegated responsibility.
+%
+% Each zone is responsible for mapping every domain names in $n \in Z$
+% an IP address, $\nu$. To do this, each zone $z_i$ stores \textsc{A} \textit{records}.
+% An \textsc{A}-record is simply a mapping of a namespace string to an IP address: $n \mapsto \nu$
+%
+%
+% Zones are sometimes called \textit{administrative authorities} following
+% this idea of delegation.
+%
+% \frmrule
+%
+% \textit{Recursive Lookup vs Iterative Lookup}
+%
+%
+% Recursive lookups should remind you of making a recursive function call
+% in a programming language.
+%
+% $ask(ln \cdot...\cdot l1)=$\\
+% $l$
+% ~$\quad\quad | ln is root = ask(server(l_{n-1})$\\
+% ~$\quad\quad | otherwise = ask(parent)$
+%
+% Note that this recursive procedure is actually \textit{tail recursive}. And
+% so we can implement this function using an accumulative parameter.
+%
+% \frmrule
+%
+% \textit{Zone Records}
+%
+% \highlightdef{\textbf{Zone Record}: A list of resource records $[[\textsf{zdn},\textsf{t},\textsf{ttl}||\textsf{v}]]$\\
+% For each namespace node $n \in Z$ there is a record in the list. }
+%
+% where:
+% \begin{itemize}[nosep]
+% \renewcommand{\labelitemi}{$\Box$}
+% \item \textsf{zdn}: the \textit{zone domain name}. That is, the domain name of the namespace node at root of the zone.
+% \item \textsf{t}: the \textit{type} - various types of records can be stored. $\mathsf{t} \in \{\textsc{A},\textsc{NS}\}$.
+% \item \textsf{ttl}: the \textit{time to live} - the number of seconds for which the RR may be cached. After this time
+% expires, the record is considered to be \textit{out-of-date}. We will look later at how to handle out-of-date records.
+% \item \textsf{v}: - the \textit{value} - the actual data to be stored in the record
+% \end{itemize}
+%
+%
+%
+%
+
+%
+%
+%
+%
+% \frmrule
+%
+%
+% \highlightdef{
+% A DNS server can only match \textit{fully-qualified} domain names to IP addresses
+% }
+%
+% \frmrule
+%
+% \begin{example}
+% For the following namespace tree with the zones partition shown,
+% give the DNS resource records for each zone.
+% \end{example}
+%
+% \frmrule
+
+
+
+\section{DNS II}
+
+
+\frmrule 
+
+\textit{DNS messages}
+
+\highlightdef{
+    \textbf{DNS}:\\
+    \textit{query} $[H||Q]$\\
+    \textit{response} $[H||Q,A,...]$\\
+}
+
+\frmrule 
+
+\textit{Using dig to inspect DNS messages}
+
+
+\frmrule 
+
+\textit{Generic domains and country domains}
+
+The namespace tree has the subtrees
+given by the immediate child nodes 
+split into two disjoint sets $\mathcal{G}$ and $\mathcal{C}$. 
+The subtrees in $\mathcal{G}$ are called generic domains 
+and the subtrees in $\mathcal{C}$ are called country domains. 
+
+
+\frmrule 
+
+\textit{ARP Ping and DNS}
+
+
+\frmrule 
+
+\textit{DNS uses UDP and not TCP}
+
+What is means is that if a DNS packet is lost, there is no automatic recover. 
+At first it may seem like this causes a problem. 
+
+
+\frmrule
+
+In addition to being subject to loss, DNS packets have a maximum length,
+potentially as low as 576 bytes. What happens when a DNS name to be looked
+up exceeds this length? Can it be sent in two packets?
+
+\frmrule
+
+Can a machine with a single DNS name have multiple IP addresses? How
+could this occur?
+
+\frmrule
+
+Can a computer have two DNS names that fall in different top-level domains?
+If so, give a plausible example. If not, explain why not.
+
+
+\section{Websites: HTTP I}
+
+
+\highlightdef{The main purpose of HTTP is to provide access to Web objects}
+It is extremely popular because of \textit{web browsing}. 
+But strictly speaking, HTTP has more 
+functions besides \textit{reading} (downloading) web objects. 
+HTTP can perform uploading. And HTTP doesn't necessarily have 
+to be used for webpages. 
+
+\frmrule 
+
+\highlightdef{HTTP has nothing to do with how a webpage is rendered}
+
+\frmrule 
+
+\begin{sidenote}{Browser Rendering}
+Every browser \textit{behaves the same} at the initial stage of 
+using HTTP to request a webpage.
+But there are issues when it comes to the next stage: \textit{rendering} webpages.  
+There are separate specifications that define how a webpage should 
+be rendered given its HTML, however issues occur when a browser's 
+implementaton doesn't follow specification.
+We end up with \textit{different behaviour} at the browser rendering stage.
+This has caused a struggle between website content makers and the browsers available. 
+
+For those interested, see: HTML spec CSS spec. 
+\end{sidenote}
+
+\frmrule 
+
+\textit{HTTP uses uniquely identifying+locating URIs to \textit{access web objects}}
+
+
+\frmrule 
+
+\textit{HTTP messages}
+
+We define $G = (\mathsf{connection} | \mathsf{date} | \mathsf{cachectrl} | ... )$, 
+as fields that can appear anywhere, in either a request or a reply. 
+These fields are called \textit{general fields}. All other fields must appear in a specific message type. 
+We also define:\\
+$E = (\mathsf{content.type} | \mathsf{content.enc} | \mathsf{content.len} 
+| \mathsf{content.lang} | \mathsf{expdate} | \mathsf{moddate} | ...)$ \\
+These fields are called \textit{entity fields} 
+and can appear in either post requests, put requests or in 
+replies. Entity fields are allow the owner of the web content (whether it be 
+the client or the server) to describe the data that is about to be sent.
+
+We finally define request fields $Q$ and reply fields $P$, 
+fields that can appear only in re\textit{q}uest messages,
+and in re\textit{p}ly messages respectively. These are defined here as: \\
+$Q = (\mathsf{host} | \mathsf{userag} | \mathsf{ref} | \mathsf{userag} | \mathsf{acc.charset} 
+| \mathsf{acc.enc} | \mathsf{acc.lang}  | ... | G)$\\
+$P = (\mathsf{server} | ...)$
+
+Then HTTP requests have the format:
+\highlightdef{
+\textbf{HTTP}: \\
+\textit{get requests}: $[\textsc{get}, \textsf{uri}, Q^{*}]$\\
+\textit{post,put request}: $[(\textsc{post}|\textsc{put}), \textsf{uri}, (E|Q)^{*},\textsf{content}]$\\
+\textit{reply}: $[\textsf{statuscode},\textsf{statusdesc},(E|P)^{*},\textsf{content}]$
+}
+
+
+where
+\begin{itemize}[nosep]
+\renewcommand{\labelitemi}{$\Box$}
+\item $\mathsf{uri}$: the URI of the web object
+\item $\mathsf{statuscode}$: the \textit{status code}. Describes the result of the reply. 
+$\mathsf{statuscode} \in \{200,404, .. \} $. 200 indicates that the reply was 
+successful. 404 indicates that the web object cannot be found.
+\item $\mathsf{statusdesc}$: a short description for the status code, $\mathsf{statuscode}$.
+\item $\mathsf{content}$: the \textit{content} of the web object. 
+The $\mathsf{content}$ field is often called the \textit{body}.
+\end{itemize}
+
+\frmrule 
+
+\begin{example}
+Below shows a browser requesting a webpage using HTTP. \\
+(a) State which fields are in general $G$, entity $E$, request $Q$, reply $P$\\
+(b) Explain how the client knows the request was successful. 
+\end{example}
+
+\frmrule 
+
+\textit{Steps involved in visiting a URL}
+
+The question is popular as an interview question 
+to test candidates understanding of the TCP/IP stack. 
+
+The browser acts as the client application. \\
+A program running on the web server acts as the server application. 
+\begin{itemize}[nosep]
+\renewcommand{\labelitemi}{$\Box$}
+\item The \textit{server} runs and listens on port $\rho_S = 80 \in \mathcal{W}$
+\item The \textit{client} chooses some ephemeral port $\rho_C \in \mathcal{D}$
+\item The \textit{client} attempts to initiate a TCP connection with the server. \\
+The client connects to the server using the socket $(\nu_S,\rho_S) = (DNS(uri),80)$ 
+\item The \textit{server} accepts the TCP connection from incoming socket $(\nu_C,\rho_C)$. 
+\item An application-to-application connection (or \textit{flow}) is setup: $(\nu_C, \rho_C, \nu_S, \rho_S)$.
+\item The \textit{client} sends a HTTP request, $[Q | \mathsf{t},\mathsf{u}, ...]$
+with $\mathsf{t} = \textsc{get}$ (a \textit{get-request}), 
+with $\mathsf{u} = uri$ and $Q$ containing additional request parameters. 
+\item The \textit{server} sends a HTTP reply, $[P | \mathsf{t},\mathsf{u}, ...]$
+with $\mathsf{t} = \textsc{get}$ (a \textit{get-request}), 
+with $\mathsf{u} = uri$
+\item The TCP connection is teared down.
+\end{itemize}
+
+Notice that we use the services of DNS to translate our URI to an IP address, 
+$\nu_S = DNS(uri)$. Everytime we visit a webpage, we rely on a DNS translation 
+to find $\nu_S$, the IP address of the server. Humans find web URIs easier 
+work with and memorise. Quite clearly, web browsing 
+would be a less enjoyable experience if we browsed pages by typing IP addresses 
+in the address bar.
+
+
+\frmrule 
+
+\textit{Rendering a webpage can lead to more HTTP requests}
+
+\frmrule 
+
+
+\textit{Persistent connections}
+
+The first version of HTTP used one TCP connection per web object. 
+As we have seen, downloading webpage can causes a burst 
+of other HTTP requests to be made. Each time, we need 
+to open a TCP connection, transfer, then tear down. 
+This causes an inefficient use of the network and operating system resources. 
+
+HTTP/1.1 introduces \textit{persistent connections}. 
+This allowed one TCP connection to be established for all 
+the web objects to be transferred for the web page.
+It allows the client to send multiple requests, and for the server to 
+send multiple replies, returning \textit{multiple web objects}, 
+all in \textit{one} TCP session. 
+
+\highlightdef{\textbf{Persistent Connection}:
+Using \textit{one TCP connection} for \textit{multiple web objects}
+}
+
+The HTTP/1.1 specification states that persistent connections 
+are to be used by default. In order to turn it off, 
+both the client and server must agree to this. 
+Both client and server add the general field
+$\mathsf{connection} = \textsc{close}$ to their messages.
+After one exchange, of HTTP reply and request, both are 
+of mutual understanding that no further transfers should 
+occur and so the TCP connection will be teared down. 
+
+\frmrule 
+
+\textit{Caching data to improve performance}
+
+\frmrule 
+
+\textit{HTTP referrers}
+
+
+\begin{sidenote}{Referrer vs Referer}
+(Wikipedia)
+The misspelling referer (one-\textit{r}, not two \textit{r}'s) originated in 
+the original proposal by computer scientist Philip Hallam-Baker to incorporate 
+the field into the HTTP specification. 
+The misspelling was set in stone when it was incorporated into RFC 1945.  Since 
+then, \textit{Referer} has since become a widely used spelling in the industry when discussing 
+the \textsf{ref} field. 
+In PHP, for example, we can access \textsf{ref} via \lstinline{\$_SERVER['HTTP_REFERER']}. (notice 
+the spelling: one-\textit{r})
+\end{sidenote}
+
+\frmrule 
+
+\textit{Using telnet to look at HTTP messages}
+
+
+\frmrule 
+
+\textit{Relevant RFCs}
+
+\begin{sidenote}{Relevant RFCs}
+
+Pretty much all that we covered about HTTP is specified in HTTP/1.1 specification: RFC 2068 (February 1997)
+
+We looked at he ideas of stateful sessions, cookies, set-cookie, and cookie 
+headers. These are specified in: \textit{HTTP State Management Mechanism}: RFC 2109.
+\end{sidenote}
+
+
+
+
+\section{Websites: HTTP II}
+
+
+\frmrule 
+
+\textit{Javascript}
+
+\frmrule 
+
+\textit{Common Gateway Interfaces}
+
+\frmrule 
+
+\textit{HTTP is stateless}
+
+the behavior (semantics) of an HTTP request does not depend on
+any previous request
+
+\frmrule 
+
+\textit{Implementing stateful sessions using cookies}
+
+the behavior (semantics) of an HTTP request does not depend on
+any previous request
+
+
+\begin{sidenote}{Cookies and Javascript}
+Most websites use Javascript to read and write cookies.
+This is done using the \lstinline{document.cookie} object.
+\end{sidenote}
+
+
+
+
+\section{Emails: SMTP I}
+
+Mail User Agents (MUAs) are programs like Microsoft Outlook, 
+
+\highlightdef{\textbf{Mail User Agents}: Email clients are formally called 
+\textit{Mail User Agents} }
+
+Mail User Agents are sometimes called \textit{User Agents}. 
+But not all user agents are mail clients. 
+The term \textit{user agent} can refer to any 
+piece of software that provides a nice interface to operate 
+over protocols like HTTP, FTP and SMTP. 
+
+\section{Emails: POP3}

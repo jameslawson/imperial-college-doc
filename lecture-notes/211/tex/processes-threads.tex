@@ -1,0 +1,687 @@
+
+\chapter{Processes and Threads \textsc{i}}
+
+
+
+
+
+\section{Introducing Processes}
+
+%Q: \textit{What is a process exactly?} \\
+%Q: \textit{Is it possible to have more than one process? How?}  \\
+%Q: \textit{How does the operating system' code get executed?}
+
+Right now, the operating system sees a program \textit{during execution} 
+an ongoing sequence of machine code instructions. Before code is executed 
+a program can be seen as high-level source code but during 
+execution the operating system doesn't have anything to describes its execution. 
+There is nothing that captures its execution state, memory usage or register contents. 
+
+The problem is that we \textit{need} this higher level view of a program running on a processor.
+The execution of a program machine code instructions will lead to it requiring io devices.
+Recall that use of io devices is complex and expensive. 
+The operating system as is resonsible for managing io devices as resources that 
+are to be allocated to programs. It acts as a resource manager
+
+So, as a resource manager, an operating system should know how programs in 
+execution affect resources. This is done with the idea of a \textit{process}. 
+A \textit{process} is an invention by an operating system. 
+It is used as a placeholder for executing programs so that we can keep a precise 
+account of how program execution is affecting the use of hardware and software resources.
+
+\highlightdef{A \textbf{Process} is the os's view of a program in execution}
+
+It's an abstraction of a running program that's useful for the operating system.
+As a virtual machine, the os needs to provide the user with easy access to the 
+resources. As a processor-helper it acts as software that controls the
+medium between the processor and devices.
+
+\highlightdef{A \textbf{Process Control Block} or \textsc{pcb} is a data structure 
+that the \textsc{os} uses to store \textit{information about a process}. 
+It allows the \textsc{os} to perform \textit{context switches}. }
+
+We will see that we can have processes running in a somewhat simulatenous manner.
+Here, the operating system will allocates 
+a process control block for each process running. 
+
+The \textsc{pcb} contains a \textit{huge amount of information} in
+one \textit{large} structure. It is a heavyweight abstraction.
+
+
+\begin{example}
+In \textsc{unix}, a process is represented by a struct called \lstinline{task}. 
+Below shows a definition of a typical Unix \lstinline{task} struct.  
+\end{example}
+
+Within the \textsc{unix} communicity this struct is known as a \textit{process descriptor}
+or a \textit{task descriptor}.
+
+\highlightdef{The operating system executes its own code using \textit{kernel processes}} 
+
+
+
+\highlightdef{An \textbf{Execution Context Switch} is }
+
+
+
+\section{UNIX Fork-Exec Model}
+
+
+\highlightdef{The \lstinline{fork()} system call creates 
+a \textit{branching copy} of the current process}
+
+The contents of all the general purpose registers are copied across. 
+In fact, the exact execution context is recreated for newly created branch process, 
+but with \textit{one difference}. 
+The difference between the branch copy and the original is
+that the return result of \lstinline{fork()} is different.
+
+\begin{figure}[h]
+\begin{tikzpicture}
+  % circles
+  \node[circle,draw,fill=white] (c1) {};
+  \node[circle,draw,fill=black, right=1.5cm of c1] (c2) {};
+  \node[circle,draw,fill=black, below=1cm of c2] (c3) {};
+  % endpoints
+  \coordinate (x1) at ($(c1)+(-3.5cm, 0.0cm)$);
+  \coordinate (x2) at ($(c2)+(2.5cm, 0.0cm)$);
+  \coordinate (x3) at ($(c3)+(2.5cm, 0.0cm)$);
+  % lines
+  \draw[dashed,->] (c1) -- (c2);
+  \draw[dashed,->] (c1) -- (c3);
+  \draw[->] (x1) -- (c1);
+  \draw[->] (c2) -- (x2);
+  \draw[->] (c3) -- (x3);
+  % labels
+  \node[above=0.1cm of c1] {\lstinline{r = fork()}};
+  \node[above=0.1cm of c2] {$\text{\lstinline{r} } \neq 0$};
+  \node[above=0.1cm of c3] {$\text{\lstinline{r} } = 0$};
+  \node[right=0.1cm of x2] {original process};
+  \node[right=0.1cm of x3] {branch process};
+	
+\end{tikzpicture}
+\end{figure}
+
+The newly created process has a return value of \textit{zero} given back 
+from calling fork(). On the other hand, the original process has a \textit{non-zero} 
+value given back. When the \textsc{os} is recreating the execution context
+for the new process, it ensures that this difference is put in.
+
+We can use this difference to write conditional statements 
+that will only execute code for a single branch (i.e. for a single process). 
+Below shows an example.
+
+\frmrule
+
+
+
+
+
+\begin{example}
+\begin{lstlisting}
+void example() {
+    pid_t pid = fork();
+    if (pid != 0) printf("P");
+    else          printf("C");
+}
+\end{lstlisting}
+\end{example}
+
+\frmrule
+
+We don't have to use the return value of \lstinline{fork()}. 
+Below shows an example where we don't do any 
+conditional logic using the result from \lstinline{fork()}.
+
+\begin{example}
+\begin{lstlisting}
+void example() {
+    printf("E");
+    fork();
+    printf("F");
+}
+\end{lstlisting}
+\end{example}
+
+
+\frmrule
+
+
+\begin{example}
+Explain what the following 
+means: \textit{A single call to function \lstinline{fork()} returns twice}.
+In particular explain why we can think of this function as returning 
+twice. 
+\end{example}
+
+\frmrule
+
+\begin{example}
+What process-related data structure will the \textsc{os} need to read from 
+to recreate the execution context for the new branch process?
+\end{example}
+
+\frmrule
+
+
+\begin{example}
+For the following code, state what is printed, and precisely in what order.
+Explain your answer. State how many processes are running 
+after \lstinline{example()} returns.
+\begin{lstlisting}
+void example() {
+    pid_t pid = fork();
+    if (pid != 0) printf("P");
+    else          printf("C");
+    printf("X");
+}
+\end{lstlisting}
+\end{example}
+
+\frmrule
+
+
+\begin{example}
+For the following code, state what is printed, and precisely in what order.
+Explain your answer. State how many processes are running 
+after \lstinline{example()} returns.
+\begin{lstlisting}
+void example() {
+    pid_t pid1 = fork();
+    if (pid1 != 0) {
+        printf("A")
+    } else {
+        pid_t pid2 = fork();
+        if (pid2 != 0) {
+            printf("B");
+        } else {
+            printf("C");
+        }
+    } 
+}
+\end{lstlisting}
+\end{example}
+
+
+\frmrule
+
+\begin{example}
+For the following code, state what is printed, and precisely in what order.
+Explain your answer. State how many processes are running 
+after \lstinline{example()} returns.
+\begin{lstlisting}
+void example() {
+    pid_t pid1 = fork();
+    if (pid1 != 0) {
+        printf("A")
+    } else {
+        pid_t pid2 = fork();
+        if (pid2 != 0) {
+            printf("B");
+        } else {
+            printf("C");
+        }
+        printf("Y");
+    } 
+    printf("X");
+}
+\end{lstlisting}
+\end{example}
+
+\frmrule
+
+\begin{example}
+For the following code, state what is printed, and precisely in what order.
+Explain your answer. State how many processes are running 
+after \lstinline{example()} returns.
+\begin{lstlisting}
+void example() {
+    pid_t pid1 = fork();
+    if (pid1 != 0) {
+        printf("X")
+    }
+    pid_t pid2 = fork();
+    if (pid2 != 0) {
+        printf("Y")
+    }
+}
+\end{lstlisting}
+\end{example}
+
+\frmrule
+
+\begin{example}
+For the following code, state what is printed, and precisely in what order.
+Explain your answer. State how many processes are running 
+after \lstinline{example()} returns.
+\begin{lstlisting}
+void example() {
+    pid_t pid1 = fork();
+    if (pid1 != 0) {
+        printf("X");
+    }
+    printf("S");
+    pid_t pid2 = fork();
+    if (pid2 != 0) {
+        printf("Y");
+    }
+    printf("T");
+}
+\end{lstlisting}
+\end{example}
+
+\frmrule
+
+\begin{example}
+Suppose the first process has a pid of 0. What problem arrises 
+when conditional logic with \lstinline{fork()} is used?
+\end{example}
+
+The initial process is therefore given an id of 1.
+This initial process is handcrafted by the \textsc{os}. 
+There is no \lstinline{fork()} call. 
+
+
+\frmrule
+
+Quite often, the child process we desire will have \textit{little resemblence} 
+to the parent process. We need a mechanism to making it easier to change our child 
+process's execution context. This can be achieved with the \lstinline{exec} 
+system call.
+
+\highlightdef{The \lstinline{exec} system calls
+ replaces the current process with a new process}
+
+By this, we mean that the memory allocated for a process is replaced with new 
+instructions and new data. For a child process, this effectively 
+replaces the recreated execution context - so the child has no similarity 
+to the parent at all. 
+
+There is a large family of \lstinline{exec} calls. These are defined in  
+\lstinline{<unistd.h>} \textsc{posix} header.
+
+
+First we will look at \lstinline{execv}.
+
+\frmrule
+
+\begin{example}
+For the following code, state what is printed, and precisely in what order.
+Explain your answer. State how many processes are running 
+after \lstinline{example()} returns.
+
+\begin{lstlisting}
+void example() {
+    pid_t pid = fork();
+    if (pid != 0) {
+        printf("P");
+    } else {
+        printf("C");
+        execv('./prog', 5, 'hello');
+    }       
+    printf("X");
+}
+\end{lstlisting}
+\end{example}
+
+\frmrule
+
+Another \lstinline{exec} system call is \lstinline{execl}.
+
+\begin{example}
+For the following code, state what is printed, in all possible orders.
+Explain your answer. State how many processes are running 
+after \lstinline{example()} returns.
+
+\begin{lstlisting}
+void example() {
+    pid_t pid = fork();
+    if (pid == 0) {
+        execl("/bin/ps", "ps", "-l", NULL);
+        printf("A");
+    } else {
+        printf("B");
+    }
+    printf("C");
+}
+\end{lstlisting}
+\end{example}
+
+\lstinline{execl} first takes in the \textit{path of a program} to run,
+then we assign a name \textit{name of the command} (usually a shortened form), 
+and then a  \textit{list of parameters} (just like on 
+the command line), and then finishes with \textsc{null}.
+
+
+
+
+% execl(“/bin/cat”, “cat”, doc.txt”, NULL);
+
+
+
+\section{Execution-Schedule Management}
+
+The job of a \textit{scheduler} is to arbitrate access to the 
+current (\textsc{cpu} between multiple processes.
+The header file include/linux/sched.h is included (either explicitly or indirectly) by
+virtually every kernel source file.
+
+The Linux kernel maintains a global variable called \lstinline{jiffies}. 
+This represents the number of timer ticks since the machine started. 
+This variable is initialized to zero and increments each timer interrupt.
+
+Below shows an example that uses \lstinline{get_jiffies_64}. This reads the jiffies 
+variable. This value can be converted to a millisecond value using 
+\lstinline{jiffies_to_msecs}.
+
+
+\highlightdef{The execution-schedule is \textbf{non-deterministic} 
+because of the use of a \textit{timer interrupt}}
+
+\frmrule
+
+If we have five processes that use the processor twenty percent of the time (spending eighty percent 
+doing \textsc{io}) then we should be able to achieve one hundred percent CPU utilisation. Of course, in 
+reality, this will not happen as there may be times when all five processes are waiting for \textsc{io}. 
+However, it seems reasonable that we will achieve better than twenty percent utilisation than we 
+would achieve with monoprogramming. 
+ 
+We can build a model from a probabilistic viewpoint. Assume that that a process spends 
+$p$ percent of its time waiting for \textsc{io}. With $n$ processes in memory 
+the probability that all n processes are waiting for \textsc{io} (meaning the CPU is idle) is $p^n$
+
+
+\highlightdef{$P[\text{cpu free}] = p^n$} 
+
+
+\highlightdef{As we introduce more processes, the \textsc{cpu} utilisation increases} 
+
+The model is a little contrived as it assumes that all the processes are independent in that processes 
+could be running at the same time. This (on a single processor machine) is obviously not possible. 
+More complex models could be built using queuing theory but we can still use this simplistic model 
+to make approximate predictions. 
+
+\frmrule
+
+\begin{example}
+
+\end{example}
+
+\frmrule
+
+
+\section{Interprocess Communication I}
+
+
+\highlightdef{\textbf{Interprocess Communication} (\textsc{ipc})
+concerns \textit{data communication} and \textit{synchronisation} between processes} 
+
+
+
+In \textsc{unix} most \textsc{ipc} obhects are \textsc{unix} \textit{special files} by 
+are identified by \textit{file descriptors}. 
+File descriptors 0, 1, and 2 are reserved by convention 
+for standard input, standard output, and standard error.
+
+Recall that \textsc{unix} is written in \textsc{c}. From a source-code perspective, 
+a program has a standard output stream and a standard input stream. 
+
+\highlightdef{A \textbf{UNIX Pipe} connects a 
+\textit{write file descriptor} of $A$ to a \textit{read file descriptor} of $B$}
+
+\textsc{unix} pipes therefore provide a mechanism
+for \textit{one-way communication} betweeen $A$ and $B$ where 
+$A$ is sending data to $B$. A common example would be 
+connecting the \textit{standard output} of $A$ 
+to the \textit{standard input} of $B$.
+
+We can create a pipe using the \lstinline{pipe()} system call.
+The \lstinline{pipe()} has just one parameter, \lstinline{pipefds} 
+which is an out array for two file descriptors. 
+The system call creates the pipe and two descriptors, 
+one for writing to the pipe (\lstinline{pipefds[1]}) 
+and one for reading from the pipe (\lstinline{pipefds[0]}). 
+
+\frmrule
+
+\begin{example}
+Below shows an example of how to create a pipe 
+using the \lstinline{pipe()} system call.
+
+\begin{lstlisting}
+int pipefds[2] = {0,0};
+pipe(pipefds);
+printf("pipe read fds: %d\n", pipefds[0]);
+printf("pipe write fds: %d\n", pipefds[1]);
+\end{lstlisting}
+\end{example}
+
+\frmrule
+
+In the previous example, after the call to \lstinline{pipe()} 
+we file descriptor table for the process looks like the following.
+
+
+\frmrule
+
+
+\begin{example}
+Below shows an example of parent child communication 
+using \lstinline{fork()} and \lstinline{pipe()}.
+
+
+\begin{lstlisting}
+int main(void) {
+    int pipefds[2] = {0,0};
+    pipe(pipefds);
+    pid_t pid = fork();
+    if (pid != 0) { 
+        write(pipefds[1], "test", 5);
+        printf("send: %s\n", buf);
+        exit(0);
+    } else { 
+        char message[30];
+        read(pipefds[0], buf, 5);
+        printf("received: %s\n", buf);
+        wait(NULL);
+    }
+    return 0;
+}
+\end{lstlisting}
+\end{example}
+
+
+
+
+
+
+\frmrule
+
+\begin{example}
+Below shows an example of a \textsc{unix} pipe is used to 
+implement a \textsc{unix} \textit{command line pipe}  is used 
+in shell command \lstinline{ls | wc -l}.
+
+\begin{figure}[h]
+\begin{tikzpicture}[
+  process/.style={rectangle, draw, minimum height=2em},
+  pipe/.style={cylinder, draw, minimum height=3cm, minimum width=0.5cm}
+]
+  \node [process] (ls) {\lstinline{ls}};
+  \node [pipe, right=0.2cm of ls] (pipe1) {};
+  \node [process, right=0.2cm of pipe1] (wc) {\lstinline{wc}};
+  \draw [draw, dashed, ->] (ls) -- (wc);
+\end{tikzpicture}
+\end{figure} 
+\end{example}
+
+
+
+\frmrule
+
+\begin{example}
+Below shows an example of a \textsc{unix} \textit{command line pipe} 
+used in shell command \lstinline{cat hello.txt | wc -w}.
+
+\begin{lstlisting}
+int example() {
+    int pipefds[2] = {0,0};
+    pipe(pipefds);
+    pid_t pid = fork();
+    if (pid != 0) { 
+        close(pipefds[1]);
+        dup2(pipefds[0], STDIN_FILENO);
+        close(pipefds[0]);
+        execl("/usr/bin/wc", "wc", "-w", NULL);
+    } else { 
+        close(pipefds[0]);
+        dup2(pipefds[1], STDOUT_FILENO);
+        close(pipefds[1]);
+        execl("/bin/cat", "cat", "hello.txt", NULL);
+    }
+}
+\end{lstlisting}
+\end{example}
+
+
+
+\frmrule
+
+\begin{example}
+The program below is run with the input 10 20 30 40 50 and piped to a file, as follows: 
+\lstinline{a.out >output 10 20 30 40 50}. \\
+\textbf{(a)} What is the sum of all the numbers written to the file \lstinline{output}? \\
+\textbf{(b)} What numbers are printed on standard error?
+
+\begin{lstlisting}
+int main(int argc, char **argv) {
+    int i, a=0, n=1;
+    int fd[2];
+    pipe(fd);
+    dup2(fd[0],0);
+    dup2(fd[1],1);
+    for (i=0;i<5;i++) {
+        printf("%d\n",n);
+        fflush(stdout);
+        n = n+a;
+        fprintf(stderr, "%d\n",n);
+        scanf("%d", &a);
+    }
+}
+\end{lstlisting}
+\end{example}
+
+\frameans{}{
+\textbf{(a)} 0.  \\
+\textbf{(b)} 1 2 3 5 8
+}
+
+The program redirects stdout to a pipe. So no data is written to file output.
+
+\frmrule
+
+So far we have been using \textit{anonymous pipes}. This is fine if both 
+processes are living in the same parent process space, 
+started by the same user. 
+There are however circumstances where the communicating processes
+must use \textit{named pipes}. One such circumstance is that the processes have to be executed under different user names and permissions.
+
+
+(Anonymous) pipes can only be used by related 
+processes
+FIFOs == pipe with name in file system
+Any process can open and use FIFO
+I/O is same as for pipes
+
+A named pipe works much like a regular pipe, but does have
+some noticeable differences.
+* Named pipes exist as a device special file in the file
+system.
+* Processes of different ancestry can share data through a
+named pipe.
+* When all I/O is done by sharing processes, the named 
+pipe remains in the file system for later use.
+
+• Persistent pipes can outlive the process which 
+created them
+• Stored on the file system
+• Any process can open it like a regular file
+ Why ever use named pipes instead of files?
+
+
+\begin{example}
+Here is another shell command \lstinline{ls -l | tee file.txt | less}.
+Technically tee is a process but semantically it is a nice to
+visualise this as a T. 
+\end{example}
+
+
+
+\section{Interprocess Communication II}
+
+
+\highlightdef{A \textbf{UNIX Signal} provide notifications for internal or external events} 
+
+These can \textit{roughly} be compared to exceptions as seen in \textsc{c}++, Java.
+The biggest difference is that signals are implemented at the \textit{kernel level}. 
+
+
+Unix domain sockets (IPC socket) \\
+Solaris doors \\
+Windows COM \\
+
+
+\section{Interprocess Communication III}
+
+Mach Ports and Messages 
+
+
+
+\section{Introducing Threads}
+
+
+
+
+
+\highlightdef{\textbf{User-Level Threads}: } 
+
+
+\highlightdef{\textbf{Kernel-Level Threads}: } 
+
+How do user and kernel threads map into each other?
+
+Many-to-One
+One-to-One
+Many-to-Many
+
+
+
+\highlightdef{\textbf{POSIX} was developed to 
+\textit{standardise} user-level threads and thread management 
+}
+as well as to standardise \textsc{ipc} mechanisms and commands 
+in \textsc{unix} operating systems.
+
+Before \textsc{posix}, the responsibility of writing the
+implementation of threads and their interaction was placed 
+solely on the developers of the given \textsc{os}. 
+As a result, there were many varying implementations floating around, 
+and writing portable multithreaded applications was difficult.
+
+\textsc{ieee} came up with the \textsc{posix} standard in 1995. 
+\textsc{posix} is an abbreviation for 
+\textit{portable \textsc{os} interface standards}.
+Threads that follow the standard are called 
+\textit{\textsc{posix} threads} or \textit{pthreads}.
+
+\begin{example}
+What does the \textsc{p} in \textsc{posix} stand for? \\
+For what reason was it seen neccessary to standardise threads.
+\end{example}
+
+
+User-level threads: 
+POSIX \textit{P-threads}, Mach \textit{C-threads}, Solaris \textit{threads}
+
+
+

@@ -1,0 +1,498 @@
+
+\chapter{Further Topics}
+
+
+
+
+
+\section{Bell States}
+
+
+Bell states are \textit{rotationally invariant}.
+Given $\ket{\psi} = \frac{1}{\sqrt{2}} [\ket{uu} + \ket{u^{\perp}u^{\perp}}]$ 
+and a rotation of the bit basis:
+$\ket{u} = a\ket{0} + b\ket{1}$ with $\ket{u^{\perp}} = -b\ket{0} + a\ket{1}$
+
+
+\[ \begin{array}{ll}
+\ket{\psi}
+& =
+\frac{1}{\sqrt{2}} [\ket{uu} + \ket{u^{\perp}u^{\perp}}] \\
+& =
+\frac{1}{\sqrt{2}} [(a\ket{0} + b\ket{1})(a\ket{0} + b\ket{1}) 
++ (-b\ket{0} + a\ket{1})(-b\ket{0} + a\ket{1})]  \\ 
+& =
+\frac{1}{\sqrt{2}} [(a^2 + b^2)\ket{00} + (a^2 + b^2)\ket{11} \\ 
+& =
+\frac{1}{\sqrt{2}} [\ket{00} + \ket{11}] \\ 
+\end{array}\] 
+
+\frmrule
+
+The previous bell state is only rotationlly invariant for real valued rotations. 
+It is not invariant for complex rotations. However the bell state, 
+psi-minus, $\ket{\psi^{-}} = \frac{1}{\sqrt{2}} [\ket{01} - \ket{10}]$
+is invariant under all complex rotations.
+
+\frmrule
+
+\begin{example}
+Prove that the bell state $\ket{\psi^{-}}$ is invariant under all complex rotations.
+\end{example}
+
+\frmrule
+
+\highlightdef{All four Bell States are \textit{entangled}}
+
+
+
+\section{Quantum Teleportation}
+
+\begin{example}
+In order for quantum teleportation to work, Alice and Bob must share .........
+\end{example}
+
+
+
+\section{Super-dense Coding}
+
+Super dense coding is the less popular sibling of teleportation. It can actually be viewed as the
+process in reverse. The idea is to send two classical bits of information by only sending one
+quantum bit. The process starts out with an EPR pair that is shared between the receiver and
+sender (the sender has one half and the receiver has the other).
+
+
+
+
+\section{Qutrits and Ququads}
+
+\textit{Qutrits} are systems with 3 degrees of freedom. 
+These are represented by vectors in $\mathbb{C}^3$ 
+using base vectors $\ket{0}$, $\ket{1}$, and $\ket{2}$. 
+
+\textit{Qutrits} are systems with 4 degrees of freedom. 
+These are represented by vectors in $\mathbb{C}^4$ 
+using base vectors $\ket{0}$, $\ket{1}$, $\ket{2}$ and $\ket{2}$.  
+
+\frmrule
+
+\begin{example}
+Give the coordinates of the base vectors $\ket{0}$, $\ket{1}$, $\ket{2}$ in $\mathbb{C}^2$ 
+\end{example} 
+
+\frmrule
+
+\begin{example}
+Give the coordinates of the 2-qutrit states: $\ket{00}$, $\ket{11}$, $\ket{22}$. 
+\end{example} 
+
+\frmrule
+
+\begin{example}
+Show that $\ket{\phi} = \frac{1}{\sqrt{3}}[\ket{000}$, $\ket{111}$, $\ket{222}]$ is entangled.
+\end{example}
+
+\frmrule 
+
+\begin{example}
+Describe teleportation for a ququad. 
+Sketch the appropriate quantum circuit and calculate the 
+state before the measurement (the corrections needed can be ignored).
+\end{example} 
+
+
+
+\section{Quantum Cryptography}
+
+
+\section{Quantum Error Correction}
+
+
+
+\highlightdef{\textbf{3-Qubit Bit-Flip Code}: }
+
+We need to keep in mind that we have to measure to determine if there was an error.
+
+
+
+
+
+
+ \begin{tikzpicture}[thick]
+    % `operator' will only be used by Hadamard (H) gates here.
+    % `phase' is used for controlled phase gates (dots).
+    % `surround' is used for the background box.
+    \tikzstyle{operator} = [draw,fill=white,minimum size=1.5em] 
+    \tikzstyle{phase} = [draw,fill,shape=circle,minimum size=5pt,inner sep=0pt]
+    \tikzstyle{control} = [draw,shape=circle,minimum size=5pt,inner sep=0pt]
+    \tikzstyle{surround} = [fill=blue!10,thick,draw=black,rounded corners=2mm]
+    %
+    \matrix[row sep=0.4cm, column sep=0.8cm] (circuit) {
+    % First row.
+    \node (q1) {\ket{\phi}}; &
+    \node[phase] (p1) {}; &
+    \node[phase] (p2) {}; &
+    \coordinate (end1); \\
+    % Second row.
+    %
+    \node (q2) {\ket{0}}; &
+    \node[control] (c1) {}; &
+    &
+    \coordinate (end2);\\
+    % Third row.
+    %
+    \node (q3) {\ket{0}}; &
+    &
+    \node[control] (c2) {}; &
+    \coordinate (end3); \\
+    };
+    % Draw bracket on right with resultant state.
+    \draw[decorate,decoration={brace},thick]
+        ($(circuit.north east)-(0cm,0.3cm)$)
+        to node[midway,right] (bracket) {$\ket{\phi'}$}
+        ($(circuit.south east)+(0cm,0.3cm)$);
+    \begin{pgfonlayer}{background}
+        % Draw lines.
+        \draw[thick] (q1) -- (end1)  (q2) -- (end2) (q3) -- (end3) (p1) -- (c1) (p2) -- (c2);
+        % Draw control vertical lines.
+        \draw[thick] (c1.north) -- (c1.south);
+        \draw[thick] (c2.north) -- (c2.south);
+
+
+    \end{pgfonlayer}
+    %
+\end{tikzpicture}
+
+
+
+
+The initial state $\ket{\phi} = \alpha \ket{0} + \beta \ket{1}$ is converted by
+the circuit into $\ket{\phi'} = \alpha \ket{000} + \beta \ket{111}$.
+Then each qubit of $\ket{000}$ is sent independently through the bit flip channel.
+Each qubit of $\ket{111}$ is sent independently through the bit flip channel. 
+This gives us $\ket{\phi''}$.
+
+We then apply a two-stage error correction method. 
+We first make a measurement using the four measurement
+operators. Each measurement operator is gives a basis for the errors. 
+
+These operators are called \textit{error syndromes}.
+Depending on which error syndrome is measured we then recover the original
+state.
+
+$M_0 = \ket{000}\bra{000} + \ket{111}\bra{111}$ \\
+$M_1 = \ket{100}\bra{100} + \ket{011}\bra{011}$ \\
+$M_2 = \ket{010}\bra{010} + \ket{101}\bra{101}$ \\
+$M_3 = \ket{001}\bra{001} + \ket{110}\bra{110}$ \\
+
+
+
+\begin{example}
+Suppose, for example, that a bit flip occurred, on the second qubit.
+Then $\ket{\phi} = \alpha \ket{0} + \beta \ket{1}$ is converted by
+the circuit into $\ket{\phi'} = \alpha \ket{000} + \beta \ket{111}$.
+Then $\ket{\phi'} = \alpha \ket{000} + \beta \ket{111}$ is converted to 
+$\ket{\phi''} = \alpha \ket{010} + \beta \ket{101}$. 
+
+Now we determine $p(2) = \bra{\phi''} M^{H}_{2} M_{2} \ket{\phi''} = ...$
+
+\end{example}
+
+\frameans{}{$1$}
+
+So it is \textit{certain} that $j = 2$. 
+
+The state of the system will not change $M_2 \ket{\phi''} = \ket{\phi''}$
+Therefore, we finally flip the second qubit two to recover $\ket{\phi'}$.
+
+\frmrule
+
+\begin{example}
+Show that these four measurement operators 
+satisfy the \textit{General Measurement Principle}: $\sum^{3}_{j=0} M^{H}_{j} M_{j} = I$
+\end{example}
+
+\frmrule
+
+\begin{example}
+Classical error correction uses repeated copies of the input bit(s); 
+the no-cloning theorem forbids copying of qubits. 
+Explain why the circuit for the 3-qubit bit-flip code does 
+not violate the no-cloning theorem.
+\end{example}
+
+
+\frmrule
+
+\begin{example}
+Sketch how one can, in general, use an encoding circuit $U_{enc}$ (like 
+the 3-qubit bit-flip code circuit above) to recover a distorted qubit. 
+\end{example}
+
+\frmrule
+
+\begin{example}
+Sketch how one can, in general, use an encoding circuit $U_{enc}$ (like 
+the 3-qubit bit-flip code circuit above) to recover a distorted qubit. 
+\end{example}
+
+\frmrule
+
+\begin{example}
+Assume that at most one 1-qubit error occurs on a codeword for the 3-qubit 
+bit-flip code. How can one recover the original state? Which recovery 
+operation(s) are needed? 
+
+State all the intermediate states during an execution of the complete 
+correction circuit encoding $\ket{0}$ for, (i) when no errors occur
+(ii) all cases where exactly one of the qubits flips.
+\end{example}
+
+\frmrule
+
+\begin{example}
+Sketch Shor's 9-qubit code circuit and calculate its output for general qubits
+\end{example}
+
+
+
+
+\section{Teleportation Quantum Computation}
+
+
+\section{One-way Quantum Computation}
+
+
+One-way Quantum Computing (1WQC) is a alternative method of thinking about 
+implementing quantum algorithms using \textit{graphs} rather than quantum circuits. 
+Let us show the contrast between the circuit scheme of quantum computation 
+and this new scheme that uses graphs. 
+
+Quantum circuits have a number of qubits which are initially in a
+product state and then are subjected to various one and two-qubit gates before 
+being measured.
+
+
+We can imagine the qubits as nodes of a graph and the graph has edges between 
+two nodes iff the two qubits are entabled. 
+In fact, we can have edges from many nodes to the same node (and vice-versa).
+These are special \textit{multi-qubit} entangled state. 
+The graph itself is a special multi-qubit entangled state. 
+
+
+Then \textit{measure} qubits individually. We measure qubits one-by-one. 
+Each measurement causes the state to be less entangled. 
+It turns out that via a suitable choice of measurements, any 
+quantum computation can be acheived using this process. 
+However the result of each measurement is random, so we need to post-process or \textit{correct}, 
+the state so that we always get the exact computation we desire (regardless of which state 
+a measurement could collapse to). 
+
+
+We treat entanglement as a limited resource (like space on a classical computer). 
+We call the first state, the \textit{resource state}. 
+It is called \textit{one-way} because the resource state 
+is destroyed by the measurements.
+ 
+
+\frmrule 
+
+\highlightdef{Each measurement, $M_j$, is of the form: $\cos(\theta_j)\ket{0} + (-1)^{s_j}\sin(\theta_j)\ket{1}$}
+where $s_j \in \{0,1\}$.
+
+\frmrule 
+
+\begin{example}
+The following are Pauli measurements. For each state, $\theta_j$ and $s_j$. \\
+\textbf{(a)} $\ket{+}, \ket{-}$\\
+\textbf{(b)} $\frac{1}{\sqrt{2}}(\ket{0} + i\ket{1})$, $\frac{1}{\sqrt{2}}(i\ket{0} + \ket{1})$ \\
+\textbf{(c)} $\ket{0}, \ket{1}$\\
+\end{example}
+
+\frmrule 
+
+
+
+\section{Measurement Calculus I}
+
+
+The measurement calculus is a formalisation of \textit{Measurement-Based Quantum Computing} (MBQC)
+and \textit{one-way quantum computing} (1WQC). 
+The measurement calculus formally describes these by using a \textit{sequence of commands}. 
+Each command is either \textit{preparation}, \textit{entanglement}, \textit{measurement}, or 
+\textit{correction}. Each command is denoted with a capital letter (namely $N$, $E$, $M$, $X$, $Z$).
+Each command uses indicies $i,j \in \{1,...,n\}$ indicate qubits to which the operations apply.  
+
+We informally describe the commands using in measurement calculus. 
+
+\begin{itemize}
+\item \textbf{N - Prepare $i$th Qubit} The \textit{preparation command} $N_i$ prepares 
+the $i$th qubit. 
+\item \textbf{E - Entangle $i$th with $j$th Qubit} The \textit{entanglement command}, $E_{i,j}$ 
+entangles qubits numbered $i$ and $j$. The entangled state is $\ket{+} = C(Z_{i,j})$. 
+That is, a controlled $Z_{i,j}$ gate, where $Z_{i,j}$ is the matrix 
+with $z_{ii} = 1$, $z_{ii} = 1$,
+\item \textbf{M - Measure $i$th Qubit} The \textit{measurement command}, $M_{i}$ 
+measures the $i$th qubit. The measurement uses a specific basis that we will 
+look at later. We will later extend the measurement command to specify this basis.
+\item \textbf{X, Z - Correct $i$th Qubit} The \textit{correction commands}, $X_{i}$ 
+and $Z_{i}$ are designed to correct the state of the system after qubits have been measured. 
+The $X_i$ command corrects the $i$th qubit by multiplication by the Pauli matrix $X$. 
+Similarly, $Z_i$ command corrects the $i$th qubit by multiplication by the Pauli matrix $Z$. 
+These corrections are often called \textit{Pauli corrections} because of the use of Pauli 
+matrices $Z$ and $X$.
+\end{itemize}
+
+\frmrule
+
+\highlightdef{Commands are read \textit{right-to-left}}
+So if we have commands $ABCD$, it is command $D$ that is done first. 
+
+\frmrule
+
+\begin{example}
+Complete the following:\\
+(a) The command(s) that act on one qubit are: ...................\\
+(b) The command(s) that act on two qubits are: ...................
+\end{example}
+
+\frmrule
+
+We now define a \textit{pattern}. 
+Informally, a pattern consists of three things. Firstly, we need \textit{qubits}. 
+These will act as our resouce for computation. Secondly, 
+we have a \textit{command sequence}. This is a sequence of commands 
+that we previously described (\textit{preparation}, \textit{entanglement}, 
+\textit{measurement}, or \textit{correction}). They specify precisely how to 
+perform the computation on our qubits.  Thirdly, we need \textit{rules}. 
+We cannot just use any combination of commands. We need specific rules 
+about what order commands can appear in sequences.
+
+
+\frmrule
+
+In general qubit $i$ has a lifetime consisting of (1)
+\textit{preparation}, then (2) \textit{entanglement}, 
+then (3) \textit{measurement}, and finally \textit{correction}. 
+We want form rules so that our commands give qubits this 
+lifetime. 
+
+\begin{tikzpicture}
+\node[align=center] (a) {prepare\\$N_i$}; 
+\node[align=center, right=1cm of a] (b) {entangle\\$E_{i,j}$}; 
+\node[align=center, right=1cm of b] (c) {measure\\$M_i$}; 
+\node[align=center, right=1cm of c] (d) {correct\\$X_i$, $Z_i$}; 
+\draw[->] (a) -- (b); \draw[->] (b) -- (c); \draw[->] (c) -- (d);
+\end{tikzpicture}
+
+Furthermore, input qubits are output qubits have slightly 
+different lifetimes and so our rules need to capture these differences. 
+In particular, output qubits are never measured. Input/intermediate 
+qubits must always be measured. 
+
+\begin{tikzpicture}
+\node[align=center] (input) {\textbf{Input Qubits}};
+\node[align=center, right=1cm of input] (inputa) {prepare\\$N_i$}; 
+\node[align=center, right=1cm of inputa] (inputb) {entangle\\$E_{i,j}$}; 
+\node[align=center, right=1cm of inputb] (inputc) {measure\\$M_i$}; 
+\node[align=center, right=1cm of inputc] (inputd) {correct\\$X_i$, $Z_i$}; 
+\draw[->] (inputa) -- (inputb); 
+\draw[->] (inputb) -- (inputc); 
+\draw[->] (inputc) -- (inputd);
+%
+\node[align=center, below = 0.5cm of input, text width=2cm] (int) {\textbf{Intermediate Qubits}};
+\node[align=center, right=1cm of int] (inta) {prepare\\$N_i$}; 
+\node[align=center, right=1cm of inta] (intb) {entangle\\$E_{i,j}$}; 
+\node[align=center, right=1cm of intb] (intc) {measure\\$M_i$}; 
+\node[align=center, right=1cm of intc] (intd) {correct\\$X_i$, $Z_i$}; 
+\draw[->] (inta) -- (intb); 
+\draw[->] (intb) -- (intc); 
+\draw[->] (intc) -- (intd);
+%
+\node[align=center, below = 0.5cm of int] (out) {\textbf{Output Qubits}};
+\node[align=center, right=1cm of out] (outa) {prepare\\$N_i$}; 
+\node[align=center, right=1cm of outa] (outb) {entangle\\$E_{i,j}$}; 
+\node[align=center, right=1cm of outb] (outc) {measure\\$M_i$}; 
+\node[align=center, right=1cm of outc] (outd) {correct\\$X_i$, $Z_i$}; 
+\draw[->] (outa) -- (outb); 
+\draw[->] (outb) -- (outc); 
+\draw[->] (outc) -- (outd);
+\end{tikzpicture}
+
+We specify the following rules for command sequences. Each command sequence 
+must obey the following rules to be valid for a pattern.
+\begin{itemize}
+\item \textbf{D0} - no command depends on an outcome not yet measured
+\item \textbf{D1} - no command acts on a qubit already measured
+\item \textbf{D2} - no command acts on a qubit not yet prepared, except if is an input qubit
+\item \textbf{D3} - a qubit $i$ is measured iff it is not an output qubit (input/intermediate)
+\end{itemize}
+
+\frmrule
+
+\begin{example}
+Assume we have a pattern $\mathcal{P}$ where 1 is an input qubit, and 
+2 is an intermediate qubit. \\
+Explain why the following command sequence is \textit{invalid}. 
+$$A = X_1 M_1 E_{1,2} $$
+
+\frameans{Look at rules D0, D1, D2, D3 to see which is violated}{D2 violated. $E_{1,2}$ acts on unprepared intermediate qubit: qubit 2}
+
+
+\end{example}
+
+\frmrule
+
+\begin{example}
+Assume we have a pattern $\mathcal{P}$ where 1 is an input qubit, and 
+2 is an output qubit. \\
+For the following command sequences explain why they are \textit{invalid}.\\ 
+(a) $M_1 X_1 E_{1,2} N_2$ \\
+(b) $M_2 M_1 N_2$ \\
+(c) $N_2$ \\
+\end{example}
+
+\frameans{Look at rules D0, D1, D2, D3 to see which is violated}
+{
+(a) D0 violated. $X_{1}$ depends on qubit 1 but was not measured earlier in sequence \\
+(b) D3 violated. output qubit is measured\\
+(c) D3 violated. input qubit is never measured
+}
+
+\frmrule
+
+We can also combine patterns using two methods, the \textit{Composite Pattern} 
+and the \textit{Tensor Pattern}.  
+\begin{itemize}
+\item \textbf{Composite Pattern} $\mathcal{P}_1 \mathcal{P}_2$
+\item \textbf{Tensor Pattern} $\mathcal{P}_1 \otimes \mathcal{P}_2$
+\end{itemize}
+
+
+\section{Measurement Calculus II}
+
+If there are $m$ measurements then there are $2^m$ different 
+executions. Each execution is described by a binary string $s$ that has $m$ bits. 
+
+
+\highlightdef{\textbf{Domain}: The \textit{domain} of a signal is the set of qubits on which it depends}
+The domain of the signals of a dependent command (measurement or correction), represents
+the set of measurements which one has to do before one can determine
+the actual value of the command.
+
+
+\begin{example}
+Describe the \textit{standard form} (or \textit{normal form}) 
+of a pattern in the Measurement Calculus. Explain its parts. 
+\end{example}
+
+\frmrule
+
+\begin{example}
+Transform the pattern $X^{s_2}_3 X^{x}_2 E_{23} X^{s_1}_2 M^{-\alpha}_1 E_{12}$ into the \textit{standard form}. 
+\end{example}
+
+
+\section{Measurement Calculus III}
+
+\highlightdef{$\mathbb{Z}^W_2$ denotes all total functions from $W$ to $\mathbb{Z}_2$}

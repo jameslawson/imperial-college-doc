@@ -1,0 +1,33 @@
+
+\chapter{Birthday Problems}
+
+
+
+\section{Introducing the Birthday Paradox}
+
+
+
+
+
+\section{Four Birthday Problems}
+
+
+\highlightdef{
+\textbf{BP1}: $P[S] = 1 - (1 - 1/N)^k$ \\
+\textbf{BP2}: $P[S] = 1 - (1 - 1/N)^{k-1}$  \\
+\textbf{BP3}: $P[S] = 1 - e^{-k^2/2N}$ \\
+\textbf{BP4}: $P[S] = 1 - e^{-k^2/N}$
+  }
+And so the sample size needed for $P[S] \geqslant 1/2$ is approx:
+$k \geqslant \ln (2).N$, $k \geqslant \ln(2).N + 1$, $k \geqslant (2.\ln(2).N)^{1/2}$ 
+and $k \geqslant (\ln(2).N)^{1/2}$.
+
+
+
+\section{Hashing}
+
+
+
+\highlightdef{Crypto Hash Functions on $n$ bits have a security of $n/2$}
+
+\highlightdef{Hash Tables \textit{cannot afford} to have grow sizes that eliminate collisions }

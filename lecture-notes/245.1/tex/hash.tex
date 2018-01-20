@@ -1,0 +1,171 @@
+
+\chapter{Hash Tables}
+
+
+
+\section{Introducing Hash Tables}
+
+
+
+
+\section{Chaining}
+
+
+\highlightdef{\textbf{Indicator Random Variable}: $X_{ij} = 1$ if $h(i) = h(j)$, 0 otherwise }
+Here we have used English to describe our random variable. 
+So first, let's think about what our \textit{sample space} is. 
+
+
+\highlightdef{\textbf{Uniform Hashing Assumption}: If $i \neq j$ then $P[h(i) = h(j)] = 1/m$ }
+
+
+\frmrule 
+
+
+
+\highlightdef{\textbf{Load Factor}: $\alpha = m/n$ for $m$ slots, $n$ keys   }
+The load factor gives the average keys per slot 
+which can be thought of as the average length of a chain if we hashed 
+every key. 
+
+\frmrule 
+
+If we denote the length of the chain at slot $j$, $T[j]$, by $N_j$. 
+Then the average length this has turns out to be the load factor $\alpha$. 
+
+
+
+
+
+% The idea is to use an indicator random variable $X_i$. The range of 
+% $X_i$ has been purposely chosen to be the $\{0,1\}$. The means that 
+% when we calculate $E[X_i]$, the formula simplies to $E[X_i] = P[X = 1]$. 
+% We define an indicator random variable $X_{ij} = 1$ iff $h(k_i) = h(k_j)$. 
+
+% We insert the first item $x$ and, without loss of generality, it will go into some the $j$th slot. 
+% We have a chain of length 1.
+
+% We insert the second item $y$ and, by uniform hashing assumption, $P[h(x) = h(y)] = 1/m$.
+% In other words, the probability that the second item goes to slot $j$ is $1/m$. 
+
+% We insert another item $z$, and, by uniform hashing assumption, $P[h(y) = h(z)] = 1/m$.
+% So the probability that the third item goes to slot $j$ is $1/m$. 
+% Hence $E[N_n] = E[X_1 + X_2 + \ldots + X_n] = E[X_1] + E[X_2] + \ldots + E[X_n] = (1/m + 1/m + \ldots + 1/m) = n/m = \alpha$. 
+
+
+\frmrule 
+
+In a Hash Table where collisions are resolved by chaining, the average: 
+\highlightdef{\textbf{Successful Search Time}: $\Theta(1 + \alpha)$
+ \\ \textbf{Unsuccessful Search Time}: $\Theta(1 + \alpha)$  }
+
+\frmrule 
+
+Let's fix a list $T[j]$. Now we hash all our items $i = 1,2,3, \ldots n$. 
+We can prove this by using a random variable $N_i : \Omega \rightarrow \mathbb{R}$ 
+to denote the size of our fixed list after insertion. We are interested in 
+finding $E[N_n]$. 
+
+We know the search is unsuccessful, so we must look at all 
+elements, before and after the $i$th element had been added. 
+The random variable gives number of searches.
+$U_i = \sum^{n}_{j=1} X_{ij}$. So the average after inserting $n$ elements is:
+%
+\[ 
+\begin{array}{lll}
+ E[\frac{1}{n} \sum^{n}_{i=1} U_i] & = E[\frac{1}{n} \sum^{n}_{i=1} \sum^{n}_{j=1} X_{ij}] & \text{substitution} \\
+  &= \frac{1}{n}\sum^{n}_{i=1} \sum^{n}_{j=1} E[X_{ij}]  & \text{linearity of expectation}\\
+  &= \frac{1}{n}\sum^{n}_{i=1} \sum^{n}_{j=1} 1/m  & \text{def. of our indicator rv}\\
+  &= \frac{1}{n}\sum^{n}_{i=1} n/m  &  \\
+  &= \frac{1}{n} n (n/m)  &  \\
+  &= (n/m) = \alpha & \\
+\end{array}
+\]
+%
+
+
+\frmrule 
+
+
+Then the average length after the $i$th element has been added is given by the random variable
+$S_i = \sum^{n}_{i=1} (1 + \sum^{n}_{j = i + 1} X_{ij})$ when we know we will 
+have a success and, since items are added to the front, we only 
+look at the items \textit{after} $i$ was inserted in order to reach $i$. 
+So average after inserting $n$ elements is:
+%
+\[ 
+\begin{array}{lll}
+ E[\frac{1}{n} \sum^{n}_{i=1} S_i] & = E[\frac{1}{n} \sum^{n}_{i=1} (1 + \sum^{n}_{j = i + 1} X_{ij})] & \text{substitution} \\
+  &= \frac{1}{n} \sum^{n}_{i=1} (1 + \sum^{n}_{j = i + 1} E[X_{ij}])  & \text{linearity of expectation}\\
+  &= \frac{1}{n}\sum^{n}_{i=1} (1 + \sum^{n}_{j = i + 1} 1/m)  & \text{def. of our indicator rv}\\
+  &= \frac{1}{n}\sum^{n}_{i=1} (1 + [n-i](1/m)) &  \\
+  &= \frac{1}{n}\sum^{n}_{i=1} (1) + \frac{1}{mn}\sum^{n}_{i=1}([n-i]) & \text{distribute sum} \\
+  &= 1 + \frac{1}{mn}(\sum^{n}_{i=1}n - \sum^{n}_{i=1}i) & \text{distribute sum} \\
+  &= 1 + \frac{1}{mn}(n^2 - n(n-1)/2) & \\
+  &= 1 + \frac{n-1}{2m} & \\
+  &= 1 + \frac{\alpha}{2} - \frac{\alpha}{2n} & \text{substitute: } \alpha = n/m \\
+\end{array}
+\]
+%
+
+So the time required for a successful search is $\Theta(1 + \frac{\alpha}{2} - \frac{\alpha}{2n}) = \Theta(1 + \alpha)$.
+
+\frmrule 
+
+\begin{example}
+Why do we write $\Theta(1 + \alpha)$ instead of $\Theta(\alpha)$?
+\end{example}
+
+\frmrule 
+
+
+\highlightdef{\textbf{Average Chain Length}: $E[N_j] = \alpha$}
+
+
+\frmrule 
+
+
+
+Here $\Theta$ is counting number of memory accesses. There is a cost of 1 for 
+accessing the slot, then a cost of $\alpha$ for going through, on average, $\alpha$ elements 
+on the chain. 
+
+The expected search time is $\Theta(1)$ when $\alpha = O(1)$. 
+But we know that $\alpha = m/n$. So by subtitution, $m/n = O(1)$ which means 
+that $n = O(m)$. In other words, the number of ....... is bounded by ............
+
+\frameans{}{the number of \textit{keys} is bounded by \textit{the number of slots}}
+
+We have constant search time when the number of slots is an upper bound on the 
+number of keys. A common mistake is to assume hash tables \textit{always} have a 
+constant access time. But we need to be careful about how many keys there whether 
+the implemented hash table will 
+grow to accomodate. 
+
+
+Regularities: Often objects are byte aligned. So addresses will be a multiple of 4 or 8. 
+
+Prime numbrs only have two divisors. 
+If we had numbers with many divisors, the modulo operation is not as rich. 
+
+The general heuristic that works well in practice is to pick a prime $m$ 
+that is not too close to a power of 2 or 10.  
+
+
+
+
+
+\section{Full Table}
+
+
+\highlightdef{\textbf{Filling a Hash Table}: $k\ln(k) + \frac{1}{2}k \leqslant r \leqslant k\ln(k) + k$ }
+
+
+
+\section{Universal Hashing}
+
+
+Given a set of hash functions $\mathcal{H}$, the set is called \textit{universal} when:
+\highlightdef{\textbf{Universal Hashing}: a randomly a hash function $h$ satisfies \textit{uniform hashing} }
+
+$|\{h \in \mathcal{H} : h(x) = h(y) \}| = \frac{|\mathcal{H}|}{m}$

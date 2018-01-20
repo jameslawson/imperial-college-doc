@@ -1,0 +1,157 @@
+
+\chapter{Algorithms}
+
+
+
+\section{Introducing Probabilistc Algorithms}
+
+
+
+
+\section{Randomised Quicksort}
+
+
+\highlightdef{ The randomisation occurs in the algorithm, \textit{not the input}  }
+
+That is to say, we use a random \textit{choice of pivots}. 
+What we \textit{do not} do is randomly shuffle the input before starting quicksort. 
+
+
+\highlightdef{ \textbf{Comparison Random Varaible} $C  = $ number of comparisons made }
+
+
+\highlightdef{ $P[z_i, z_j \text{ get compared}]  = \frac{2}{j-i+1}$  }
+for all $i,j$ where $i < j$. 
+
+Fix $z_i, z_j$. Consider the set $z_i, z_{i+1}, ..., z_{j-1}, z_{j}$. 
+
+Inductively: If none are chosen as pivot, then there are all passed to same recursive call.
+Out of these $j - i + 1$ elements, consider which gets chosen first to be pivot. 
+1. If either $z_i$ or $z_j$ gets chosen first to be pivot, then $z_i$ and $z_j$ get compared 
+2. If one of $z_{i+1}, ..., z_{j-1}$ gets chosen first to be pivot, then $z_i$ and $z_j$ are \textit{never} compared. 
+This is because $z_i$ and $z_j$ are split into different recursive calls and so will never be compared. 
+Since pivots always chosen uniformly at random, each of $z_i, z_{i+1}, ..., z_{j-1}, z_{j}$ 
+has an equal chance of being the first (first within this set) to be chosen as pivot. 
+Hence $P[z_i, z_j \text{ get compared}]  = \frac{2}{j-i+1}$. 
+
+\frmrule 
+
+So now we have:
+\[ 
+\begin{array}{ll}
+ E[C] & = E[\sum^{n}_{i=1} \sum^{n}_{j=1} X_{ij}]  \\
+  &= \sum^{n}_{i=1} \sum^{n}_{j=i+1} E[X_{ij}]\\
+  &= \sum^{n}_{i=1} \sum^{n}_{j=i+1} 
+  (0 \times P[z_i, z_j \text{don't get compared}] +  1 \times P[z_i, z_j \text{ get compared}]) \\
+  &= \sum^{n}_{i=1} \sum^{n}_{j=i+1} 0 + 1 \times \frac{2}{j-i+1}  \\
+  &= 2\sum^{n}_{i=1} \sum^{n}_{j=i+1} \frac{1}{j-i+1}  \\
+\end{array}
+\]
+
+Rules used: substitution, linearity of expectation, def. of our indicator rv, substitute 
+$P[z_i, z_j \text{ get compared}]  = \frac{2}{j-i+1}$, simplification. 
+
+We want to show that this double sum is $O(n\log n)$. But the sum is rather 
+difficult to evaluate precisely. But we only need to find an upper bound.
+First, notice that that the inner sum is bounded by $\sum^{n}_{k=2} {1/k}$. 
+For the outer sum, we can simplify by chaning the index from $i=1..n-1$ to $i=1..n$. 
+The result is that we have $E[C] \leqslant 2.n.\sum^{n}_{k=2} {1/k}$. 
+
+\frmrule 
+
+Now to evaluate $\sum^{n}_{k=2} {1/k}$ we can use the trick we used in before when 
+dealing with Hash Tables where we showed that this harmonic series is \textit{logarithmic}. 
+Specifically, if we draw our sum as bars, then the \textit{top-right corner} of each bar touches 
+the continous graph of $1/x$. By comparing the area of 
+each bar with the area under the graph of $1/x$, we 
+see that: $\sum^{n}_{k=2} {1/k} < \int^{n}_{1} 1/x dx = [\ln(x)]^{n}_1 = \ln(n)$.
+
+Hence $E[C] \leqslant 2.n.\sum^{n}_{k=2} {1/k} \leqslant 2.n.\ln(n) = O(n \log(n))$. 
+
+\frmrule 
+
+
+\section{Randomised Selection}
+
+
+
+\highlightdef{ Randomised Selection has a \textit{linear} run-time: $O(n)$ }
+
+So finding the $i$th order statistic using this algorithm is better than 
+our first attempt that sorts the array and returns the $i$th element.
+
+
+
+\highlightdef{ The randomisation occurs in the algorithm, \textit{not the input}  }
+
+
+
+\highlightdef{ \textbf{Phase} $j$: RSelect($A,u,v$) is in phase $j$ iff \\
+ $A$ has length between $(3/4)^{j+1}n$ and $(3/4)^{j}n$   }
+
+If Rselect chooses a pivot giving a 25-75 split or better, 
+then the current phase ends. This is because 
+the new array'a length is at most 75\% of the old array's length. 
+This all follows from the definition of RSelect being in phase $j$. 
+
+The running time of RSelect is simply the summation of the 
+running times of RSelect during phases $j = 0,1,2....$. 
+By definition of what is means to be in phase $j$, the maximum array size is $(3/4)^{j}n$.  
+So each recursive call during phase $j$ has work bounded by $c.(3/4)^{j}n$. 
+
+Suppose we make $X_j$ number of recursive calls during $j$. 
+Each recusive call as work bounded by the maximum array size during phase $j$. 
+Then the runtime for phase $j$ is $\leqslant X_j.c.(3/4)^{j}n$.
+
+So therefore total runtime for RSelect $\leqslant \sum_{j} X_j.c.(\frac{3}{4})^j.n$. 
+We simple sum up the work that can be done 
+in all possible phases and use that as our upper bound. 
+
+Notice that the left hand side is a \textit{random variable}. 
+It is not a fixed value, 
+and cannot be. After all, our algorithm is a random one. 
+The sample space for these random variables, $\omega$ is 
+the choice of pivots. Clearly a different pivot choice  
+will affect total run time for RSelect.  So the LHS 
+changes dependent on the coin-tosses made by our algorithm. 
+Similarly the RHS is affected by the choice of pivots. 
+The work done during phase $j$ depends on which pivots get chosen. 
+As before, we care about the \textit{expectations} of these random variables.
+
+
+We can think of $E[X_{ij}]$ as the number of times we choose pivots until we get a 25-75 pivot. 
+We have a series of \textit{Bernoulli trails} (aka a Bernoulli \textit{process}). 
+Here our failure/tails is choosing a bad pivot (i.e one that 
+gives a \textit{poor split} that leaves the smaller half with size 0\%-24\% of the array size at phase $j$.
+And our success/heads is choosing a good pivot, i.e. one that 
+gives a gives a \textit{good split} that leaves the smaller half with size 25\%-50\% 
+of the original array size phase $j$. However, what is the probability, $p$ of success for 
+each \textit{Bernoulli trail}? We ask ourselves, what is the probability 
+that a pivot choosen uniformly at random gives a split that leaves the smaller half with size 25\%-50\%. 
+It's $\frac{1}{2}$.
+
+\highlightdef{ probability of 25\%-50\% split is $p = 1/2$ }
+
+Intuitively, if you have an array of length 100, then there are 50 places 
+to put the pivot that give a 25\%-50\% split, namely positions [25,25..50] 
+and [51,25..75]. So the probability of a random pivot giving 25-50 split is $p = 1/2$. 
+
+Now, we said that $E[X_{j}]$ is the number of times we choose pivots until we get a 25-75 pivot, at phase $j$.
+In other words, $E[X_{j}]$ expected number of times we need to flip a fair coin and get one heads. 
+So  $E[X_{j}] = 2$. This is true no matter what $j$ we are at. 
+
+So, from earlier, total runtime for RSelect $\leqslant \sum_{j} X_j.c.(\frac{3}{4})^j.n$. 
+We can now say expected runtime for RSelect $\leqslant \sum_{j} E[X_j.c.(\frac{3}{4})^j.n$
+which by linearity is $\sum_{j} E[X_j].c.(\frac{3}{4})^j.n$. From previous work, we realised
+that $X_j$ is a first success random variable (i.e. a geometric random variable) 
+we found that $E[X_j] = 2$. So RHS is $\sum_{j} 2.c.(\frac{3}{4})^j.n$ which
+rearranges to $2.c.n \sum_{j} (\frac{3}{4})^j$. We are left with a simple 
+geomtric series that sums to $1/(1-r) = 1/(1-\frac{3}{4}) = 4$. 
+So we have $2.c.n.4 = O(n)$. 
+
+
+\frmrule
+
+
+
+\section{Randomly Built Binary Search Trees}

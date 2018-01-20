@@ -1,0 +1,49 @@
+
+\chapter{Bloom Filters}
+
+
+\section{Introducing Bloom Filters}
+
+Bloom filters are like Hash Tables in that they support 
+fast inserts and fast lookups. Below shows how we might 
+visualise a bloom filter.
+
+
+How does this differ from a Hash Table?
+Notice there are \textit{two} hash functions rather than one.
+Bloom filters can have more than one hash function. 
+Also notice that like Hash table buckets, we have an array. 
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{insert(x)} To insert an element, we set 
+$A[h_1(x)] = 1$ and $A[h_2(x)] = 1$.
+\item \textbf{lookup(x)}  An element is present iff 
+$A[h_1(x)] = 1$ and $A[h_2(x)] = 1$.
+\end{itemize}
+
+
+A bloom filter has the remembers what lookups have been done.
+But it does this without storing the objects in the structure.
+It also does this in a very space efficient way. 
+Also vanilla bloom filters do not support deletion.
+
+
+\begin{example}
+Below shows a bloom filter with two hash functions.
+Show the result of the array after insert(1).
+\end{example}
+
+
+\highlightdef{A Bloom Filter gives \textit{false positives} but doesn't 
+give \textit{false negatives}}
+
+
+\section{Heuristic Analysis}
+
+small m leads to high probability of false positives
+large m leads to wasted space but (hopefully) less false positives
+So there is a tradeoff betweeen correctness and space.
+
+\section{Deleting Elements}
+

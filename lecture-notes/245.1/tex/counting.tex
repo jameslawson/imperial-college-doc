@@ -1,0 +1,160 @@
+
+\chapter{Counting}
+
+
+
+
+
+
+
+
+\section{Balls and Bins I}
+
+
+\highlightdef{Number of Balls: $n$, Number of Bins: $b$}
+
+
+\begin{example}
+\textbf{Distinct balls - distinct bins}:
+Suppose that $n$ balls are distinct and that their order within a bin does not
+matter. Argue that the number of ways of placing the balls in the bins is $b^n$.
+\end{example}
+
+
+
+\textbf{DD - binary bins}:
+Show that the number of possible configurations is $P(b,n)$.
+
+\textbf{DD - fixed size}:
+Show that the number of possible configurations is a \textit{multinomial}.
+
+
+\section{ID - Binary Bins}
+
+
+Suppose that the balls are indistinguishable, and hence their order within a bin 
+is not accounted for. Show that the number of possible configurations is $C(b, n)$.
+
+\highlightdef{\textbf{BinaryString}: The number configurations a 
+string of length $n$ using two symbols that has $b$ of one symbol is $C(b,n)$ }
+
+
+\textit{BinaryString} and \textit{ID - Binary Bins} are very much 
+the same problem.  
+
+\frmrule
+
+\highlightdef{$C(n,k) = C(n,n-k)$}
+
+
+
+\highlightdef{The number of integers satisfying $1 \leqslant x_1 < x_2 < ... < x_k \leqslant n$ is $C(n,k)$}
+
+
+\section{ID}
+
+Suppose that the balls are indistinguishable, and hence their order within a bin 
+is not accounted for. The number of possible configurations is $C(n+b-1, n)$.
+
+Every configuration can be encoding into a string of dots and seperators. 
+Each string must have $n$ dots, because we must use all $n$ balls. 
+Each string must have $b-1$ seperators, because for $b$ boxes we need $b-1$ seperators.
+So we have reduced the problem to finding the number of configurations of a
+a length $n + b-1$ string of two symbols, where we need $n$ of one symbol. 
+This is a reduction to \textit{binaryString}. So the solution is $C(n + b -1, n)$. 
+
+\frmrule
+
+\begin{example}
+
+\end{example}
+
+\frmrule
+
+\begin{example}
+\textit{Chemistry - Counting Energy States} \\
+Let $N$ represent the number of atoms and $q$ represent the number of quanta of energy. 
+Represent quanta by dot. Use seperators to show divide atoms.
+Each string must have $q$ dots, because we must use all the energy and there is $q$ quanta. 
+Each string must have $N-1$ seperators, because for $N$ atoms we need $N-1$ seperators.
+
+So the number of ways or arranging the energy is $C(N + q - 1, q)$. 
+\end{example}
+
+\frmrule
+
+\section{ID - Nonempty Bins}
+
+
+Suppose that the balls are indistinguishable, and that no bin may be left empty. 
+Assuming $n \geqslant b$ (enough balls to fill bins),
+show that the number of possible configurations is $C(n-1, b-1)$.
+
+\frmrule
+
+A common Balls and Bins application involves enumerations with letters.
+\highlightdef{
+Indistinguishable Balls = Sequences of Letters\\
+Indistinguishable Balls = Unordered set of Letters}
+
+\frmrule
+
+\begin{example}
+Express the following problem as a Balls-to-Bins problem. 
+\end{example}
+
+\frmrule 
+
+
+
+\section{Identities}
+
+
+Pick $k$ people out of $n$ with 1 chosen to be president. 
+\highlightdef{$nC(n-1,k-1) = kC(n,k)$}
+
+\frmrule 
+
+Choosing $k$ people from $m+n$ people. 
+Any given configuration has $j$ people from $M$ group 
+and $k-j$ people form the $N$ group. By multiplication 
+principle, there are $C(m,j)C(n,k-j)$ different configurations 
+with $j$ people from $M$ group. So adding up configurations 
+for $j = 0, 1, ..., k$ we have:
+
+\highlightdef{$C(m+n, k) = \sum^{k}_{j=0}C(m,j)C(n,k-j)$}
+This identity is known as \textit{Vandermonde's Identity}.
+
+\begin{example}
+Give a combinatorial argument to show $C(3n,n) = \sum^{n}_{r=0}C(n,r)C(2n,n-r)$.
+\end{example}
+
+
+\frmrule
+
+\highlightdef{$C(n, k) = C(n-1,k-1) + C(n-1, k)$}
+This identity is known as \textit{Pascals's Identity}.
+
+\frmrule
+
+\highlightdef{$\sum^{n}_{k=0}C(k, r) = C(n+1,r+1)$}
+This identity is known as \textit{Chu's Theorem}.
+
+
+\frmrule
+
+\section{Balls and Bins - Stacks}
+
+Sometimes known as the \textit{Flagpole Problem}
+
+\begin{example}
+\textbf{DD - w/binorder}:
+Suppose that the balls are distinct, the bins are distinct, 
+but now, the balls in each bin are ordered. Each bin 
+acts like a stack and stores the order in which the ball was placed in the bin. 
+Prove that there are exactly $(b+n-1)!/(b-1)!$ ways to place the balls in the
+bins. (Hint: Consider the number of ways of arranging $n$ distinct balls and $b-1$
+indistinguishable sticks in a row.)
+\end{example}
+
+

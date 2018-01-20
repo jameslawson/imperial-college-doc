@@ -1,0 +1,290 @@
+
+\chapter{Devices and Drivers}
+
+
+\section{Device Drivers Revision}
+
+We revise the device drivers from 113. 
+
+What is perhaps misleading about the names \textit{top half} and \textit{bottom half} 
+is that one might think that half the work is done by the \textit{top half} and the other half 
+of processing is done by the \textit{bottom half}. This is wrong. In fact, 
+the very purpose for having a top half/bottom half divide is to allow the halves to differ 
+greatly in the amount of processing they do. 
+
+A given driver can spend $L$ amount of time in a top half. If it spends any longer then 
+it is putting a bottleneck in the system. Interrupts are turned off in the top 
+half and the top half has to be \textit{quick}. If not everything can be done in the top 
+half, we resort to having to schedule that work to be done later in a thread called 
+the \textit{bottom half}.
+We require that the time for the top half work to be completed does not take too long 
+$0 \leq \text{time}(w_T) < L$.
+The bottom half has no bound on how long it takes: $0 \leq \text{time}(w_B)$. 
+
+
+\begin{figure}[h]
+\begin{tikzpicture}[
+  n/.style={draw=none, fill=none, text width=1.6cm, align=center,inner sep=6pt,font=\small},
+  s/.style={draw=black, fill=white, drop shadow, inner sep=2pt},
+]
+  %   
+  \node[n] (t1) {Top Half};
+  \node[n, below=0cm of t1, minimum height=3cm](b1) {Bottom Half};
+  \draw[dashed] (b1.north west) -- (b1.north east);
+  %
+  \node[n, right=1cm of t1] (t2) {Top Half};
+  \node[n, below=0cm of t2, minimum height=3cm](b2) {Bottom Half};
+  \draw[dashed] (b2.north west) -- (b2.north east);
+  %
+  \node[n, right=3cm of t2] (t3) {Top Half};
+  \node[n, below=0cm of t3, minimum height=3cm](b3) {Bottom Half};
+  \draw[dashed] (b3.north west) -- (b3.north east);
+
+  \begin{pgfonlayer}{background}
+      \node [s, fit={(t1) (b1)}] (s1) {};
+      \node [s, fit={(t2) (b2)}] (s2) {};
+      \node [s, fit={(t3) (b3)}] (s3) {};
+      \fill[draw=none,color=black!15] (t1.north west) rectangle (b1.south east);
+      \fill[draw=none,color=black!15] (b2.north west) rectangle (b2.south east);
+      \draw[->] ($(s1.east)+(0.1cm,0.0cm)$) -- ($(s2.west)+(-0.1cm,0.0cm)$);
+      \draw[->] ($(s2.east)+(0.1cm,0.0cm)$) -- ($(s3.west)+(-0.1cm,0.0cm)$);
+      \draw[decorate,decoration={brace,mirror},thick]
+      ($(s1.south)+(0.1cm,-0.3cm)$) to node[midway,below,yshift=-0.1cm] (bracket) {Interrupts Disabled}
+      ($(s2.south)+(-0.1cm,-0.3cm)$);
+      \draw[decorate,decoration={brace,mirror},thick]
+      ($(s2.south)+(0.1cm,-0.3cm)$) to node[midway,below,yshift=-0.1cm] (bracket) {Interrupts Enabled}
+      ($(s3.south)+(-0.1cm,-0.3cm)$);
+  \end{pgfonlayer}
+\end{tikzpicture}
+\end{figure} 
+
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Immediate Handler} (Top Half)
+Also called the \textit{interrupt handler}. 
+This services the interrupt. It checks for errors and copies data to/from 
+the memory area it shares with the bottom half.
+The processing done here is for \textit{time sensitive data} but at the same time, 
+the processing done must be \textit{minimal}. Any non time-critical processing related
+to the event that caused the interrupt is \textit{deferred} for the bottom half.
+\item \textbf{Kernel Thread} (Bottom Half)
+The bottom half runs as a schedulable thread within the os and performs
+the remainder of the work that was too heavy to do in the immediate handler. 
+\end{itemize}
+
+In most systems (including Linux), it is \textit{not mandatory} to perform this top-half/bottom-half 
+split. However quite often processing the entirety of an interrupt is indeed 
+too heavy to do while interrupts are disabled in the top half. 
+It's up the device driver developer to find the right balance between 
+top half and bottom half. It's a \textit{design issue}. Also the developer has to design the top half 
+so that that time sensitive data is handled but without causing too much latency. 
+
+\frmrule
+
+\begin{example}
+Why not put all the work in the top half?
+
+Interrupts are disabled during the top half. Performing too much work in the top half 
+will mean that the interrupts will remain disabled for longer. In other words, 
+access is denied for other devices 
+for a longer time and may make the system less responsive.
+\end{example}
+
+\frmrule
+
+\begin{example}
+Why not put all the work in the bottom half?
+
+Interrupts often have to respond to an interrupt event in a timely fasion. 
+Yet, work that is done in the bottom 
+half is delayed by putting it in a schedulable kernel thread. 
+Any time critical processing mistakenly put 
+in the bottom half will be preempted by the processing of other threads. 
+This will make the device appear less responsive to the user.
+\end{example}
+
+\frmrule
+
+\begin{example}
+Network interrupt causes packet to be copied from 
+network card to kernel space (kernel interrupt handler)
+Other processing on the packet should be deferred until 
+its time comes (kernel deferrable function)
+\end{example}
+
+
+\begin{example}
+How is data passed between the top and bottom halves of a device driver?
+
+The top half copied data to a shared memory area.
+\end{example}
+
+\frmrule
+
+The bottom half can’t block. 
+Interrupts are enabled during bottom half, 
+there are not disabled like they are during top half.
+
+If an interrupt occurs during the bottom half, 
+a new top half is introduced. 
+The bottom half preemptable by top half of a different driver.
+
+This introduces the idea of \textit{interrupt nesting}.
+
+
+
+
+
+
+\section{Introducing Linux Drivers}
+
+
+
+
+
+\highlightdef{\textbf{LKM}: Linux drivers are written 
+inside a \textit{Loadable Kernel Module}. These are binary 
+files can be use to extend kernel code on-demand  }
+
+
+
+\textsc{linux} puts io devices, mostly, into two categories.
+
+
+\begin{figure}[h]
+\begin{tikzpicture} [
+   every node/.style={node_sty, align=center},
+   edge from parent/.style={edge_sty},
+   edge from parent path={(\tikzparentnode.south) 
+   |- ($(\tikzparentnode.south)!0.5!(\tikzchildnode.north)$) -| (\tikzchildnode.north)},
+   level 1/.style={sibling distance=4cm, level distance = 0.9cm}
+]
+   \node 
+   (root) {\textsc{linux} \textsc{io} Device}
+      child {node (pio) {Character}}
+      child {node(intio) {Block}};
+   
+\end{tikzpicture}
+\end{figure}
+
+We a familiar with \textsc{io} devices being hardware.
+However \textsc{unix} allows an \textsc{io} device to be purely software. 
+
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Character} 
+A \textit{character io device} is one that works with a sequential streams of bytes. 
+The driver for character \textsc{io} devices are written to be able to work with streams.
+They need to implement at least the \textit{open}, \textit{close}, \textit{read}, and 
+\textit{write} unix system calls. 
+\item \textbf{Block} 
+A \textit{block io device} is the like a character io device. 
+It works with streams of bytes. It also must implement at least 
+\textit{open}, \textit{close}, \textit{read}, and \textit{write}. 
+However, \textit{more operations} are provided to handle streams of bytes as 
+a \textit{flow of blocks}. Block \textsc{io} devices are 
+able to process blocks whose data arrives in a non-sequential order.
+\end{itemize}
+
+Note that these two categories are \textit{not absolute}. 
+The distinction is often \textit{blurred}. For example, is a tape a 
+block device or a character device? Others devices don't fit 
+into these characters.
+For example clocks and network devices.
+One important distinction is that block device transfers 
+are buffered through a \textit{block buffer cache}.
+
+
+\highlightdef{Block devices have access to the \textit{block buffer cache}. 
+Character devices however do not. }
+
+
+\frmrule
+
+
+Recall from the first chapter that \textsc{unix} makes a distinction between \textit{normal files}
+and \textit{special files}. Each device has a \textsc{unix} special file.
+We will call this the \textit{device special file}. 
+
+
+\begin{figure}[h]
+\begin{tikzpicture} [
+   every node/.style={node_sty, align=center},
+   edge from parent/.style={edge_sty},
+   edge from parent path={(\tikzparentnode.south) 
+   |- ($(\tikzparentnode.south)!0.5!(\tikzchildnode.north)$) -| (\tikzchildnode.north)},
+   level 1/.style={sibling distance=6cm, level distance = 0.9cm},
+   level 2/.style={sibling distance=1cm},
+   ch/.style={text width=0.5cm}
+]
+   \node 
+   (root) {\textsc{unix} Files}
+      child {
+        node (pio) {Normal Files}
+        child {
+            node(n)[ch] {\lstinline{-}}
+        }
+      }
+      child {
+        node(intio) {Special Files}
+        child {node(d)[ch] {\lstinline{d}}}
+        child {node(l)[ch] {\lstinline{l}}}
+        child {node(p)[ch] {\lstinline{p}}}
+        child {node(c)[ch, fill=black!15] {\lstinline{c}}}
+        child {node(b)[ch, fill=black!15] {\lstinline{b}}}
+        child {node(s)[ch] {\lstinline{s}}}
+      };
+   
+\end{tikzpicture}
+\end{figure}
+
+Character and block devices have their special files located in the \lstinline{/dev} directory.
+
+
+\frmrule
+
+Every device is uniquely identified up to a pair of numbers $(j,n)$,
+the first, $j$ is called the \textit{major identification number} 
+and the second, $n$ is called the \textit{minor identification number}. 
+Having major and minor identification numbers allows the operating system 
+to organise devices and group devices that behave similarly. In particular, 
+devices with \textit{same major number} controlled by \textit{same driver}.
+
+
+\section{Writing a Unix Driver}
+
+Suppose we create our own driver called \textsc{doc} Driver or \lstinline{docdrv}. 
+This will be stored in \lstinline{/dev/docdrv}. 
+
+These are event functions that give us a chance 
+to write code that executes when the driver is loaded and also write code 
+for when it is stopped. 
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Driver Open Function} When the user opens \lstinline{/dev/docdrv}, 
+the kernel calls a function in \lstinline{docdrv} called the
+\textit{driver open function}. This is used for initialisation code.
+\item \textbf{Driver Close Function} Similarly, when the user closes \lstinline{/dev/docdrv}, 
+the kernel calls a function in \lstinline{docdrv} called the 
+\textit{driver close function}. This is used for deallocating memory and to ensure 
+the driver closes safely.
+\end{itemize}
+
+\frmrule
+
+Io modules can be loaded and removed using \textit{insmod} and \textit{rmmod}.
+
+\begin{lstlisting}
+doc > gcc -c hello.c
+doc > insmod hello.o
+Hello doc!
+doc > rmmod hello.o
+See you soon doc!
+doc >
+\end{lstlisting}
+
+
+\section{Devices in Pintos}

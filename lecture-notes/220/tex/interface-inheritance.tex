@@ -1,0 +1,92 @@
+
+\chapter{Inheritance Modules}
+
+The challenge for language designers is to provide the means by which the designer 
+of a class can  \textit{express an interface to inheriting clients} 
+that \textit{reveals the minimum information} needed to use the class.
+
+
+
+For example, in Java, every class that overrides equals must also override hashCode.
+equals.
+
+
+\section{C++ Multiple Inheritanc}
+
+% C++ MI
+
+
+\highlightdef{\textbf{Multiple Inheritance}: }
+
+
+
+
+
+
+\section{Scala Traits/Mixins}
+
+
+Mixins are \textit{fragments of a class}.
+Mixins \textit{cannot have a superclass}, they describe their superclass via an 
+interface. Mixins put constraints on the behaviour of the superclass. 
+But mixins do not specify what a superclass expects
+from its subclass. This inverts the relationship between 
+
+Traits provide a set of methods 
+Traits require a set of methods
+Traits are the behavioral building blocks of classes
+Class = Superclass + State + Traits + Glue Methods
+
+A trait breaks down an inheritence into smaller pieces.
+We use the \textit{trait} keyword to define a trait.
+We use the \textit{with} keyword to combine traits together. 
+
+\highlightdef{A \textbf{trait} is a block of methods that can be inherited}
+They provide us with a way of defining composable units of behaviour.
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Traits cannot be initiated}
+We cannot have objects that belong to a trait. 
+We cannot use the new keyword with a trait. 
+As always, we can only create objects from concrete classes when using the \textit{new} keyword.
+\item \textbf{Traits cannot inherit.}
+Traits are \textit{atomic} building blocks for inheritence.
+They cannot inherit methods from another trait or another class. 
+They cannot implement an interface. As a result, they do not declare a superclass. 
+There is no notion of traits having some kind of
+\textit{parent trait}, \textit{parent interface} or \textit{parent class}. 
+\item \textbf{Multiple Traits}
+Many traits can be combined within a single concrete class definition.
+When multiple traits are inherited they can refer to members of their common super class,
+but not to members of other mixed-in traits.
+A trait can require another class or trait;
+it can only be mixed-in when the requirement is available.
+\item \textbf{Abstract Methods} 
+We know concrete methods can be contained in a trait.
+However \textit{abstract methods} can also be defined in a trait.
+When a contrete class takes a trait, it must give an body to the abstract method.
+\item \textbf{Traits may define fields}
+As a result traits are stateful. 
+\end{itemize}
+
+\section{Ruby Traits/Mixins}
+
+\section{Objective-C Protocols and Categories}
+
+A category allows us to add methods to a class. 
+We can even add methods to classes that we don't own. 
+A common case is adding new methods to NSString. 
+
+By convention, the file is named: Class+CategoryName. 
+
+
+\section{Objective-C Class Extensions}
+
+
+\section{C\textsuperscript{\#} Class Extensions}
+
+
+\section{Javascript Prototypes}
+
+Some languages like ECMAScript (commonly referred to as JavaScript) do not support mixins on the language level, but can easily mimic them by copying methods from one object to another at runtime, thereby borrowing the mixin's methods. Note that this is also possible with statically typed languages, but it requires constructing a new object with the extended set of methods.

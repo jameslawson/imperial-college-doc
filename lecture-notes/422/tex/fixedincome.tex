@@ -1,0 +1,472 @@
+
+\chapter{Fixed-Income Securities I}
+
+
+
+\section{Introducing Bonds and Securities}
+
+
+You can lend money to the US government and in return they give you an IOU and 
+promise to pay you back the money, along with interest at some future date. 
+
+\begin{figure}[h]
+\begin{tikzpicture} [
+  edge from parent/.style={edge_sty},
+  edge from parent path={(\tikzparentnode.south) -- ++(0, -0.3cm) -| (\tikzchildnode.north)},
+  level/.style = {level distance = 0.9cm, every node/.style={draw, node_sty2}},
+  level 1/.style={sibling distance=3cm, text width = 1.5cm},
+  level 2/.style={sibling distance=2cm}
+]
+  \node (root) [node_sty2] {US Treasury}
+    child {node(bills) {bills}}
+    child {node(notes) {notes}}
+    child {node(bonds) {bonds}};
+  \node[below=0.2cm of bills, align=center] {\textit{$<$ 1 year}};
+  \node[below=0.2cm of notes, align=center] {\textit{1 to 10 years}};
+  \node[below=0.2cm of bonds, align=center] {\textit{$>$ 10 years}};
+\end{tikzpicture}
+\end{figure}
+
+
+\begin{itemize}
+\item \textbf{Face Value} $F$, sometimes called \textit{par value}
+\item \textbf{Subannual periods}: pay $m$ times per year 
+\item \textbf{Subannual Payments}: given annual rate $r$, after $m$ subannual periods, 
+we have paid $rF$. We call $C = rF$ the \textit{yearly coupon amount}. 
+We pay $C/m = rF/m$ at every subannual period. 
+\item \textbf{Maturity}: $n$ how many years we are making payments
+\end{itemize}
+
+Given face value $F$, rate $r$, maturity $n$, and subannual periods $m$,
+\highlightdef{\textbf{Bond}: pay $Fr/m$, $m$ times per year for $n$ years}
+
+\section{Spot Rates}
+
+
+So far we have only been dealing with a single 
+interest rate, $r$. This has been constant over time. 
+But what is our interest rate varies over time?
+We can model a cash flow as having a whole 
+family of interest rates at any point in time. 
+These interest rates we call \textit{spot rates}.  
+
+\highlightdef{
+  \textbf{Spot Rate of Interest}: The \textit{spot rate} is the 
+  annualized interest rate charged for 
+  borrowing money from the present until time $t$.
+}
+
+By considering different maturity times, $t$, that is, 
+looking at holding money now up to time $t$, we derive 
+different interest rates. These are the \textit{spot rates}. 
+
+Both the interest and the principle (original amount borrowed) 
+are paid at time $t$. The spot rate is denoted $s_t$. 
+For example, $s_1$ is the 1-year interst rate - the rate paid for borrowing money for one years. 
+$s_2$ is the rate paid for borrowing money for two years. 
+
+However spot rates are expressed on an \textit{annualized} basis.
+So for example, if you make an agreement to pay a rate of $s_2$ 
+for a two-year deposit of amount $A$ compounded yearly, it 
+will actually repay $(1 + s_2)^2 \cdot A$ at the end of two years. 
+Your money grows by factor $(1 + s_2)^2$, not $(1 + s_2)$. 
+
+Spot rates are always yearly rate. We may have done a recalculation from some other periodicity 
+but, overall, $s_t$ denotes the $t$th \textit{year}. If you mount $A$ compounded yearly, 
+you get a return of $(1 + s_t)^t \cdot A$ (not $(1 + s_t) \cdot A$). 
+
+\begin{figure}[h]
+\begin{tikzpicture}
+\matrix [matrix of nodes, column sep=5mm, row sep=0cm]
+{
+  \textbf{Yearly} & \textbf{Periods} & \textbf{Continuous} \\
+  $(1+ s_t)^t$ & $d_t = (1 + s_t/m)^{mt}$ & $e^{s_t t}$ \\
+};
+\end{tikzpicture}
+\end{figure}
+
+
+Given any cash flow stream $[x_0, x_1, x_2, ..., x_n]$, we can compute the 
+present value and future value using $s_t$
+and $d_t$, the corresponding discount factor ($= 1/s_t$). 
+
+\highlightdef{
+  \textbf{Future Value}: $\text{FV} = x_0 s_0 + x_1 s_1 + x_2 s_2 + ... + x_n s_n$
+}
+
+\frmrule 
+
+\begin{example}
+Consider: \textit{an 8\% bond with a face value of \pounds100 maturing in 10 years}. \\
+(a) Give the cash flow stream. \\
+(b) For the spot rates, $s_t$, given below, compute the present value, $\text{PV}$.
+ $$[5.571, 6.088, 6.555, 6.978, 7.361, 7.707, 8.020, 8.304, 8.561, 8.793]$$
+\end{example}
+
+
+
+\frmrule 
+
+Rather than having the spot rates given to us in 
+the form $[s_0, s_1, s_2, ..., s_n]$, it is quite useful to 
+have them presented in \textit{graphical form}. This 
+graph is called a \textit{spot rate curve}.
+
+\highlightdef{\textbf{Spot-rate Curve}: A graph with $y$-axis: $s(t)$, \textit{spot rate}, 
+and $x$-axis: $t$, \textit{time}. }
+
+This is often called the \textit{yield curve}. 
+Spot rate curves are usually \textit{upwards sloped}. 
+In other words, if you lend your money for longer periods of time, 
+then a higher interest rate is paid. Intuitively, if you lend money 
+for a longer period of time, then there is a higher risk. So a higher 
+return is expected. Conversely, shorter periods of time have a lower 
+risk. Only so much can happen in a month in comparison to several years. 
+With less risk comes a lower interest rate. 
+
+\frmrule 
+
+\begin{example}
+A typical spot-rate curve has its $x$-axis starting from $t = 1$. \\
+Why don't we plot the $x$-axis starting from $t = 0$, rather than from $t = 1$? 
+
+\frameans{Hint: Will there be anything interesting about $s_0$?}{$s_0 = 1$, \textit{always}. No point plotting.}
+\end{example}
+
+\frmrule 
+
+For the given three given modes of computing spot rates, we can define 
+the corresponding discount factors, $d_t$. 
+
+\begin{figure}[h]
+\begin{tikzpicture}
+\matrix [matrix of nodes, column sep=5mm, row sep=0cm]
+{
+  \textbf{Yearly} & \textbf{Periods} & \textbf{Continuous} \\
+  $d = \frac{1}{(1+ s_t)^t}$ & $d_t = \frac{1}{(1 + s_t/m)^{mt}}$ & $d_t = e^{-s_t t}$ \\
+};
+\end{tikzpicture}
+\end{figure}
+
+Where for yearly, $t \in \mathbb{N}$, for periods we have $t \in \{0,1,..m\}$ 
+and for continuous, $t \in \mathbb{R}$. 
+
+\highlightdef{
+  \textbf{Present Value}: $\text{PV} = x_0 d_0 + x_1 d_1 + x_2 d_2 + ... + x_n d_n$
+}
+
+
+$d_t$ acts like a price for cash received at time $t$. And so 
+the present value is summing up the quantities, $x_t$ multiplied by 
+the prices, $d_t$ for having that quantity. This summation is over 
+all times $t = 0....n$, that is - a summation from now, up to 
+the relevant future time $n$. 
+
+
+
+\section{Forward Rates}
+
+\highlightdef{
+  \textbf{Forward Rate}: The \textit{forward rate}, $f_{t_1, t_2}$, is an 
+  interest rate for money to be borrowed between two dates \textit{in the future}, 
+  $t_1$ and $t_2$ ($t_1 < t_2$).  
+}
+where the terms of agreement are made \textit{today}. 
+It is the rate charged for \textit{borrowing money at} $t_1$ which is to be repaid 
+with interest at $t_2$. Furthermore, this rate of interest, $f_{t_1, t_2}$ is 
+agreed upon \textit{in advanced} at $t = 0$ (today). 
+
+
+\frmrule
+
+\begin{example}
+Suppose that we know the spot rates $s_1$ and $s_2$. That is, 
+we know how much interest to charge to the borrowing of money 
+now (on the spot) to be repaid at time $t = 1$, 
+and the borrowing of money now (on the spot) to be repaid at time $t = 2$. 
+\begin{itemize}
+\item We leave $\pounds 1$ in a two year account. By the definition of spot rates, 
+the growth factor for a deposit made after $t$ years is $(1 + s_t)^t$.
+So for two years, our  $\pounds 1$ grows to $\pounds 1 \times (1 + s_2)^2$. 
+\item Alternatively, we make two simulateously agreements. The first agreement 
+is on putting $\pounds 1$ in an account for just one year (rather than two). 
+The second agreement is 
+that money will be borrowed between two dates \textit{in the future},
+for $t = 1$ and $t = 2$. How much interest do we charge? This is precisely the \textit{forward rate}, 
+$f_{1,2}$. This agreement is made \textit{now}, and it details the borrowing of money 
+between \textit{two future dates}.
+
+How much is borrowed? Well suppose we lend the contents of our account 
+at the end of year 1. Recall that we put  $\pounds 1$ in for one year.
+By the definition of spot rates, 
+the growth factor for a deposit made after $t$ years is $(1 + s_t)^t$.
+So at $t = 1$, our  $\pounds 1$ will have grown to $\pounds 1 \times (1 + s_1)^1$.
+Let's lend this amount for the time between $t = 1$ to $t = 2$. We are repaid 
+this amount at time $t = 2$ plus an interest given by $f_{1,2}$. In other words, we 
+have a total of $\pounds 1 \times (1 + s_1)^1 \times (1 + f_{1,2})$. 
+\end{itemize}
+\end{example}
+
+We claim that these two options \textit{are the same investment}. That is, 
+after two years, both options give the same return on investment. Hence:
+$$(1+s_2)^2 = (1 +s_1)^{1}(1 + f_{1,2})$$
+
+Why should these two options give an equal return? This is an application 
+of the \textit{comparison principle} and so our justification requires 
+an \textit{arbitrage argument}. This is like a proof by contradiction.
+
+Assume the two options \textit{did not} give the same return on investment. 
+Then either $(1+s_2)^2 > (1 +s_1)^{1}(1 + f_{1,2})$ or $(1+s_2)^2 < (1 +s_1)^{1}(1 + f_{1,2})$
+\begin{itemize}
+\item $(1+s_2)^2 > (1 +s_1)^{1}(1 + f_{1,2})$
+\item $(1+s_2)^2 < (1 +s_1)^{1}(1 + f_{1,2})$. In this case, the second investment 
+is better. An arbitrageur could also do option two and \textit{lend} money to somebody else. 
+But, he could also \textit{borrow} money. Somebody else will be willing to lend under option 1, 
+and so the arbitrageur will borrow money from this person. \\
+\begin{itemize}
+\item $t = 0$ 
+
+Arbitrageur, borrows from somebody, $X_1$, offering same agreement terms as option 1 
+(the arbitrageur is on the \textit{borrowing} side, rather than the on the \textit{lending} side).\\ 
+$X_1$: $X_1$ deposits $\pounds 1$ in the arbitrageur's account at $t = 0$. 
+and arbitrageur agrees to pay $\pounds 1 \times (1 + s_2)$ at $t = 2$.
+
+\frmrule 
+
+Immediately after this agreement has been made (still at $t = 0$), the arbitrageur carries out option 2. 
+
+$X_2$: Lend $\pounds 1$ to $X_2$ now and $X_2$ will repay us a total of $(1 + s_1)^1$ at $t = 1$. 
+
+$X_3$: Lend to $X_3$ for time $t = 1$ to $t = 2$, the amount returned from lending the $\pounds 1$
+to $X_2$ be repaid at $t = 2$ with interest rate $f_{1,2}$.  That is, we agree now to lend $\pounds (1 + s_1)$
+to $X_3$ and $X_3$ will pay us $\pounds (1 + s_1)(1 + f_{1,2})$. 
+
+\frmrule \\
+\item $t = 1$ \\
+$X_2$ pays arbitrageur $\pounds (1+s_1)^1$. \\
+Arbitrageur pays $X_3$ $\pounds (1+s_1)^1$. \\
+Total cash is $0$. \\
+\frmrule 
+\item 
+$t = 2$ \\
+$X_3$ pays arbitrageur $\pounds (1 + s_1)(1 + f_{1,2})$. \\
+Arbitrageur pays $X_1$ $\pounds (1+s_2)^2$. \\
+Total profit of $(1 + s_1)(1 + f_{1,2}) - (1+s_2)^2 > 0$. 
+\end{itemize}
+\end{itemize}
+
+\frmrule
+
+This arbitrage scheme could be carried out with at any magnitude. 
+At $t = 0$, we could have several triples of people $(X_1, X_2, X_3)$, say
+$(X_1',X_2',X_3'),  (X_1'',X_2'',X_3''),  ...$ and made the same agreements with 
+those triples. 
+If we had $k$ triples, we have $k$ times the profit. So, assuming 
+a countless number of people, we would in theory, 
+could make a countless amount of money - all from no initial capital. 
+So it must be \textit{impossible to implement the scheme in the market}. And so 
+we have a contradiction. If were possible - 
+a vast number of arbitrageurs would take advantage of it and it would affect the 
+market so greatly that it would make the scheme no longer possible 
+(gaps in rates would close). 
+
+\frmrule
+
+
+
+\begin{example}
+Suppose that the spot rates for years 1 and 2 are $s_1 = 7\%$ and $s_2 = 8\%$. 
+What must the forward rate, $f_{1,2}$ be?
+
+Firstly, the comparison principle tells us that $(1 + s_2)^2 = (1 + s_1)^1(1 + f_{1,2})$. \\
+So:
+$$f_{1,2} =  \frac{(1 + s_2)^2}{(1 + s_1)^1} - 1$$
+
+Hence $f_{1,2} = ............$
+
+\frameans{The forward rate is ....}{$9.01\%$}
+
+\end{example}
+
+
+\frmrule
+
+Let us generalise for any two future times $t = i$ and $t = j$, where $i < j$.
+
+\begin{example}
+Suppose that we know the spot rates $s_i$ and $s_j$. That is, 
+we know how much interest to charge to the borrowing of money 
+now to be repaid at time $t = i$, and the borrowing of money now to be repaid at time $t = j$. 
+\begin{itemize}
+\item \textit{Option 1:} We leave $\pounds 1$ in an $j$ year account. $\pounds 1$ grows to $\pounds 1 \times (1 + s_j)^j$. 
+\item \textit{Option 2:} Make two simultaneous agreements. First agreement:
+put $\pounds 1$ in an account for just $i$ years (rather than $j$). 
+At $t = i$, we will be paid $\pounds (1 + s_i)^i$.
+Second agreement: lend $\pounds (1 + s_i)^i$
+at $t = i$ and  at $t = j$ be repaid $\pounds (1 + s_i)^i (1 + f_{i,j})^{j-i}$. 
+\end{itemize}
+\end{example}
+
+By the comparison principle, $$(1 + s_j)^j = (1 + s_i)^i (1 + f_{i,j})^{j-i}$$
+Hence
+
+$$f_{i,j} =  \left[\frac{(1 + s_j)^j}{(1 + s_i)^i} \right]^{1/(j-i)} - 1$$
+
+
+\frmrule
+
+
+
+
+
+\section{Expectation Dynamics I}
+
+
+
+
+\highlightdef{
+  \textbf{Predicting the Future I}: Spot rates can be calculate 
+  from forward rates.
+}
+
+
+The claim is that next applicable forward rate (i.e. one that starts 
+at time $t = 1$ and goes to some time $t = j > 1$), $f_{1,j}$ is 
+a very good prediction of next year's spot rate of borrowing 
+on the spot (next year) for $j-1$ years. 
+
+\highlightdef{
+  \textbf{Unbiased Expectations Hypothesis}:
+  $f_{1,j} = E[s'_{j-1}]$
+}
+where $s'_{j-1}$ is next year's spot rate. 
+Note that times $(1,j)$ now become times $(0,j-1)$ near year. 
+This explains why there is a $j-1$ underneath $s'$ (it is \textit{not} $s_j$).
+
+
+
+According to the \textit{unbiased expectations hypothesis}, 
+the forward rate $f_{1,j}$ is \textit{exactly} equal to 
+the market expectation of what the $j-1$-year spot rate will be next year. 
+The expectation of what an not yet known value can be inferred 
+from already known existing values. 
+
+\frmrule
+
+\begin{example}
+Earlier we considered a situation where $s_1 = 7\%$, $s_2 = 8\%$. 
+We found that the implied forward rate was $f_{1,2} = 9.01\%$. 
+According to the \textit{unbiased expectations hypothesis}, 
+this value of $9.01\%$ is the markets's expected value of next year's 
+1-year spot rate $s_1'$. 
+\end{example}
+
+\frmrule
+
+In general, the current spot rate curve, $[s_1, s_2, ..., s_n]$, by 
+the comparison principle (CP),
+leads of a set of implicit forward rates $f_{1,2}, f_{1,3}, ..., f_{1,n}$ 
+which, by the \textit{unbiased expectations hypothesis} (EH),
+define the expected spot rate curve for next year $[s_1', s_2', ..., s_{n-1}']$.
+
+
+\begin{figure}[h]
+\begin{tikzpicture}
+\node (s1) {$[s_1, s_2, ..., s_n]$};
+\node [right = 2cm of s1] (f) {$f_{1,2}, f_{1,3}, ..., f_{1,n}$};
+\node [right = 2cm of f] (s2) {$[s_1', s_2', ..., s_{n-1}']$};
+\draw[<->, shorten <=10pt, shorten >=10pt] (s1) -- node[above]{CP} (f);
+\draw[<->, shorten <=10pt, shorten >=10pt] (f) -- node[above]{EH} (s2);
+\end{tikzpicture}
+\end{figure}
+
+This argument flows in the reverse direction too. 
+That is, if we are given an expected spot rate curve, $[s_1', s_2', ..., s_{n-1}']$, 
+then this determines the forward rates $f_{1,2}, f_{1,3}, ..., f_{1,n}$
+which in turn, determine the current year's spot rate curve, $[s_1, s_2, ..., s_n]$.
+So overall, the current spot rate curve implies an expectation of what the 
+spot rate curve will be next year. And, (turning the argument around) the 
+expectation of next year's spot rate curve determines what this year's curve is.
+So there is a certain intertwining between today's spot rate curve 
+and the expectations of next year's spot rate curve. 
+
+\frmrule
+
+\begin{figure}[h]
+\begin{tikzpicture}
+\matrix [matrix of math nodes, column sep=5mm, row sep=0cm]
+{
+  f_0,1 & f_2 & f_1 \\
+  f_0,1 & f_2 & f_1 \\
+  f_1 & f_1 & f_1 \\
+};
+\end{tikzpicture}
+\end{figure}
+
+
+
+\section{Expectation Dynamics II}
+
+What we have been doing is calculating interest rates for future times 
+from already known spot rates. In some ways, this is like predicting 
+the future. 
+
+\highlightdef{
+  \textbf{Predicting the Future I}: Forward rates can be calculated 
+  from spot rates.
+}
+
+\frmrule
+
+Unknown forward rates calculated from known spot rates. 
+These forward rates are called \textit{implied forward rates}.
+They are merely an \textit{implicit} value that can be derived from spot rate curves. 
+They are not a perfect representation of what happens in the future.
+That is, they are subject to \textit{market imperfections}. 
+
+
+\highlightdef{
+  \textbf{Implicit Forward Rate}: The \textit{Implicit forward rate} 
+  between times $t_1$ and $t_2$ (where $t_1 < t_2$) is the rate of interest 
+  between those two times that is \textit{consistent with a given spot rate curve}.
+}
+As will all forward rates, the terms of agreement are made \textit{today}. 
+It is \textit{today}'s forward rate between $t_1$ and $t_2$. 
+It is a forcast of the future spot rate between $t_1$ and $t_2$. 
+We don't know what the spot rate is going to be. Future interest 
+rates as unknown. But implicit 
+in today's prices is a forcast of this spot rate and we call 
+this forcast the \textit{implicit forward rate}. It captures 
+the market's best guess at what the future spot rate will be.
+
+\frmrule
+
+\begin{example}
+Assume the spot rates for the current year are:
+$$[6.00, 6.45, 6.80, 7.10, 7.36, 7.56, 7.77]$$
+\end{example}
+
+\frmrule
+
+
+\section{Short Rates}
+
+
+\highlightdef{\textbf{Short Rate}: A \textit{short rate} is a forward rate spanning one year}
+
+$$(1 + f_{i,j})^{j-i} = (1 + r_i)(1 + r_{i+1})...(1 + r_{j-1})$$
+
+$$1 + r_t = \frac{(1 + f_{0,t})^{t}}{(1 + f_{0,t-1})^{t-1}}$$
+
+
+% To summarise:
+
+% \begin{itemize}
+% \item \textbf{Spot Rate} $s_t$ (already known)
+% \item \textbf{Future Spot Rate} (don't know) $s_t'$
+% Sometimes called the \textit{Future Rate} or the \textit{Future Expected Spot Rate}.
+% \item \textbf{Forward Rate} $f_{i,j}$ (already known)
+% \item \textbf{Implicit Forward Rate} (don't know) $f_{i,j}$ (calculated from $s_i$ and $s_j$)
+% \end{itemize}
+
+

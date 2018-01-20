@@ -1,0 +1,262 @@
+
+\chapter{Permutations}
+
+
+
+\section{Introducing Stablisers}
+
+
+\begin{example}
+Take any stabiliser subgroup $G_x$. True or false: \\
+For every $p$ in $G_x$, $F(p) \geqslant 1$.
+
+\frameans{}{True}
+Recall that $F(p) : G \rightarrow \mathbb{N}$ counts how 
+many fixed points there are in $p$. That is, how many elements 
+$y$ are there such that $p(y) = y$? 
+By definition of $G_x$, every $p$ in $G_x$ keeps 
+$x$ fixed. Hence $F(p)$ must be at least 1.
+\end{example}
+
+\frmrule
+
+Recall that $G_x$, the \textit{stabliser subgroup} (of $x$) is a subgroup of $G$ that consists 
+of the permutations that leave $x$ \textit{stable}/fixed. That is, the permutations $p$ in $G$, 
+where $p(x) = x$, are precisely those in $G_x$. 
+
+Suppose we define the function $(f\cdot) : G_x \rightarrow fG_x$.
+\highlightdef{\textbf{Cosets of Stablisers}: $fG_x$ is range of $(f\cdot)$}.
+
+From our work on cosets, we know that $|G_x| = |fG_x|$. 
+
+
+\highlightdef{\textbf{Cosets as Senders}: $fG_x = \{p | p(x) = f(x)\}$}
+From $x$'s point of view, all the permutations in $fG_x$ are the same. 
+They all send $x$ to the same element $y$. Here $y$ is the element which $f$ sends $x$ to. 
+In fact, if $p(x) = y$ then it \textit{must} be in $fG_x$. 
+So $fG_x$ is precisely the permutations that send $x$ to $y$. 
+This insight that: the cosets of stablisers precisely pin down the permutations 
+that send one element to another element, we shall call \textit{cosets as senders}. 
+
+\frmrule
+
+\begin{example}
+Suppose $f(a) = b$. $g(b) = c$. \\
+What can we say about the permutations in: \\
+(a) $fG_a$ (b) $gG_b$ (c) $gfG_a$? \\
+
+(a) They all send ..... to .... \\
+(b) ............\\
+(c) ............\\
+\end{example}
+
+\frameans{Think about the cosets as senders}{(a) They all send $a$ to $b$ \\ (b) They all send $b$ to $c$ \\ (c) They all send $a$ to $c$}
+
+
+\frmrule
+
+
+
+\section{Introducing Orbits}
+
+We define a relation called \textit{orbital equivalence} that tells us which two elements 
+$x,y \in V = \{1,2,...,m\}$ are neighbours with respect to the permutations available in the group. 
+
+\highlightdef{\textbf{Orbital Equivalence} $xOy$ iff there is a $p$ such that $p(x) = y$}
+
+Orbital Equivalence (as the name suggests) is an equivalence relation. 
+
+The equivalence classes of the orbital equivalence relation are called \textit{orbits}.
+That is $[x]$ is the set of all elements related to each other by $O$. 
+We shall denote the orbit containing $x$, $[x]$, by $O_x$. 
+
+\frmrule
+
+\begin{example}
+Let $G = \{e_4, (12), (34), (12)(34)\}$. \\
+(a) Find the orbital equivalence relation $O \subseteq \{1,2,3,4\} \times \{1,2,3,4\}$\\
+(b) Hence state the orbits of $G$. 
+
+\begin{enumerate}
+\item Let us start with 1. Let's find all the $x$ such that $1Ox$. 
+First, is there a $p \in G$ such that $p(1) = 1$.
+
+\frameans{Hint: Look at $e_4$} {There is a $p$.}
+
+The identity permutation keeps all elements fixed. So clearly $e_4(1) = 1$. So there is a $p$ 
+and so $1O1$. 
+Next, is there is a $p$ such that $p(1) = 2$. 
+After looking at $G$, we see ........... (there is a $p$/there is not), hence ........... ($1O2$/not $1O2$).
+
+\frameans{Check $G$ to see if any permutations map 1 to 2} {There is a $p$. $1O2$.}
+
+We can see that $p = (12)$, $p = (12)(34)$ maps 1 to 2. So there is indeed a $p$ (we only need one). 
+So by definition of $O$, $1O2$. 
+
+Continuing, to check $1O3$, we look at $G$ to see if is there a $p$ such that ........... $=$ ...... 
+After looking we see .............. (there is a $p$/there is no such $p$), hence ........... ($1O3$/not $1O3$).
+
+\frameans{Fill in the gaps concerning $1O3$} {$p(1) = 3$. there is no such $p$. not $1O3$.}
+
+By now, you should have the idea. Since $xOy$ is an equivalence relation, 
+we actually don't have to check all $n \times n = 16$ tuples on the 
+relation's adjacency matrix. Reflexivity 
+tells us that we definitely have the diagonal entries. And with symmetry,
+we only need inspect the upper triangle.  Hence, to finish finding $O$, complete the following:
+
+For 1 and 4: we have .............. ($1O4$/not $1O4$).\\
+For 2 and 3: we have .............. ($2O3$/not $2O3$).\\
+For 2 and 4: we have .............. ($2O4$/not $2O4$).\\
+For 3 and 4: we have .............. ($3O4$/not $3O4$).\\
+For reference: $G = \{e_4, (12), (34), (12)(34)\}$.
+
+\frameans{Fill in the gaps to finish finding relation $O$} {not $1O4$. not $2O3$. not $2O4$. $3O4$.}
+
+So the relation is:
+
+
+\begin{tabular}{|r|l|l|l|l|}
+  \hline
+   $O$ & 1 & 2 & 3 & 4 \\
+    \hline
+  1 & 1 & 1 & 0 & 0 \\
+  2 & 1 & 1 & 0 & 0 \\
+  3 & 0 & 0 & 1 & 1 \\
+  4 & 0 & 0 & 1 & 1 \\
+  \hline
+\end{tabular}
+
+\frmrule
+
+\item The equivalence classes are:\\
+$O_{....} = O_{....} = ..............$ and \\
+$O_{....} = O_{....} = ..............$  
+
+\frameans{Use the relation to find the equivalence classes} {$O_1 = O_2 = \{1,2\}$ \\ $O_3 = O_4 = \{3,4\}$}
+
+\end{enumerate}
+\end{example}
+
+
+
+\section{Stabilisers vs Orbits}
+
+
+
+\begin{tikzpicture}
+\node(a){$G_x$};  \node(a1)[below=1cm of a]{send $x \mapsto x$};
+\node(b)[right=1cm of a]{$fG_x$}; \node(b1)[below=1cm of b]{send $x \mapsto y$};
+\node(c)[right=1cm of b]{$gG_x$}; \node(c1)[below=1cm of c]{send $x \mapsto z$};
+\node(d)[right=1cm of c]{$hG_x$}; \node(d1)[below=1cm of d]{send $x \mapsto w$};
+\node(e)[below right = 1cm and 1cm of a1]{elements in $O_x$};
+\draw (a)--(a1) (b)--(b1) (c)--(c1) (d)--(d1);
+\draw (a1)--(e) (b1)--(e) (c1)--(e) (d1)--(e);
+\end{tikzpicture}
+
+
+We discovered in the cosets section that the coset membership relation $aLb$ was 
+an equivalence relation that partition $G$. We also have seen that the orbit relation 
+$xOy$ is an equivalence relation that partitions $V = \{1,2,...m,\}$. We can find a 
+natural connection between the two. Fix $x$. Then 
+
+\highlightdef{[$pLp$ for some $p$ where $p(x) = y$] iff $xOy$ }
+
+
+\frmrule
+
+\highlightdef{
+The function $\text{send}_x: O_x \rightarrow L(x)$ is \textit{bijective}}
+And so $|O_x| = |L(x)|$. 
+
+But notice that by Lagrange's Theorem $|L(x)| = ........$ 
+
+\frameans{Hint: what is the subgroup here?}{$G/G_x$}
+
+The left cosets that belong to $L(x)$ are obtained from 
+the subgroup $G_x$.
+Recall that \textit{Lagrange's theorem} states that the number of 
+distinct cosets for a given subgroup is the size of $G$ divided by 
+the size of that subgroup. Hence $|L(x)| = |G|/|G_x|$. 
+Given that $|O_x| = |L(x)|$, we have $|O_x| = |G|/|G_x|$. 
+And so rearranging gives us: 
+
+\highlightdef{$|G| = |O_x|\cdot|G_x|$}
+This is often called the \textit{Orbit-Stabilizer Thereom}. 
+We have found how that we can express a group's size 
+in terms of the number of stabilizers and orbits for any element 
+of our choosing, $x$. 
+
+\frmrule
+
+Rather than summing $x$ in any old order (granted in ascending order), 
+let's be more organised and summate $|G_x|$ going equivalence class by equivalence class. 
+We will look all the $x$ in one orbit, then move on and look at all the $x$ in the next 
+orbit, and so on. We are still considering each $x$ once - so this is the same thing as 
+just enumerating $x = 1,2,...m,$. 
+Suppose that each equivalence class has a special candidate element $x_i$ that helps 
+us to uniquely identify that class. If there are $t$ classes, then we have:
+
+$$\sum_{x \in \{1,2,...,m\}} |G_x| = \sum^{t}_{i = 1}\sum_{x \in O_{x_i}} |G_x|$$
+
+But now note that the inside of the inner summation is always $|G|/|O_x|$ by the Orbit-Stabiliser theorem.
+And this value is independent of the index. So the inner sum is simply adding $|G|/|O_i|$ 
+for a total of $|O_{x_i}|$ times. Hence the inner sum becomes $|G|\cdot |O_{x_i}|/|O_x|$ giving:
+
+$$\sum_{x \in \{1,2,...,m\}} |G_x| = \sum^{t}_{i = 1} \frac{|G|\cdot |O_{x_i}|}{|O_x|}$$
+
+But recall that orbits are always the same size.
+So $|O_{x_i}| = |O_x|$. Hence the right-hand sum simplifies to 
+$\sum^{t}_{i = 1} \frac{|G|\cdot |O_{x}|}{|O_x|} = \sum^{t}_{i = 1} |G| = t|G|$
+
+
+$$\sum_{x \in \{1,2,...,m\}} |G_x| = t|G|$$
+
+Recall from our work on stabilisers that the left-hand size is simply $\sum_{f \in G} F(f)$. 
+We saw this by drawing a grid of elements versus permutations, matching which permutations 
+fix which elements and equating a column-wise summation with row-wise summation. 
+Hence we finish the the result:
+
+$$\frac{1}{|G|}\sum_{f \in G} F(f) = t$$
+
+This is called \textit{Burnside's Theorem} (sometimes \textit{Burnside's Lemma}). 
+It gives us the best way to find the number of orbits. For this reason 
+it is sometimes called the \textit{orbit-counting theorem}. It states 
+that the number of distinct orbits for a permutation group $G$ 
+is given by the average number of fixed points 
+of the permutations of $G$.
+
+\highlightdef{\textbf{Burnside's Theorem}: No. orbits = avg no. of fixed points}
+
+The formula given by Burnside's Theorem is indeed the best way to 
+find the number of orbits. Below gives several stategies for finding the number 
+of fixed points of a permutation group. 
+
+...
+
+Now let's practice using Burnside's Theorem to find the number of orbits.
+
+\frmrule
+
+\begin{example}
+Let $K = \{e_5, (12)(34), (13)(24), (14)(23)\}$ be a permutation group. \\
+Using \textit{Burnside's Theorem}, compute the number of distinct orbits. 
+
+\begin{enumerate}
+\item 
+Recall that $F(p)$ is the number of elements fixed by permutation $p$ (the number of $x$ such that $p(x) = x$). 
+We simply need to work out $F(p)$ for all permutations $p$ in $K$. 
+Be careful, this is a permutation group on \textit{five} elements.\\
+$F(e_5) = ...... $ \\
+$F((12)(34)) = ...... $ \\
+$F((13)(24)) = ...... $ \\
+$F((14)(23)) = ...... $ 
+
+\frameans{For the above permutations, compute the number of fixed points.}{5. 1. 1. 1.}
+So the average number of fixed points per permutation is $\frac{1}{4}(5+1+1+1) = 2$. 
+So by Burnside's Theorem, there are \textit{two} distinct orbits. 
+\end{enumerate}
+
+\end{example}
+
+
+\frmrule

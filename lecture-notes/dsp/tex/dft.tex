@@ -1,0 +1,151 @@
+\chapter{Discrete Fourier Transform}
+
+
+
+\section{Introducing the DFT}
+
+
+
+
+
+\frmrule 
+
+\textit{Proving that Q is a Hermitian matrix}
+
+
+Recall that the $(i,j)$th entry of $Q^{H}Q$ is 
+the inner product of $q_i$ and $q_j$. $Q^{H}Q$ is 
+simply working out $n^2$ different inner products 
+for $i,j \in \{0,...,N-1\}$ of the columns of $Q$. 
+Instead of indexing by $i,j$, we will use $k,l$ 
+to avoid confusing the index $i$ with the complex 
+number $i$. 
+
+$(Q^{H}Q)_{k,l} = q^H_k q_l = \sum^{N-1}_{n = 0} (\frac{1}{\sqrt{N}} \omega^{nk}_N)^{*} \frac{1}{\sqrt{N}} \omega^{nl}_N$\\
+$= \frac{1}{N} \sum^{N-1}_{n = 0} (\omega^{-nk}_N) \omega^{nl}_N$ \\
+$= \frac{1}{N} \sum^{N-1}_{n = 0} \omega^{n(l-k)}_N $
+
+Case: when $l=k$, \\
+$ \frac{1}{N} \sum^{N-1}_{n = 0} \omega^{n(0)}_N =  \frac{1}{N} \sum^{N-1}_{n = 0} \omega^{0}_N 
+=  \frac{1}{N} \sum^{N-1}_{n = 0} 1 =  \frac{1}{N} N = 1$
+
+Case: when $l\neq k$, \\
+Then we have a finite geometric series\\
+$ \frac{1}{N} \sum^{N-1}_{n = 0} \omega^{n(l-k)}_N =  \frac{1}{N} \frac{a(1-r^{N})}{1-r}$
+$ = \frac{1}{N} \frac{1(1-(\omega^{l-k}_{N})^{N})}{1-(\omega^{l-k}_{N})}$
+$ = \frac{1}{N} \frac{1-(\omega^{l-k}_{1})}{1-(\omega^{l-k}_{N})}$
+$ = \frac{1}{N} \frac{1-1}{1-(\omega^{l-k}_{N})}$
+$ = 0$
+
+
+A more interesting way to see the second case (case when $l\neq k$) is to see that
+we are adding up all $N$ rotations of some $N$th root of unity. 
+Why must this summation add up to zero? Clearly there are some cancellations
+happening in the sum, but why exactly zero, every time for any $N$, and for any 
+particular root of unity?
+
+
+\frmrule 
+
+\textit{Looking at Analysis vs Synthesis}
+
+
+
+If $X[k]$ is the DFT of $x[n]$ (or equivalently $x[n]$ is the inverse DFT of $X[k]$), 
+then we say that $X[k]$ and $x[n]$ are \textit{DFT pairs}. This simply expresses that 
+$X[k]$ and $x[n]$ are related by the DFT transform. 
+
+$X[k]$ is a \textit{sequence of inner products} involving $Q$ and $x[n]$.\\
+$X[k]$ is a \textit{weighting of columns of $Q$}, weighted by $x[n]$.\\
+
+\frmrule 
+
+\begin{example}
+Let $x[n]$ be a finite length signal with $N=64$. \\
+(a) Express $x[n] = 3\cos(\frac{2\pi}{16}n)$ as a 
+linear combination of harmonics $w_i[n]$. \\
+(b) Hence find the DFT of $x[n]$, $X[k]$
+
+(a) Express $x[n]$ using $\omega_{64}$'s. \\
+$3\cos(\frac{2\pi}{16}n) = 3\frac{1}{2}(e^{\frac{2\pi n}{16}ni} + e^{-\frac{2\pi}{16}ni})$ \\
+$=\frac{3}{2}(e^{\frac{2\pi ni}{64}4n} + e^{-\frac{2\pi i}{64}4n})$\\
+$=\frac{3}{2}(\omega^{4n}_{64} + \omega^{-4n}_{64})$ \\
+$=\frac{3}{2}(\omega^{4n}_{64} + \omega^{60n}_{64})$ \\
+$=\frac{3}{2}(w_4[n] + w_{60}[n])$ 
+
+(b) $X[k] = <w_k[n],x[n]> = <w_k[n],\frac{3}{2}(w_4[n] + w_{60}[n]>$ \\
+By linearity of inner product: $= \frac{3}{2}<w_k[n],w_4[n]> + \frac{3}{2}<w_k[n],w_{60}[n]>$ \\
+Recall that these inner products are zero unless we have equal harmonics. \\
+So $<w_k[n],w_4[n]> = 64$ iff $k=64$. \\
+So $<w_k[n],w_{60}[n]> = 64$ iff $k=60$. \\
+Hence $\frac{3}{2}<w_k[n],w_4[n]> + \frac{3}{2}<w_k[n],w_{60}[n]> = 96$ for $k=4,60$ and 0 otherwise.
+
+\end{example}
+
+\frmrule 
+
+
+
+\frmrule 
+
+\textit{Looking at the DFT as evaluating a general polynomial $A(x)$ }
+
+
+$y_k = A(\omega^{k}_n) = \sum^{N-1}_{n=0} a_j \omega^{kj}_N$
+
+
+\section{Properties of the DFT}
+
+
+\frmrule 
+
+\textit{Proof: DFT is periodic with period $N$}
+
+$X[k + lN] = \sum^{N-1}_{n=0} x[n] \frac{1}{\sqrt{N}}\omega^{n(k+lN)}_N$
+$= \sum^{N-1}_{n=0} x[n] \frac{1}{\sqrt{N}}\omega^{nk}_N\omega^{lN}_N$
+$= \sum^{N-1}_{n=0} x[n] \frac{1}{\sqrt{N}}\omega^{nk}_N = X[k]$
+
+\frmrule 
+
+\highlightdef{\textbf{DFT periodic}: $X[k] = X[k + lN]$}
+This tells us that we can work with \textit{modulo arithmetic} when specifying 
+the index, $k$ of $X[k]$. Having a period of $N$ means we can use modulo $N$.
+Adding multiples of $N$ makes \textit{no difference}. 
+
+\frmrule 
+
+
+\textit{Looking at the DFT as measuring frequency content }
+
+
+$X[k]$ measures the similarity between the time signal $x$ and the harmonic 
+sinusoid $s_k$. Recall that we define frequency in this discrete-time 
+scenario as $\omega_k = \frac{2\pi k}{N}$.
+Since $X[k]$ is periodic, $X[k]$ measures the frequency content of 
+$x$ at frequency $(\omega_k)_N = \frac{2\pi k}{N} (k)_N$. 
+
+
+
+\frmrule 
+
+\highlightdef{Any DFT property true for $x[n]$ holds for $X[(n-k)_N]$}
+
+\frmrule 
+
+\textit{Modulation Thoerem and Circular Shift Thoerem}
+
+\highlightdef{\textbf{Modulation Theorem}: $\omega^{ln}x[n]_N \leftrightarrow X[(k-l)_N]$}
+\highlightdef{\textbf{Circular Shift Theorem}: $x[(n-m)_N] \leftrightarrow \omega^{-km}_N X[k]$}
+
+
+\begin{sidenote}{DFT shifts vs Laplace Transform Shifts}
+
+The modulation theorem of DFTs can be compared to the \textit{first shift
+theorem} of Laplace Transforms.
+$$\mathcal{L}\{e^{at}f(t)\} = F(s-a)$$
+
+The circular shift theorem of DFTs can be compared 
+to the \textit{second shift theorem} of Laplace Transforms. 
+$$\mathcal{L}\{f(t-a)u(t-a)\} = e^{-sa}F(s)$$
+where $u(t)$ is the unit step function.
+\end{sidenote}

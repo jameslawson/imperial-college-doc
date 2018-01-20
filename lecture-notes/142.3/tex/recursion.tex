@@ -1,0 +1,26 @@
+
+\chapter{Recursion}
+
+
+
+
+
+\section{Introducing Recurrence Relations}
+
+\begin{example}
+\textit{Geometric Series}. 
+To calculate $S_n = \sum^n_{k=0} x^k$ we form two recurrence relations.
+
+$$ S_{n+1} = 1 + x(1 + x + x^2 + \cdots + x^n) = 1 - xS_n$$
+$$ S_{n+1} = (1 + x + x^2 + \cdots + x^n) + x^{n+1} = S_n + x^{n+1}$$
+
+
+
+\end{example}
+
+
+
+
+
+
+\highlightdef{Any recursion can be verified by induction}

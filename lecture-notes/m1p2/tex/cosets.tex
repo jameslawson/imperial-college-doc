@@ -1,0 +1,367 @@
+
+\chapter{Cosets}
+
+
+
+\section{Introducing Cosets}
+
+
+
+\highlightdef{$(a\cdot)$ is a function from $H$ to some set $Y$ }
+
+\highlightdef{\textbf{Coset}: $aH$ is the range of $(a\cdot): H \rightarrow Y$ }
+
+A coset is simply the range of a function. Note that it is a \textit{set}, 
+not a group. Hence why we say co\textit{set}. 
+By definition, it is the range of a function i.e. the \textit{codomain's set}, 
+which can be shortened to \textit{coset}. 
+We can think of $aH = $ map $(a\cdot) \; H$ which is why we have the notation 
+$aH$. It's like taking the set $H$ and mapping $(a\cdot)$ to all the elements 
+in $H$. Typically the set would shrink in the case where two inputs to $(a\cdot)$ 
+give the same output. But it turns out that, for $(a\cdot)$, this \textit{never} happens.  
+
+\highlightdef{The function $(a\cdot):H \rightarrow Y$ is a \textit{bijection}}
+
+And so by the Pidegon-hole principle, $|Y| = |H|$, the size of the domain is the same 
+as the size of the codomain. Furthermore, the range and codomain are equal, 
+so $Y = aH$. To show that this function is a bijection, 
+we need to show that it is surjective and injective. 
+
+\begin{itemize}
+\item \textbf{Surjective} (onto)
+\item \textbf{Injective} (one-to-one)
+\end{itemize}
+
+One subtle question arrises from the proof of $(a \cdot)$ being surjective.
+And that is: how did we know that $a^{-1}b \in H$? What if some other element 
+was in $H$ was the input to $(a \cdot)$ that gave $b$? 
+
+
+\frmrule
+
+
+
+\section{Coset Membership Relation}
+
+The question that naturally arises is \textit{which elements belong to which coset}?
+For a group with $n$ elements, we need to think about $n^2$ possible cases. 
+Each case asks: is $a$ in $bH$? In order to answer these $n^2$ questions, 
+we define relation $R$ on $G$. This is known as the \textit{coset membership relation}.
+Intuitively $aRb$ iff $a$ is in $b$'s coset (or more precisely $(b\cdot)$'s coset). 
+
+\highlightdef{\textbf{Coset Membership Relation}: $aRb$ iff $a \in bH$}
+
+
+\highlightdef{Every element of G is in some coset since $g \in gH$.}
+
+
+
+
+\highlightdef{$aRb$ iff $b^{-1}a \in H$}
+
+
+\highlightdef{$aRb$ is an equivalence relation}
+
+
+\begin{itemize}
+\item \textbf{Reflexive}: $e \in H$ since $H$ is a subgroup. 
+And so when we perform the mapping $(a\cdot)(e) = a$. So $a$ is in the range of $(a\cdot)$, $a \in aH$. 
+Hence $aRa$.
+\item \textbf{Symmetric}:  Assume $aRb$
+$b^{-1}a \in H$. Since $H$ is a group, the inverse element exists in $H$. 
+So $(b^{-1}a)^{-1} \in H$. That is $a^{-1}b \in H$. 
+In other words, $bRa$.
+\item \textbf{Transitive}: Assume $aRb$ and $bRc$. 
+Since $aRb$, $a$ is in the range of $(b\cdot)$. 
+By undoing the left multiplication of $b$, we get $b^{-1}a \in H$. 
+Similarly since $bRc$, we undo multiplication of $c$ to recover the 
+corrosponding element in the domain, $c^{-1}b \in H$. 
+Since $H$ is closed, $(c^{-1}b)(b^{-1}a) \in H$. That is, $c^{-1}a \in H$. In other words, 
+$aRc$. 
+\end{itemize}
+
+\frmrule
+
+\begin{example}
+For the following subgroup,\\
+(a) Compute the cosets \\
+(b) Give the coset relation $R$
+\end{example}
+
+\frmrule
+
+\begin{example}
+For the given coset relation $R$, give the cosets $aH, bH, cH, dH$.
+\end{example}
+
+\begin{example}
+Suppose we know coset $aH = \{a,b,c,d\}$. \\
+What can we say about the cosets that $a$ is in?
+\end{example}
+
+\frameans{}{We know, at the very least, $a \in aH,bH,cH,dH$ }
+
+The question gives us that $aRa, bRa, cRa, dRa$. Since $R$ is an equivalence 
+relation, it is \textit{symmetric}, and so we have $aRa, aRb, aRc, aRd$. 
+That is $a \in aH,bH,cH,dH$, by def. of $H$. 
+
+\frmrule
+
+\highlightdef{$aRb$ iff $aH = bH$}
+Equality of cosets is given precisely by membership in just one direction. 
+That is, an element $a$ is in coset $bH$ if and only if 
+the cosets $aH$ and $bH$ are equal. 
+
+\begin{itemize}
+\item ($\Rightarrow$) Assume $aRb$. To show $aH = bH$\\
+$x \in aH \Rightarrow xRa \Rightarrow xRb \Rightarrow x \in bH$\\
+$x \in bH \Rightarrow xRb \Rightarrow bRx \Rightarrow aRx \Rightarrow xRa \Rightarrow x \in aH$
+\item ($\Leftarrow$) Assume $aH = bH$. To show $aRb$. \\
+$aRa \Rightarrow a \in aH \Rightarrow a \in bH \Rightarrow aRb$
+\end{itemize}
+
+\frmrule
+
+\begin{example}
+Suppose we know coset $aH = \{a,b,c,d\}$. \\
+What can we say about cosets $bH, cH, dH$?
+\end{example}
+
+\frameans{}{$aH = bH = cH = dH$ }
+
+The question gives us that $aRa, bRa, cRa, dRa$. 
+Since $xRy$ iff $xH = yH$, we deduce that $aH = aH$, $bH = aH$, $cH = aH$ and $dH = aH$. 
+In other words $aH = bH = cH = dH = \{a,b,c,d\}$. 
+
+\frmrule
+
+Let us consider the equivalence classes for the coset membership relation. 
+
+$[a] = \{ x \;|\; aRx \}$ by def of an equivalence class \\
+$ = \{ x \;|\; xRa \}$ reflexivity \\
+$ = \{ x \;|\; xa^{-1} \in H \}$ property of coset membership relation \\
+$ = \{ ya \in G \;|\; y \in H \}$  let $y = xa^{-1}$ \\
+$ = Ha$ 
+
+What should now be clear is that all the cosets form a \textit{partition} of $G$. 
+This result follows from the fact that $R$ is an equivalence relation. 
+Take some equivalence class $[a]$. This is all the elements that are related to 
+each other under $R$. Say if $[a] = \{a,b,c,d,e\}$, then 
+$aRb, bRc, cRd, eRa$ must be true. But coset equality is precisely being related 
+in one direction, so $aH = bH$, $bH = cH$, $cH = dH$, $eH = aH$. 
+Each equivalence class gives one unique coset. 
+An element can't be in two equivalence classes, and 
+every element of $G$ belongs to some equivalence class. 
+So the classes partition $G$. 
+Given that 
+each class gives one unique coset,
+we conclude that the cosets partition $G$. 
+
+\frmrule
+
+An intersting property of the coset membership relation is that it is 
+\textit{compatible with left multiplication}. That is:
+
+\highlightdef{\textbf{Compatible w/left multiplication}: $aLb$ iff $(ca)L(cb)$}
+
+
+$aLb$  \\
+$\Leftrightarrow$ $b^{-1}a \in H$. By property of coset membership relation\\
+$\Leftrightarrow$ $b^{-1}c^{-1}ca \in H$ By algebra \\
+$\Leftrightarrow$ $(cb)^{-1}(ca) \in H$ By algebra \\
+$\Leftrightarrow$ $(ca)L(cb)$. By property of coset membership relation\\
+
+
+\section{Left vs Right Cosets}
+
+
+\highlightdef{
+\textbf{Left}: $a L b$ iff $a \in bH$\\
+\textbf{Right}: $a R b$ iff $a \in Hb$
+}
+
+Anything done on the left holds with symmetric on the right 
+so long as we take inverses. 
+\highlightdef{
+$a L b$ iff $a^{-1} R b^{-1}$ 
+}
+
+Every element has exactly one inverse element. 
+So clearly, all the results for left cosets have the same result 
+for right cosets. For a given subgroup, there is the same 
+number of left cosets as there are right cosets. 
+
+\frmrule
+
+\begin{example}
+Suppose we know the left coset $aH = \{a,b,c,d\}$. \\
+What can we say about the \textit{right} cosets?
+\end{example}
+
+\frmrule
+
+For any subset $S \subseteq G$, let $S^{-1} = \{ s^{-1} \;|\; s \in S\}$. 
+What happens if we invert all the elements of a coset? 
+Well take some coset $aH$, then \\
+$(aH)^{-1} = \{ay \;|\; y \in h\}$ by def of coset \\
+$= \{(ay)^{-1} \;|\; y \in h\}$ by def of $S^{-1}$\\
+$= \{y^{-1}a^{-1} \;|\; y \in h\}$ by algebra\\
+$= \{y a^{-1} \;|\; y^{-1} \in h\}$ same expression\\
+$= \{y a^{-1} \;|\; y \in h\}$ subgroups closed under inversion\\
+$= Ha^{-1}$  by def of coset\\
+
+Similarly, $(Ha^{-1})^{-1} = ....$
+
+\frameans{}{$(aH)^{-1}$ }
+
+\highlightdef{
+The function $f(S) = S^{-1}$ is a bijecion from $G/H$ to $H\backslash G$
+}
+
+\highlightdef{
+The function $f = aH \mapsto Ha^{-1}$ is a bijecion from $G/H$ to $H\backslash G$
+}
+
+We introduce some new notation here. 
+$G/H$ is the denotes a set of cosets (a set of sets). 
+In particular $G/H$ is the set of \textit{left} cosets. 
+Similarly, $H\backslash G$ is the set of \textit{right} cosets. 
+
+\highlightdef{
+\textbf{Set of Left Cosets}: $G/H$ \\
+\textbf{Set of Right Cosets}: $H\backslash G$
+}
+These sets of sets are sometimes called coset \textit{spaces}. 
+The slash notation should remind you of $S/R$ when we looked at equivalence 
+classes in set theory. Recall that $S/R$ denotes a paritition of $S$
+induced by equivalence relation $R$. Here, instead of $S/R$, 
+we use $G/H$, but the idea is the same. We have a paritition of $G$ 
+induced by the coset membership relation $L_H \equiv$ [$a L b$ iff $a \in bH$]. 
+But rather then writing $G/L_H$, it's clearer to write $G/H$. 
+For group theory it's nicer to emphasise what subgroup is in question.
+Besides, when we are given the subgroup $H$, 
+we know what equivalence relation gives the partition (given $H$, 
+we know that the relation is $L_H$). 
+
+\frmrule
+
+\begin{example}
+For the following $G$, $H$:\\
+(a) Find $G/H$ \\
+(b) Find $H\backslash G$ \\
+(c) Find a bijection from $G/H$ to $H\backslash G$
+\end{example}
+
+\frmrule
+
+
+\section{Double Cosets}
+
+
+\highlightdef{$(\cdot a \cdot)$ is a function from $H \times K$ to some set $Y$}
+
+\highlightdef{\textbf{Double Coset}: $HaK$ is a the range of $(\cdot a \cdot)$}
+
+Just as we previously defined the \textit{coset membership relation}, we define:
+\highlightdef{\textbf{Double Coset Membership Relation}: $aDb$ iff $a \in HbK$}
+And it turns out that this relation is an equivalence relation.
+
+
+
+And so double cosets partition $G$. 
+
+\frmrule
+
+Note that ($H$, $\{e\}$)-double cosets are just the right cosets of $H$. 
+And($\{e\}$, $K$)-double cosets are just the left cosets of $K$. 
+
+\frmrule
+
+Recall that cosets of a subgroup all have the same cardinality equal to 
+the subgroups cardinality. This is not the case for double cosets. 
+
+\highlightdef{Double cosets do not necessarily have the same cardinality}
+
+So the sets inside $H\backslash G/K$ do not have to have the same size.
+It turns out that when a subgroup is a \textit{normal subgroup}, then 
+it is indeed the case that double cosets have the same cardinality. 
+In fact, subgroup is a \textit{normal subgroup}, we can find a 
+bijection from $H \backslash G$ to $H\backslash G/K$, and a bijection from 
+to $G/K$ to $H\backslash G/K$. So not only will double cosets have the same size as left/right
+cosets, but there will be the same number of left/right cosets as double cosets. 
+
+
+
+\section{Normal Subgroups}
+
+Let $f:G/H \rightarrow H/G\backslash H$ be a function from \textit{$H$ left cosets} to \textit{$(H,H)$ double cosets}. 
+\highlightdef{
+\textbf{Normal Subgroup}: $H$ is \textit{normal} when $f = aH \mapsto HaH$ is a bijection
+}
+where $aH$ is the codomain of $(\cdot a): H \rightarrow aH$ \\
+and $HaH$ is the codomain of $(\cdot a \cdot): (H \times H) \rightarrow HaH$ 
+
+Let us prove the following alternate definition of a normal subgroup is equivalent 
+to the first.
+\highlightdef{
+$H$ is \textit{normal} iff [$h \in H \Rightarrow aha^{-1} \in H$]
+}
+\begin{itemize}
+\item $(\Rightarrow)$  Assume not [$h \in H \Rightarrow aha^{-1} \in H$]. \\
+Then there is some $h \in H$ where $aha^{-1} \notin H$. \\
+So $ah \notin Ha$. \\
+By reflexivity of coset membership, $ah \in ahH$. \\
+Since an element is in $ahH$ but not in $Ha$ we have $Ha \neq ahH$. \\
+Now $HaH = H(ah)H  $. \\
+Hence $f(aH) = f(haH)$ but $aH \neq haH$. So $f$ cannot be an injection.\\ 
+So $f$ cannot be bijective. So $H$ is not normal.
+
+\item $(\Leftarrow)$  Assume [$h \in H \Rightarrow aha^{-1} \in H$]. \\
+We will show that $f$ is a bijection.
+\begin{itemize}
+\item Injection: Assume $f(aH) = f(bH)$. Then $HaH = HbH$
+Take any $x \in aH$. Then $a^{-1}x \in H$. 
+So by assumption, $aa^{-1}xa^{-1} \in H$.  That is, $xa^{-1} \in H$
+\item Surjection:
+\end{itemize}
+\end{itemize}
+
+\frmrule 
+
+\highlightdef{
+If $H$ is \textit{normal} then $f = Ha \mapsto HaH$ is also a bijection
+}
+
+
+\frmrule 
+
+Fix $a$. Then the following gives us a condition for equality of left and right cosets. 
+\highlightdef{
+$aH = Ha$ iff [$h \in H$ iff ($h \in H$ and $aha^{-1} \in H$)]
+}
+
+\begin{itemize}
+\item ($\Rightarrow$) Assume $aH = Ha$. \\
+$h \in H$ $\Leftrightarrow$
+$a^{-1} a h a^{-1} a \in H$ $\Leftrightarrow$
+$a h a^{-1} a \in aH$ $\Leftrightarrow$
+$a h a^{-1} a \in Ha$ $\Leftrightarrow$
+$a h a^{-1} \in H$ 
+
+
+\item ($\Leftarrow$) Assume [$h \in H$ $\rightarrow$ ($h \in H$ iff $aha^{-1} \in H$]. \\
+$x \in aH$ $\Leftrightarrow$
+$a^{-1} x \in H$ $\Leftrightarrow$
+$a a^{-1} x a^{-1} \in H$ $\Leftrightarrow$
+$x a^{-1} \in H$ $\Leftrightarrow$
+$x \in Ha$
+
+
+\end{itemize}
+
+
+\highlightdef{$aH = Ha$ iff [$a^{-1}x \in H$ iff $xa^{-1} \in H$]}
+Equality of left and right cosets for $a$ means $a^{-1}$ has \textit{commutative membership} with elements in $H$
+
+
+\section{Quotient Groups}

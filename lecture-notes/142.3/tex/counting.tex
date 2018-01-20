@@ -1,0 +1,81 @@
+
+\chapter{Counting}
+
+
+
+
+\section{Counting Arguments}
+
+Next, we use overcounting to count the number of edges in a binary tree. 
+
+\begin{example}
+We notice that each node corresponds to two edges. 
+So we write: $\text{edges} = 2 \times \text{nodes} \dotsm$ but then 
+we notice that the leave nodes have no corresponding edges. 
+We have \textit{overcounted}. We fix our count by subtracting 
+$2 \times \text{leaves}$. 
+Hence the final equation is $\text{edges} = 2 \times \text{nodes} - 2 \times \text{leaves}$ 
+or  $\text{edges} = 2 \times (\text{nodes} - \text{leaves})$ 
+\end{example}
+
+For a tree of depth $d$, 
+we know $\text{leaves} = 2^{d}$ 
+and $\text{nodes} = 2^{d+1}-1$
+
+If we substitute these into the above edge relationship, we get 
+% TODO: put in array
+$
+\text{edges} = 2 \times (\text{nodes} - \text{leaves})
+= 2 \times (2^{d+1}-1 - 2^{d})
+= 2^{d+2} - 2 - 2^{d+1}
+= 2^{d+1} - 2
+$ 
+
+Hence a simple counting argument gives us the same result as the one 
+we worked out using the geometry sum formula. 
+
+\frmrule
+
+
+\begin{example}
+We will use another counting argument to show that the number of 
+edges is one less than the number of nodes. 
+\end{example}
+
+
+
+
+\section{Repeated Expansions}
+
+
+
+
+By doing a repeated exansion, $\text{leaves}_d = 2(2(2[ \dotsm 2(1) \dotsm ]))$.
+Hence we have $\text{leaves}_d = 2^{d}$
+
+By doing a repeated exansion, $\text{nodes}_i = 
+2(\text{nodes}_{i-1} - \text{nodes}_{i-2} - \text{nodes}_{i-2} ... - \text{nodes}_0)$.
+
+Hence we have $\text{leaves}_d = $
+
+
+We can show that the \textit{sum of the elements in a given row} of pascals triangle is a \textit{power of two}
+using \textit{repeated expansion}. \textit{Pascal's identity} allows us to
+notice that $\sum^{n}_{r=0} C(n,r) = 2 \sum^{n-1}_{r=0} C(n-1, r)$
+
+% TODO: put in array
+We get $\sum^{N}_{r=0} C(N,r) 
+= 2 (\sum^{n-1}_{r=0} C(N-1, r))
+= 2 (2(\sum^{n-2}_{r=0} C(N-2, r)))
+= 2 (2(2(\sum^{n-3}_{r=0} C(N-3, r))))
+= \dotsm
+= 2 (2(2[ \dotsm 2(\sum^{1}_{r=0} C(1, r))] ))
+= 2^{N}
+$
+
+
+We can also use repeated expansion to solve \textit{recurrence relations}.
+
+We can also use repeated expansion to solve \textit{series involving subtraction}.
+This technique is known as \textit{difference of two sums}. 
+The series are often called \textit{telescoping series}. 

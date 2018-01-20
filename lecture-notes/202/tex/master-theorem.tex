@@ -1,0 +1,90 @@
+
+\chapter{Master Theorem}
+
+
+
+
+\section{Master Theorem I}
+
+We assume all subproblems have the same size. 
+\highlightdef{\textbf{General Tree}: $T(n) = aT(\ceil{\frac{n}{b}}) + O(n^d)$}
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Recursive Calls}, $a$:  
+The number of recursive calls is a natural number that is positive, $a \geqslant 1$. 
+It needs to be a whole number (we cannot make half a resursive call) and we are 
+constraining ourselves to make at least one. When $a=0$, then the recurrence would be 
+easy to solve as there is no recursion. We exclude this and only consider cases where 
+there is definitely recursion. 
+\item \textbf{Problem Size Reduction Factor}, $b$:  
+
+\end{itemize}
+Note that there are constants that are independent of $n$. 
+
+
+\highlightdef{\textbf{Master Theorem}: Formula for solving \textit{general} recurrence trees}
+
+
+
+\frmrule 
+
+\begin{example}
+Prove by induction $n_j \leqslant \frac{n}{b_j} + \sum^{j-1}_{i = 0}\frac{1}{b_i}$ 
+\end{example}
+
+\frmrule
+
+\begin{example}
+Prove that $n_j < \frac{n}{b_j} + \frac{b}{b-1}$. \\
+\textit{Hint: use an infinite series summation}
+\end{example}
+
+\frmrule
+
+\begin{example}
+Show that $n_{\floor{\log_b n }} = O(1)$.
+\end{example}
+
+\frmrule
+
+
+
+So at level $\floor{\log_b n}$, $n_k$ is a constant. This is an upper bound for the number of levels 
+that are needed so that we can be sure the leaves are asymptotically constant. 
+
+\highlightdef{At level $\floor{\log_b n}$, the subtree sum for nodes is $O(1)$}
+
+So we take the subtree sum taken from the root down to level $\floor{\log_b n}$. \\
+For levels 0 to $\floor{\log_b n} - 1$, we have level totals that sum via $\sum^{\floor{\log_b n} -1}_{j=0} a^j f(n_j) $\\
+For level $\floor{\log_b n}$, we have a level total of $a^{\floor{\log_b n}} \times O(1) = \Theta(a^{\log_b n})$. 
+
+The Master Theorem has three cases corresponding to the three cases of the summation. 
+
+\[ T(n) = \left\{ 
+  \begin{array}{l l}
+    O(n^{d}\log(n)) & \quad \text{if $a = b^d$}\\
+    O(n^{d})        & \quad \text{if $a < b^d$}\\
+    O(n^{\log_b a}) & \quad \text{if $a > b^d$}
+  \end{array} \right.\]
+
+\frmrule
+
+
+
+\frmrule
+
+\begin{example}
+Binary search has $(a,b,d) = (1,2,0)$ So $T(n) = O(\log n)$
+\end{example}
+
+
+\section{Master Theorem II}
+
+We can improve the master theorem to handle even more general cases. 
+
+
+
+\section{Master Theorem III}
+
+We can strengthen the master theorem to give a theta bound. 

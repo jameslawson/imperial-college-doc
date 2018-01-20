@@ -1,0 +1,105 @@
+\chapter{Find, Grep, Sed, Awk}
+
+
+
+\section{Regular Expressions}
+
+\frmrule 
+
+\textit{Vanilla regular expressions}
+
+Vanilla regular expressions
+$E ::= (E)* | (E)? | (E|E|...|E)$
+
+Quite often 
+we include 
+
+$E+$ matches $E$ repeated $r$ times where $1 \leqslant r$.\\
+Note that $E+ \equiv E(E)*$.
+
+\frmrule 
+
+\textit{Syntactic Sugar: Counting Occurences}
+
+We introduce syntactic sugar for counting occurences. 
+
+$E\{n\}$ matches $E$ repeated $r$ times where $r = n$.\\
+$E\{n,\}$ matches $E$ repeated $r$ times where $n \leqslant r$.\\
+$E\{n,m\}$ matches $E$ repeated $r$ times where $n \leqslant r \leqslant m$.\\
+
+Notice that:\\
+$E\{n\} \equiv EEE...E$\\
+$E\{n,\} \equiv EEE...E(E)*$\\
+$E\{n,m\} \equiv EEE...E|EEE...EE|...|EEE...EEEEE$\\
+This shows that these new operators for counting occurences can be expressed in terms 
+of the vanilla regular expression 
+operators. And so these new operators be thought of as \textit{syntactic sugar}. 
+They help make things look shorter and more meaningful to read. 
+
+We now define:
+$E ::= (E)* | (E)+ | (E|E|...|E) | E\{n\} | E\{n,\} | E\{n,m\}$\\
+
+\frmrule 
+
+\textit{Dot or Period: sugar for matching any character exactly once}
+
+$. \equiv (c_1 | ... | c_N)$ 
+for each $c_i \in \Sigma$
+
+\frmrule 
+
+\textit{Syntactic sugar: character classes}
+
+Suppose we have a set of alphabets $\mathcal{A} = \{[a_0,...a_k]\}$ 
+where an alphabet is a ordered list of characters $[a_0,...a_k]$. Then 
+we can define syntactic sugar for characters belonging to mixtures of alphabets. 
+We call mixtures of alphabets \textit{character classes} and use $[C]$ to match 
+against a class $C$. 
+
+$E ::= (E)* | (E)+ | (E|E|...|E) | E\{n\} | E\{n,\} | E\{n,m\} | [C] | [\wedge C] $\\
+$C ::= (A_1|A_2|...|A_t)+ $\\
+$A_i ::= a_i\text{-}a_j | a_0 | ... | a_k $ for each alphabet $A_i \in \mathcal{A}$
+
+Each character class description $[C]$ can be replaced by an alternation $[C] \equiv (c_1|...|c_s)$
+where we have one alternative for each character $c_i$ in the class $C$. 
+Similarly $[\wedge C]$ can be replaced with $[\wedge C] (d_1|...|d_s)$ where 
+where we have one alternative for each character $d_i$ in $\Sigma - C$. 
+So character classes are, like the occurence counting operators, \textit{syntactic sugar}.
+
+\frmrule 
+
+\textit{Syntactic sugar for certain character classes}
+
+
+Digits: $\backslash  d \equiv [0-9]$  $\backslash  D \equiv [\wedge 0-9]$ \\
+Alphanumerical:  $\backslash  w \equiv [A-Za-z0-9 \_]$  $\backslash  W \equiv [\wedge A-Za-z0-9\_]$ \\
+Spaces:  $\backslash  s \equiv [\textsc{fnrtvo}]$  $\backslash  S \equiv [\textsc{fnrtvo}]$ 
+
+A common pattern is to use lowercase to match positively (using $[C]$) 
+and to use \textit{uppercase} to match \textit{negatively} (using $[\wedge C]$).
+Also not that the underscore character is commonly included in the alphanumerical class.
+Because the character classes were syntactic sugar for alternatives, $[C] \equiv (c_1|...|c_s)$, 
+these character class shorthands are too, syntactic sugar for some alternation.
+
+
+\frmrule 
+
+\textit{Handling multiline input with $\wedge$ and $\$$}
+
+\frmrule 
+
+\textit{Parenthesized Substring Matches}
+
+\frmrule 
+
+\textit{Back references}
+
+
+\highlightdef{\textbf{Forward Slash Delimeters}: A lot of programming languages use 
+\textit{forward slashes} as delimeters for regular expressions: $/regex/$ }
+
+
+\section{Sed}
+
+
+\highlightdef{\textbf{Sed}: s$/$regex$/$replacement string$/$flags inputfile}

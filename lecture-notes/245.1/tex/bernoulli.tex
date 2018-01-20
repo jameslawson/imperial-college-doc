@@ -1,0 +1,107 @@
+
+\chapter{Bernoulli Trials}
+
+
+
+\section{Revising Bernoulli Trial}
+
+
+Recall \textit{Cross Product Sample Spaces}.
+
+\highlightdef{
+$$
+\begin{array}{rl}
+\textbf{Bernoulli Trail}:& \text{A Y/N, 0/1, Success/Fail event}\\
+\textbf{Bernoulli Process}:& n \text{ Bernoulli Trials}\\
+\end{array}
+$$
+}
+Often called \textit{Bernoulli Experiment} or \textit{Independent Trial}. 
+
+
+Be careful, a Bernoulli trial is \textit{not} defined to be a
+$50/50$ experiment. This is just a simple case. 
+Although a coin toss is a classic example of a Bernoulli trial,
+we must remember that, for fair coins, $p = q = 1/2$, 
+is a special case. It's better, to think about 
+Bernoulli processes as tossing an \textit{unfair} coin - this 
+isn't a special case as \textit{any} Bernoulli trial can be 
+compared to tossing an \textit{unfair} coin.
+
+
+\highlightdef{ $X : \Omega \rightarrow R \sim \text{Bernoulli}(p)$ iff   }
+
+
+
+
+\section{Counting Successes}
+
+
+\highlightdef{\textbf{No. Successes}: $k$ successes after $n$ trials: $C(n,k)p^k(1-p)^{n-k}$ }
+
+
+These random variables that count successes
+\highlightdef{\textbf{Binomial Random Variable}: Counting success some finite bernoulli process  }
+
+
+\section{First Success}
+
+
+
+
+
+\highlightdef{\textbf{No. Trials Until First Success}: $1/p$ }
+Or more precisely, the \textit{expected} number of trials until the first success.
+
+Let's consider a particular sample space $\Omega$ of Bernoulli processes 
+of the form $\omega = n, yn, yyn, yyyn, yyyyn, \ldots$.
+Consider the random variable $X : \Omega \rightarrow R$
+that maps $X(\omega) = k$ where 
+$\omega$ has $h$ successes followed by one fail for $h \geqslant 0$.
+We are interested only in $k > 0$ tosses (ignore outcomes with not tosses).
+
+\frmrule
+
+\begin{example}
+What is the expected number of tosses of a fair coin 
+needed until we get a heads.
+\end{example}
+
+\frameans{}{2}
+
+\frmrule
+
+Here is an alternate proof for $E[F] = 1/p$. 
+The trick is to express $E[F]$ in \textit{terms of itself}, and then 
+solve for the unknown, which in this case is $E[F]$.
+
+Suppose we toss the coin once.
+Then it'll give us either heads or tails. But either way 
+we have tossed it \textit{once} so we have $E[F] = 1 + \text{something}$.
+Now, either 
+we got heads straight away or we need to continue flipping.
+There is a probability of $1-1/p$ of getting tails and having to continue flipping. 
+So we have: $E[F] = 1 + (1-1/p).E[F]$. 
+Solving for the unknown $E[F]$, gives us $E[F] = 1/p$. 
+
+This is very similar the trick used when we solved the formula geometric series. 
+We can express a geometric series in terms of itself and solve algebraically. 
+In fact, first success random variables are better known 
+as \textit{Geometric} Random Variables. 
+
+\highlightdef{\textbf{Geometric Random Variable}: First success rvs for some bernoulli process  }
+
+They are called Geometric because of how closely related they 
+are to geometric series.
+
+\frmrule
+
+Another proof that $E[F] = 1/p$ comes from an earlier proof that 
+about positive-integer random variables. 
+Recall that if $Z$ is a positive-integer random variables, then 
+$E[Z] = \sum^{\infty}_{i=0}P[R > i]$. Notice that $F$ 
+is a positive-integer random varaible - we can only have a whole number 
+of trails and we need to have at least one trail to see a success. 
+So $E[F] = \sum^{\infty}_{i=0}P[F > i]$. But what is $P[F > i]$? 
+It is the probability of failing at least $i$ times. In other words $(1-p)^i$. 
+Hence $E[F] = \sum^{\infty}_{i=0}(1-p)^i = 1/(1-(1-p)) = 1/p$.

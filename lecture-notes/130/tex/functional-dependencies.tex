@@ -1,0 +1,358 @@
+\chapter{Functional Dependencies}
+
+
+\section{Functional Dependence I}
+
+
+For a given relation 
+$\textsf{R} \subseteq 
+(\textsf{l}\text{:}X \;\times\; 
+\textsf{l}'\text{:}X' \;\times\; 
+...)
+$ we define what it means for 
+an attribute $\textsf{l}$ to \textit{functionally determine} 
+another $\textsf{l}'$ in the relation. 
+
+\highlightdef{\textbf{Functional Determine}: 
+$\textsf{l}$ \textit{functionally determines} $\textsf{l}'$ in $\textsf{R}$,
+iff the projection relation $p_{\textsf{l},\textsf{l}'}(A) \subseteq X \times X'$ is 
+a \textit{function}. }
+
+Let's look at an example.
+
+\frmrule
+
+
+\begin{example}
+Let $X_1 = \{a,b,c,d\}$, $X_2 = \{f,g\}$, $X_3 = \{p,q,r,s\}$, $X_4 = \{u,v,w,x,y\}$\\
+we define relation 
+$\textsf{A} \subseteq (\textsf{a}\text{:}T_1 \;\times\; 
+\textsf{b}\text{:}T_2 \;\times\; 
+\textsf{c}\text{:}T_3 \;\times\; 
+\textsf{d}\text{:}T_4)$ 
+
+$$
+\arraycolsep=2pt
+\left\{
+\ratuple {
+    \textsf{a} & a \\
+    \textsf{b} & g \\
+    \textsf{c} & p \\
+    \textsf{d} & u \\
+}
+\ratuple {
+    \textsf{a} & a \\
+    \textsf{b} & g \\
+    \textsf{c} & q \\
+    \textsf{d} & w \\
+}
+\ratuple {
+    \textsf{a} & a \\
+    \textsf{b} & g \\
+    \textsf{c} & r \\
+    \textsf{d} & y \\
+}
+\ratuple {
+    \textsf{a} & b \\
+    \textsf{b} & f \\
+    \textsf{c} & s \\
+    \textsf{d} & u \\
+}
+\ratuple {
+    \textsf{a} & c \\
+    \textsf{b} & g \\
+    \textsf{c} & r \\
+    \textsf{d} & v \\
+}
+\ratuple {
+    \textsf{a} & c \\
+    \textsf{b} & g \\
+    \textsf{c} & p \\
+    \textsf{d} & x \\
+}
+\ratuple {
+    \textsf{a} & c \\
+    \textsf{b} & g \\
+    \textsf{c} & q \\
+    \textsf{d} & x \\
+}
+\right\}
+$$
+
+\textbf{(a)} Find the projection relation $p_{\textsf{a},\textsf{b}}$. 
+Hence show that $\textsf{a}$ functionally determines $\textsf{b}$ in \textsf{A}.\\
+\textbf{(b)} Find the projection relation $p_{\textsf{a},\textsf{c}}$. 
+Hence show that $\textsf{a}$ \textit{does not} functionally determines $\textsf{c}$ in \textsf{A}.
+\end{example}
+
+
+
+\begin{itemize}
+\item 
+To find $p_{\textsf{a},\textsf{b}}(\textsf{A})$, 
+consider $\pi_{\textsf{a},{b}}(\textsf{A})$:
+
+$$
+\arraycolsep=2pt
+\left\{
+\ratuple {
+    \textsf{a} & a \\
+    \textsf{b} & g \\
+}
+\ratuple {
+    \textsf{a} & b \\
+    \textsf{b} & f \\
+}
+\ratuple {
+    \textsf{a} & c \\
+    \textsf{b} & g \\
+}
+\right\}
+$$
+
+Then $p_{\textsf{a},\textsf{b}}(\textsf{A})$ is given by the corresponding 
+classical relation of ordered pairs:
+$$
+p_{\textsf{a},\textsf{b}}(\textsf{A}) = \{(a,g),(b,f),(c,g)\} \subseteq X_1 \times X_2
+$$
+This relation is indeed a \textit{function} because every input has exactly one associated output. 
+Since $p_{\textsf{a},\textsf{b}}(\textsf{A})$ is a function,
+by definition, $\textsf{a}$ functionally determines $\textsf{b}$ in \textsf{A}.
+\item 
+To find $p_{\textsf{a},\textsf{c}}(\textsf{A})$, 
+consider $\pi_{\textsf{a},{c}}(\textsf{A})$:
+
+$$
+\arraycolsep=2pt
+\left\{
+\ratuple {
+    \textsf{a} & a \\
+    \textsf{b} & p \\
+}
+\ratuple {
+    \textsf{a} & a \\
+    \textsf{b} & q \\
+}
+\ratuple {
+    \textsf{a} & a \\
+    \textsf{b} & r \\
+}
+\ratuple {
+    \textsf{a} & b \\
+    \textsf{b} & s \\
+}
+\ratuple {
+    \textsf{a} & c \\
+    \textsf{b} & r \\
+}
+\ratuple {
+    \textsf{a} & c \\
+    \textsf{b} & p \\
+}
+\ratuple {
+    \textsf{a} & c \\
+    \textsf{b} & q \\
+}
+\right\}
+$$
+
+To find $p_{\textsf{a},\textsf{c}}(\textsf{A})$, we convert 
+$\pi_{\textsf{a},\textsf{c}}(\textsf{A})$ from a set of unordered tuples a corresponding 
+set of ordered tuples (using the order: $\textsf{a}$ then $\textsf{c}$ - as specified in the 
+subscript of $p_{\textsf{a},\textsf{c}}$). This gives:
+$$
+p_{\textsf{a},\textsf{c}}(\textsf{A}) = \{(a,p),(a,q),(a,r),(b,s),(c,r),(c,p),(c,q)\} \subseteq X_1 \times X_3
+$$
+This relation is \textit{not} a function. Clearly, some inputs do not have 
+a single possible output value (specifically, $a$ and $c$). 
+So $\textsf{a}$ \textit{does not} functionally determines $\textsf{c}$ in \textsf{A}.
+\end{itemize}
+
+
+\frmrule
+
+
+
+\highlightdef{
+$A.\textsf{l}_j$ \textit{functionally dependent} $A.\textsf{l}_i$
+iff $A.\textsf{l}_i$ functionally determines $A.\textsf{l}_j$
+}
+
+When $A.\textsf{l}_j$ is functionally dependent on $A.\textsf{l}_i$ 
+we write $A.\textsf{l}_j \rightarrow A.\textsf{l}_i$ or 
+just $\textsf{l}_j \rightarrow \textsf{l}_i$.
+
+\frmrule
+
+\frmrule
+
+
+\section{Functional Dependence II}
+
+We can extend the idea of functional determinance to hold for 
+\textit{multiple attributes}. We generalise so that now 
+a \textit{set of attributes} can functionally determine 
+another \textit{sets of attributes}.
+
+Given a relation 
+$\textsf{R} 
+\subseteq 
+(
+\textsf{l}_1\text{:}X_1 \;\times\; 
+\textsf{l}_2\text{:}X_2 \;\times\; 
+... \;\times\; 
+\textsf{l}_n\text{:}X_n \;\times\; 
+\textsf{l}'_1\text{:}X'_1 \;\times\; 
+\textsf{l}'_2\text{:}X'_2 \;\times\; 
+...
+\textsf{l}'_n\text{:}X'_m
+)
+$ 
+\\
+Let $L = X_1 \times ... \times X_n$ 
+and $L' = X'_1 \times ... \times X'_m$. Then:
+
+\highlightdef{
+\textbf{Multiple Attributes}:
+$\{X_1, ..., X_n\}$ \textit{functionally determines} $\{X'_1, ..., X'_m\}$ in $\textsf{R}$,\\
+iff the projection relation $p_{\textsf{l}_1,...,\textsf{l}_n, \textsf{l}'_1,...,\textsf{l}'_m}(\textsf{R}) 
+\subseteq L \times L'$ \\
+gives a \textit{function} 
+$p_{\textsf{l}_1,...,\textsf{l}_n, \textsf{l}'_1,...,\textsf{l}'_m}(\textsf{R} )  : L \rightarrow L' $. }
+
+In other words, given any $n$-unordered-tuple in $\textsf{R}$, $(l_1|a_1, ..., l_n|a_n)$ there exists 
+a \textit{unique} $m$-unordered-tuple $(l'_1|b_1, ..., l'_m|b_m)$. 
+The attributes $X_1 \times ... \times X_n$ determine $X'_1 \times ... \times X'_m$.
+
+\begin{sidenote}{Currying}
+We are using currying here.
+\end{sidenote}
+
+Let's look at an example.
+
+\frmrule
+ 
+\begin{example}
+Let $A = \{a,b,c,d\}$, $F = \{f,g,h\}$, $P = \{p,q,r,s\}$, $U = \{u,v,w\}$, $X = \{x,y\}$\\
+we define relation 
+$\textsf{A} \subseteq 
+(\textsf{a}\text{:}A \;\times\; 
+\textsf{f}\text{:}F \;\times\; 
+\textsf{p}\text{:}P \;\times\; 
+\textsf{u}\text{:}U \;\times\; 
+\textsf{x}\text{:}X)$ to have tuples:
+$$
+\arraycolsep=2pt
+\left\{
+\ratuple {
+    \textsf{a} & a \\
+    \textsf{f} & f \\
+    \textsf{p} & p \\
+    \textsf{u} & u \\
+    \textsf{x} & x \\
+}
+\ratuple {
+    \textsf{a} & a \\
+    \textsf{f} & f \\
+    \textsf{p} & p \\
+    \textsf{u} & u \\
+    \textsf{x} & y \\
+}
+\ratuple {
+    \textsf{a} & b \\
+    \textsf{f} & f \\
+    \textsf{p} & q \\
+    \textsf{u} & u \\
+    \textsf{x} & x \\
+}
+\ratuple {
+    \textsf{a} & c \\
+    \textsf{f} & f \\
+    \textsf{p} & q \\
+    \textsf{u} & u \\
+    \textsf{x} & y \\
+}
+\ratuple {
+    \textsf{a} & c \\
+    \textsf{f} & f \\
+    \textsf{p} & p \\
+    \textsf{u} & v \\
+    \textsf{x} & x \\
+}
+\ratuple {
+    \textsf{a} & a \\
+    \textsf{f} & g \\
+    \textsf{p} & r \\
+    \textsf{u} & w \\
+    \textsf{x} & x \\
+}
+\ratuple {
+    \textsf{a} & a \\
+    \textsf{f} & h \\
+    \textsf{p} & q \\
+    \textsf{u} & u \\
+    \textsf{x} & x \\
+}
+\ratuple {
+    \textsf{a} & a \\
+    \textsf{f} & h \\
+    \textsf{p} & q \\
+    \textsf{u} & u \\
+    \textsf{x} & y \\
+}
+\ratuple {
+    \textsf{a} & d \\
+    \textsf{f} & h \\
+    \textsf{p} & s \\
+    \textsf{u} & w \\
+    \textsf{x} & y \\
+}
+\right\}
+$$
+\textbf{(a)} 
+Show that $\alpha = \{\textsf{a}, \textsf{f} \}$ 
+functionally determines
+$\beta = \{\textsf{p}, \textsf{u} \}$
+\\
+\textbf{(n)} 
+Show that $\alpha = \{\textsf{p}, \textsf{u} \}$ 
+\textit{does not} functionally determine 
+$\beta = \{\textsf{a}, \textsf{f} \}$
+
+\end{example}
+
+
+\section{Armstrong's Inference Rules}
+
+
+\highlightdef{\textbf{Armstrong's Rules}: 
+rules that hold for functional dependencies
+}
+
+
+
+\highlightdef{
+\textbf{Soundness}: if we derive an fd then it is valid. \\
+\textbf{Completeness}: if an fs is valid, then it can be derived
+}
+
+To visualise soundness and completeness, consider two
+sets $R^{+}$ all the fds that hold for $R$ 
+and $S^{+}$, all the fds that can possibly 
+be written down starting from formulas in $S$. 
+
+
+
+
+% Recall that an \textit{axiom} in logic is 
+% a rule that are so fundamental 
+% that they can proven from first principles or is 
+% a rule that is assumed to be true because 
+% any proof would seem too trivial.  
+
+
+
+\section{Set Closures}
+
+
+\section{Set Covers}

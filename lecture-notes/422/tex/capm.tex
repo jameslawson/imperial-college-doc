@@ -1,0 +1,157 @@
+
+\chapter{Capital Asset Pricing Model}
+
+
+
+\section{Introducing CAPM}
+
+\highlightdef{
+Risk is measured by $\beta_i$ not the variance of the asset
+}
+
+
+\highlightdef{
+You are only rewarded with a \textit{positive excess expected return} \\
+for \textit{risk that you cannot diversify away}
+}
+
+
+\highlightdef{
+The return of asset $i$ is determined by \textit{how it fits into 
+the market portfolio}.\\ Not by it's characteristics alone.
+}
+
+
+
+
+\section{Security Market Line}
+
+For a given asset, $i$, we define the \textit{Market Security Line}: 
+\highlightdef{\textbf{Security Market Line}: $(\overline{r_i},\beta_i)$-graph 
+with plot: $\overline{r_i} =  (\overline{r}_M - r_f) \beta_i + r_f$ }
+
+This is a graph of the form $y = (b-c)x + c$. 
+The gradient is $(b-c)$ and the $y$-intersept is $c$. 
+In other words, the Market Security line has gradient $(\overline{r}_M - r_f)$ 
+and $y$-intersept $r_f$.
+
+For any given value of $\beta_i$, that is, any value on the $x$-axis, 
+there is a corresponding value of $r_i$ - a corresponding value on the $y$-axis. 
+In other words, knowing well the $i$th asset \textit{correlates with the market}, 
+is the same as knowing, the average return rate $\overline{r_i}$. 
+But we also know $\overline{r}_f$. So really, knowing $\beta_i$, the market 
+correlation for asset $i$, is the same as knowing the expected \textit{excess} rate 
+of return: $r_i - \overline{r}_f$ given for asset $i$ in market $M$. 
+
+Take care to notice the difference between the \textit{Capital} Market Line and 
+the \textit{Security} Market Line. Both of them relate expected returns with 
+risk. The difference is that the CML looks at an \textit{entire portfolio} whereas 
+the SML only looks at only an \textit{individual asset}.  
+
+\highlightdef{
+\textbf{CML}: return vs risk for a \textit{portfolio} \\
+\textbf{SML}: return vs risk for an \textit{asset}
+}
+
+
+
+\section{Systematic Risk}
+
+
+
+Recall that covariance is \textit{bilinear}. 
+That is, $\text{cov}[aX + bY,Z] = a\text{cov}[X,Z] + b\text{cov}[Y,Z]$,  
+and $\text{cov}[Z,aX + bY] = a\text{cov}[Z,X] + b\text{cov}[Z,Y]$. 
+
+\[
+\begin{array}{ll}
+ \text{cov}[r_i, r_i] & = \text{cov}[(r_M-r_f)\beta_i + r_f + \epsilon_i, \;\;\;(r_M-r_f)\beta_i + r_f + \epsilon_i] \\
+ &= \beta_i^2 \text{cov}[r_M, r_M] + \beta_i^2 \text{cov}[r_f, r_f] + \text{cov}[r_f, r_f] + \text{cov}[\epsilon_i, \epsilon_i]  \\
+ &\quad + 2( \beta^2_i \text{cov}[r_M, r_f] + \beta_i \text{cov}[r_M, r_f] + \beta_i \text{cov}[r_M, \epsilon_i] \\
+ &\quad\quad  - \beta_i \text{cov}[r_f, r_f] - \beta_i \text{cov}[r_f, \epsilon_i] + \text{cov}[r_f, \epsilon_i]) \\
+\end{array}
+\]
+
+Now $\text{cov}[r_f, r_f] = \sigma^2_f = 0$ because, a risk-free asset, by definition, has zero risk and so
+ \textit{zero variance}. Risk-free assets also have no affect on the market, so 
+ $\text{cov}[r_M, r_f] = 0$. We have shown that CAPM implies $\text{cov}[r_M, \epsilon_i] = 0$
+and also $\text{cov}[r_f, \epsilon_i] = 0$. Hence the above equation simplifies to:
+$\text{cov}[r_i, r_i] = \beta_i^2 \text{cov}[r_M, r_M] + \text{cov}[\epsilon_i, \epsilon_i]$. 
+In other words, $\sigma^2_i = \beta_i^2 \sigma^2_M + \text{var}[\epsilon_i]$. 
+
+\highlightdef{
+\textbf{Risk Formula}: $\sigma^2_i = \beta_i^2 \sigma^2_M + \text{var}[\epsilon_i]$
+}
+
+We are familiar with idea that the risk of an asset $i$ is associated its variance $\sigma^2_i$. 
+What the \textit{Risk Formula} reveals is that this risk has \textit{two terms} and crucially, 
+one term depends on the market, and another does not depend on the market. 
+We call these two forms of risk, \textit{systematic risk} and \textit{nonsystematic risk} 
+respectively. 
+
+\begin{itemize}
+\item \textbf{Systematic Risk}
+This is given by the term $ \beta_i^2 \sigma^2_M$. 
+This is the risk that the asset has when taking the market into account. 
+This risk caanot be reduced unless $\beta_i = 0$, ($\beta^2_i \sigma^2_M = 0$ iff $\beta_i = 0$)
+but of course, when $\beta_i = 0$, the asset would be risk-free (that is completely risk-free). 
+So for any asset that isn't risk-free, $\beta_i > 0$ and this systematic risk is indeed present. 
+Diversification cannot reduce this risk because any combination of assets will contain this risk. 
+The risk is independent of the choice of assets put into the mix and so will be present
+in any combination. 
+\item \textbf{Nonsystematic Risk} 
+This is given by the term $ \text{var}[\epsilon_i]$. 
+This risk is uncorrelated with the market and exists purely with the asset. 
+This risk can be reduced by \textit{diversification}. That is, reduce 
+risk, without changing the portfolio's mean return, by mixing and matching 
+assets in a different way. This form of risk is also called the
+\textit{idiosyncratic risk} or the \textit{specific risk}. 
+\end{itemize}
+
+Nonsystematic risk can be shown on the capital market line. 
+If $\epsilon_i = 0$ then $r_i = \overline{r}$. The asset 
+falls perfectly on the CML. However if $\epsilon_i > 0$, the risk is higher, so the 
+value of $\sigma$ increases. The result is that the 
+$x$-coordinate increases and we start to see that
+the coordinate drifts to the \textit{right} of the CML. 
+
+\section{CAPM Pricing Formula}
+
+We can use the CAPM formula to give a \textit{pricing formula}. 
+Suppose we have only one asset. So instead of writing $\beta_i$, $r_i$, 
+we write just $\beta$, $r$.
+
+$r = \frac{Q-P}{P}$. 
+$\overline{r} = r_f + \beta(\overline{r}_M - r_f)$. 
+
+Combining gives:
+$$P = \frac{Q}{1 + r_f + \beta(\overline{r}_M-r_f)}$$
+
+This formula has an interesting interpretation. 
+In particular, it looks as through we are taking $Q$ 
+and, rather than discounting it by a factor of $1 + r_f$, 
+we discount it by an \textit{adjusted factor} of 
+$1 + r_f + \beta(\overline{r}_M-r_f)$. 
+We need to increase the reduction by $\beta(\overline{r}_M-r_f)$
+to account for the uncertainty in payoff $\overline{Q}$. 
+After all, it is a random variable and we cannot be sure
+for it has a risk associate with the market. 
+
+Another way is to say, using a non-adjusted rate $\frac{1}{1+r_f}$, 
+what's adjusted payoff $Q'$. 
+
+$$P = \frac{1}{1+r_f}\left(\overline{Q} - \frac{\text{cov}(Q,r_M)}{\sigma^{2}_{M}}(\overline{r}_M - r_f) \right)$$.
+
+From this we have that the adjusted payoff 
+$Q' = \left(\overline{Q} - \frac{\text{cov}(Q,r_M)}{\sigma^{2}_{M}}(\overline{r}_M - r_f) \right)$.
+
+
+A ﬁrm can use the CAPM to decide which projects it
+should carry out.
+It is natural to deﬁne the NPV of a project that costs P
+and generates a random payoff Q as
+
+$$\text{NPV} = -P + \frac{1}{1+r_f}\left(\overline{Q} - \frac{\text{cov}(Q,r_M)}{\sigma^{2}_{M}}(\overline{r}_M - r_f) \right)$$
+
+It is appropriate for the ﬁrm to select the group of
+projects that maximize NPV.

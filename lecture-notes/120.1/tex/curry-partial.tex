@@ -1,0 +1,27 @@
+
+\chapter{Currying and Partial Application}
+
+
+
+
+
+\section{Point-free Style}
+
+It is very common for functional programmers to write functions as a composition of other functions, never mentioning the actual arguments they will be applied to. For example, compare:
+
+\begin{lstlisting}
+sum = foldr (+) 0
+sum' xs = foldr (+) 0 xs
+\end{lstlisting}
+
+These functions perform the same operation, 
+however, the former is more compact, and is considered cleaner.
+It is clearer to write let fn = f . g . h than to write let fn x = f (g (h x)).
+This idea of knocking off arguments is called \textit{point-free style}. 
+
+In fact, this can be compared to pipelining in unix shell scripting
+
+\begin{lstlisting}
+grep '^X-Spam-Level' | sort | unique | wc -l
+length . nub . sort . filter (isPrefixOf "X-Spam-Level")
+\end{lstlisting}

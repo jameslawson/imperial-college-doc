@@ -1,0 +1,223 @@
+
+\chapter{Partial Order Relations}
+
+
+
+
+\section{Introduction}
+
+
+
+\highlightdef{\textbf{Partial Order Relation:} }
+
+\highlightdef{\textbf{Partially Ordered Set:} }
+
+\highlightdef{\textit{Antisymmetric} is not the same as: \textit{Not Symmetric} }
+
+
+
+\highlightdef{\textbf{Hasse Diagram:} Diagram useful for visualising posets}
+
+\highlightdef{
+\textit{Reflexive loops} and \textit{transitive edges} are not drawn in Hasse diagrams\\
+\textit{Arrowheads} are not drawn - instead we draw $b$ higher than $a$ when $a \leqslant b$}
+
+
+
+\section{Maxima and Minima}
+
+
+\highlightdef{\textbf{Maximal Element}: $x$ comparable to $y$ implies $x \geqslant y$ }
+An element $x$ is maximal when it is greater than or equal to all the elements in the poset 
+that are comparable to $x$.
+
+\highlightdef{\textbf{Minimal Element:} $x$ comparable to $y$ implies $x \geqslant y$ }
+An element $x$ is minimal when it is less than or equal to all the elements in the poset 
+that are comparable to $x$.
+
+\highlightdef{\textbf{Minimum Element:} $x$ comparable to $y$ and $x \geqslant y$ }
+\highlightdef{\textbf{Maximum Element:} $x$ comparable to $y$ and $y \geqslant x$ }
+
+Maximum elements sometimes called \textit{greatest elements}. 
+Minimum elements sometimes called \textit{least elements}. 
+
+\highlightdef{There can be either zero or one Minimum element\\
+There can be either zero or one Maximum element}
+
+
+\highlightdef{There is at least one minimal element\\
+There is at least one maximal element
+}
+
+There may indeed be several minimal elements and several maximal elements. 
+
+
+
+
+\highlightdef{\textbf{Total Order Relation:} }
+\highlightdef{\textbf{Totally Ordered Set:} }
+
+
+
+\begin{example}
+For a poset, given that there is a path from $x$ to $y$, which of the following can we definitely say:
+(a) there is a path from $y$ to $x$ (b) there is \textit{not a path} from $y$ to $x$
+(c) $x$ and $y$ are \textit{incomparable}    (d) $x$ and $y$ are \textit{comparable}
+\frameans{}{(b),(d)}
+\end{example}
+
+
+\section{Topological Sorts}
+
+
+\highlightdef{\textbf{Well-ordered Poset:} $(X,\leqslant)$ is well-ordered iff $X$ is well-founded 
+and $\leqslant$ is a total order relation.}
+
+\highlightdef{\textbf{Well-founded Poset:} $(X,\leqslant)$ is well-founded iff
+there are no infinitely descending chains of elements}
+
+
+
+
+\highlightdef{Every directed acyclic graph can be seen as a well-founded poset}
+
+
+\section{Dominating Paths}
+
+
+
+
+
+
+
+\section{Lattices}
+
+Take some subset of a poset. 
+
+\highlightdef{\textbf{Upper bound}: An element of a poset subset is \textit{upper bound} iff it is the maximum in the subset}
+That is a subset $Y$ of poset $P$ has $y$ as an \textit{upper bound} iff $\forall x \in Y : x \leqslant y$. 
+
+\highlightdef{\textbf{Lower bound}: An element of a poset subset is \textit{lower bound} iff it is the minimum in the subset}
+That is a subset $Y$ of poset $P$ has $y$ as an \textit{lower bound} iff $\forall x \in Y : x \leqslant y$. 
+
+\frmrule 
+
+\textit{Thinking informally about upper bounds using paths}
+
+
+
+
+
+\highlightdef{The upper bound/lower bound \textit{does not} have to be in the poset subset}
+And quite often lies \textit{outside} the original subset in question. 
+
+
+\highlightdef{\textbf{Complete Lattice}: A poset is a \textit{complete lattice} when 
+all subsets have least upper bounds as well as greatest lower bounds}
+
+
+
+
+\highlightdef{\textbf{Meet} $a \wedge b = glb(\{a,b\})$,  \textbf{Join} $a \wedge b = lub(\{a,b\})$   }
+
+\frmrule 
+
+\textit{Introducing a Moore family}
+
+
+\highlightdef{\textbf{Moore Family:} A \texit{Moore Family} is a subset $Y$ of a complete 
+lattice such that  $\forall Z \subseteq Y : \meet{Z} \in Y$ }
+
+
+Thus a Moore family \textit{always contains a least element}, that being $\meet{Z}$ 
+and a greatest element $\meet{\emptyset}$ which is equal to the 
+greatest element, $\top$ of the original complete lattice. 
+
+A Moore family can \textit{never be empty}. 
+
+\frmrule 
+
+\begin{example}
+Given the complete lattice $L = (P(S), \subseteq)$, where $S = \{1,2,3\}$. \\
+Show that $Y = \{ \{2\}, \{1,2\}, \{2,3\}, \{1,2,3\} \}$ is a \textit{Moore family}.
+\end{example}
+
+\frmrule 
+
+\begin{example}
+Given the complete lattice $L = (P(S), \subseteq)$, where $S = \{a,b,c\}$. \\
+Show that $Y = \{ \{a,b,c\}, \emptyset \}$ is a \textit{Moore family}.\\
+\end{example}
+
+\frmrule 
+
+\begin{example}
+Given the complete lattice $L = (P(S), \subseteq)$, where $S = \{x,y,z\}$. \\
+Show that $Y = \{ \{ x \}, \{ y \} \}$ is \textit{not} a Moore family.
+\end{example}
+
+\frmrule 
+
+\begin{example}
+Given the complete lattice $L = (P(S), \subseteq)$, where $S = \{x,y,z\}$. \\
+Show that $Y = \{ \emptyset, \{ x \}, \{ y \}, \{ x,y \} \}$ is \textit{not} a Moore family.
+\end{example}
+
+
+\section{Functions}
+
+
+
+
+A function is 
+injective \\
+bijective \\
+monotone  \\
+additive  \\
+multiplicative \\
+
+\frmrule 
+
+\highlightdef{\textbf{Completely Additive}: A function is \textit{completely additive} 
+if for all $Y \subseteq L_1$, $f(join_1(Y)) = join_2(\{f(y) | y \in L_1 \} )$}
+
+
+
+\section{Fixed Points}
+
+
+
+\highlightdef{\textbf{Reductive of $f$}: The set of elements upon which $f$ is reductive }
+$Red(f) = \{x \;|\; f(x) \leqslant x\}$ 
+
+\highlightdef{\textbf{Extensive of $f$}: The set of elements upon which $f$ is extensive }
+$Ext(f) = \{x \;|\; x \leqslant f(x)\}$ 
+
+
+Since $L$ is a complete lattice, all subsets have greatest lower bounds 
+(as well as least upper bounds). 
+So the subset of $Fix(f)$ will also have a greatest lower bound. 
+We shall call this the \textit{least fixed point} of $f$, written $lfp(f)$. 
+Similarly $Fix(f)$ will also have a least upper bound
+that we shall call the \textit{greatest fixed point} of $f$, written $gfp(f)$. 
+
+\highlightdef{
+\textbf{Least Fixed Point}: $lfp(f) = glb(Fix(f))$\\
+\textbf{Greatest Fixed Point}: $gfp(f) = lub(Fix(f))$
+} 
+
+
+\section{M\"{o}bius Functions}
+
+
+\highlightdef{\textbf{Arborescence}:
+An \textit{Arborescence} is a partial ordering with a least element \\
+and exactly one path from the least element to other elements }
+
+
+If there is exactly one path from $x$ to $y$ then for $x \leqslant z \leqslant y$ ...
+\highlightdef{
+$\mu(x,z) = -1$ when $z$ is direct 
+neighbour of $x$, \\ $\mu(x,z) = 0$ when $z$ is indirect neighbour  }
+
+\section{M\"{o}bius Inversions}

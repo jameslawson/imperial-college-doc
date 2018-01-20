@@ -1,0 +1,100 @@
+
+\chapter{Basic Theory of Interest}
+
+
+
+
+
+
+
+\section{Principle and Interest}
+
+
+
+
+
+\section{Compound Interest}
+
+
+\section{Present Value}
+
+
+\section{Annuities}
+
+
+Recall that the total given $n$ terms of a $(a,b)$-finite geometric series can be found by 
+$S_n = \frac{a(b^n-1)}{b-1}$.
+
+
+Suppose that the multiplier of the geometric series, $b$, is now a \textit{reciprocal}, $1/(1+b)$. 
+We can derive a new formula for $S_n$. 
+
+
+\[ \begin{array}{ll}
+S_n 
+& = S_{n+1} - a \\
+& = \frac{a( \left(\frac{1}{1+b}\right)^{n+1}-1)}{(\frac{1}{1+b})-1} - a \\ 
+& = a\left[  \frac{\left(\frac{1}{1+b}\right)^{n+1}-1}{(\frac{1}{1+b})-1} - 1\right] \\ 
+& = a\left[  \frac{\left(\frac{1}{1+b}\right)^{n}-(b+1)}{1-(b+1)} - 1\right] \\ 
+& = a\left[  \frac{\left(\frac{1}{1+b}\right)^{n}-(b+1)}{-b} - \frac{b}{b}\right] \\ 
+& = \frac{a}{b}\left[ (b+1) - \left(\frac{1}{1+b}\right)^{n} - b\right] \\
+& = \frac{a}{b}\left[ 1 - \left(\frac{1}{1+b}\right)^{n} \right] \\
+\end{array}\] 
+
+
+
+
+
+If you look carefully at the formula, you should notice something of mathematical interest. 
+Specifically, look at $S_n$ as $n$ varies. The formula clearly shows that the sum 
+has a particular cap/limit. And, in order to work out $S_n$, we are subtracting from 
+the cap/limit. The cap/limit is $a/b$ and we subtract of a scale factor of $\frac{1}{(1+b)^n}$. 
+The larger $n$ is, the smaller $\frac{1}{(1+b)^n}$ is, the less we subract off the cap. 
+The smaller $n$ is, the greater $\frac{1}{(1+b)^n}$ is, we subtract more off the cap. 
+
+This result is not surprising when you realise that \textit{reciprocal geometric series} 
+\textit{always converge}. That is, the infinite sum of 
+$1/(1+b)$ always converges for $b > 0$. It's equivalent to saying 
+the infinite sum of $1/b$ converges for $b > 1$ which we know is true from our work 
+on series analysis. So, knowing that the \textit{infinite sum} of $1/(1+b)$ always converges 
+to some cap/limit/bound, any \textit{finite sum} of $1/(1+b)$ can be found by 
+working backwards from the cap/limit/bound, subtracting off as necessary. 
+
+
+
+
+\frmrule
+
+\highlightdef{\textbf{Annuity}: paying amount $A$ each period for a total of $n$ periods }
+
+The discount factor is $d_k = \frac{1}{(1+r)^k}$ where $0 < r < 1$. 
+The present value is given by the series $PV = \sum^{n}_{k = 0} A d_k = \sum^{n}_{k = 0} \frac{A}{(1+r)^k}$. 
+This is a \textit{reciprocal geometric series} and so we can use the formula. 
+The first term, $a = A$, the multiplier is $\frac{1}{1+r}$, so $b = r$, and 
+the number of terms is $n$. Plugging these into the formula 
+\textit{reciprocal geometric series}: 
+$S_n = \frac{a}{b}\left[ 1 - \left(\frac{1}{1+b}\right)^{n} \right]$ 
+gives us a formula for $PV = S_n$ known as the \textit{annuity formula}. 
+
+\highlightdef{\textbf{Annuity Formula}: $PV = \frac{A}{r}\left[1 - \frac{1}{(1+r)^n}\right]$ }
+
+
+
+\highlightdef{\textbf{Amortization}: convert an obligation to paying $A$ at regular periods }
+Convert any payment to paying amount $A$ at regular periods (not necessarily annualy). 
+That is, replacing a current obligation with a new obligation to make \textit{periodic payments}. 
+
+
+\highlightdef{\textbf{Amortization Formula}: $A = \frac{(1+r)^n r PV}{(1+r)^n -1}$ }
+
+\frmrule
+
+\begin{example}
+You have borrowed $\pounds 1000$ at $12\%$ interest compounded monthly.
+Suppose we apply \textit{Amortization} so instead of paying 
+increasing amounts each month, we instead pay a constant amount each month.
+
+Assume we repay using \textit{equal} monthly payments.\\
+(a) How much are monthly payments if we need to repay for 5 years? \\
+(b) How many months are needed if we pay $\pounds 30$ each month? \\
+\end{example}

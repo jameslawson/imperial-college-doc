@@ -1,0 +1,21 @@
+\documentclass[a4paper, draft, 10pt]{book}
+
+% BEGIN PACKAGE IMPORT
+% =============================================================================
+\usepackage{../docstyle}
+% =============================================================================
+
+\newcommand{\nucl}[3]{
+\ensuremath{
+\phantom{\ensuremath{^{#1}_{#2}}}
+\llap{\ensuremath{^{#1}}}
+\llap{\ensuremath{_{\rule{0pt}{.75em}#2}}}
+\mbox{#3}
+}
+}
+
+\begin{document}
+\input{./tex/elements.tex}
+\input{./tex/bonding.tex}
+\input{./tex/reactions.tex}
+\end{document}

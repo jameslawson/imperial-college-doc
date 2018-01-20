@@ -1,0 +1,880 @@
+
+\chapter{Parsing III: Bottom-up}
+
+
+
+\section{Introducing Bottom-up Parsing}
+
+\textit{Contrasting top-down with bottom-up parsing }
+
+
+
+\frmrule 
+
+
+
+
+\section{Unique Handles}
+
+
+\textit{Defining the handle of a right sentential form } 
+
+For grammar $G$ with start non-terminal $S$, 
+\highlightdef{\textbf{Sentential Form}:
+any string $\alpha$, such that $S \Rightarrow^{*} \alpha$ is called 
+a \textit{sentential form}. }
+
+The start symbol is a sentential form because trivially, $S \Rightarrow^{*} S$. 
+Any terminal string in $L(G)$ is a sentential form because $x \in L(G)$ implies $S \Rightarrow^{*} x$. 
+More importantly, any \textit{half-finished derivation} is a sentential form. 
+A sentential form consists of a sequence of terminals and non-terminals that can 
+be legally derived from $S$ using rules form $G$. Any derivation corresponds to 
+a sentential form (and vica versa). 
+
+\highlightdef{\textbf{Sentence}:
+any sentential form $\alpha$ where $\alpha \in T^{*}$ is called a \textit{sentence}. }
+
+A sentence is a \textit{fully-finished derivation}. In other words, 
+a sentence is a sentential form that is a terminal string in $L(G)$. It is a 
+sentential form comprised only of \textit{terminals}, $\alpha \in T^{*}$.
+
+
+\frmrule 
+
+\highlightdef{\textbf{Handle}: if $S \Rightarrow^{*} \alpha X \gamma \Rightarrow \alpha \beta_i \gamma$ 
+then $\beta_i$ is a handle of the\\ sentential form $\alpha \beta_i \gamma$ at the position following $\alpha$ }
+
+It is convenient to say $\beta_i$ is a handle of $\alpha \beta_i \gamma$ when 
+\textit{it is clear} what production and position are meant. 
+Suppose we have a right sentential form $= \alpha \beta_i \gamma$ that is not the start symbol,
+then such a rsf can have have one or many \textit{handles}. 
+We will explore examples which show this and think about how 
+we can find a way of enforcing a rsf to have \textit{exactly one} handle. 
+
+\frmrule 
+
+\begin{example}
+Consider the grammar:\\
+$S \rightarrow AaS | b$ \\
+$A \rightarrow c | d | B$ \\
+$B \rightarrow AgC | AhC | DgC | DhC$ \\
+$C \rightarrow c | d | D $ \\
+$C \rightarrow eBf $ \\
+(a) Show that $cab$ is a sentential form of the grammar. \\
+(b) Show that $cab$ has \textit{two} handles. 
+\end{example}
+
+\frmrule 
+
+(b) \\
+There are actually \textit{two} derivations, 
+$S \Rightarrow AaS \Rightarrow caS \Rightarrow cab$\\
+$S \Rightarrow AaS \Rightarrow Aab \Rightarrow cab$\\
+And they differ in the last step. Which means we have two handles. \\
+$c$ is a handle of $cab$ at position 0, \\
+$b$ is a handle of $cab$ at position 1, 
+
+\frmrule 
+
+\begin{example}
+Consider the grammar:\\
+$S \rightarrow AaS | b$ \\
+$A \rightarrow c | d | B$ \\
+$B \rightarrow AgC | AhC | DgC | DhC$ \\
+$C \rightarrow c | d | D $ \\
+$C \rightarrow eBf $ \\
+For the following, (i) show that each is a sentential form of the grammar.
+and (ii) find the \textit{total number of handles} each sentential form has. \\
+(a) $Aab$ (b) $AaS$ (c) $b$  (d) $Aacab$
+\end{example}
+
+
+
+\frmrule 
+
+\textit{A sentential form $\neq S$ must have at least one handle}
+
+
+
+
+\frmrule 
+
+\textit{A sentential form $\neq S$ may have several handles}
+
+\frmrule 
+
+\textit{Idea: Using a rightmost derivation could help enforce unique handles}
+
+
+\frmrule 
+
+
+
+
+\highlightdef{\textbf{Right Sentential Form}:
+any string $\alpha$, such that $S \Rightarrow^{*}_{rm} \alpha$ \\
+is called a \textit{right sentential form} (RSF). }
+
+That is, a \textit{right sentential form} is simply a sentential form that 
+is a result of using a rightmost derivation. 
+We can similarly define a \textit{left} sentential form 
+a sentential form that 
+is a result of using a \textit{leftmost} derivation 
+($\alpha$ s.t. $S \Rightarrow^{*}_{lm} \alpha$). 
+
+
+
+
+%\highlightdef{\textbf{Handle}: if $S \Rightarrow^{*}_{rm} \alpha X \gamma \Rightarrow_{rm} \alpha \beta_i \gamma$ 
+%\\ then $\beta_i$ is a handle of the rsf $\alpha \beta_i \gamma$ at the position following $\alpha$ }
+
+First notice that when we say $\alpha X \gamma \Rightarrow_{rm} \alpha \beta_i \gamma$ 
+we used $\Rightarrow_{rm}$ to specify a one-step \textit{rightmost derivation}. We didn't 
+use $\Rightarrow$ (any derivation). What is implies is that 
+$\gamma$ has no non-terminals. Why? Well, according to $\alpha X \gamma \Rightarrow_{rm} \alpha \beta_i \gamma$
+we replaced the rightmost non-terminal $X$ with $\beta_i$. 
+If there were any non-terminals in $\gamma$, then $X$ would not've been the rightmost non-terminal.
+
+So $\gamma$ is a sequence of zero or more \textit{terminals}. 
+To make this idea clearer, rather than writing gamma, we can invent a symbol to denote 
+zero or more terminals (like $w$ for \textit{word}) and then write $\alpha X w \Rightarrow_{rm} \alpha \beta_i w$.
+So some definitions will define a handle as:
+if $S \Rightarrow^{*}_{rm} \alpha X w \Rightarrow_{rm} \alpha \beta_i w$, 
+then $\beta_i$ is a handle of the rsf $\alpha \beta_i w$. This definition (with $w$) 
+and the original (with $\gamma$) are \textit{equivalent}. 
+
+In other words, a \textit{handle} of a rsf is a string $\beta_i$ in the rsf
+that can replace the rightmost non-terminal $X$.
+
+
+%\frmrule 
+
+%\textit{Looking a handles from the perspective of a reverse rightmost derivaiton}
+%In other words a \textit{handle} 
+%\highlightdef{A handle corresponds to a step in a rightmost derivation, 
+%\textit{from a reverse perspective}  }
+
+% Notice that we have two rsfs, , but the definition is 
+% talking about  - that is the later one in the rightmost derivation, which as we will see,
+% will be the earlier one in the LR parse.
+
+
+\frmrule 
+
+\textit{A rsf $\neq S$ must have at least one handle}
+
+
+
+
+\frmrule 
+
+\textit{A rsf $\neq S$ may have several handles}
+
+
+\begin{example}
+For the simple grammar:\\
+$S \rightarrow Tat | TaT$\\
+$T \rightarrow t$\\
+(a) Show that $tat$ is a rightmost sentential form\\
+(b) Show that $tat$ has \textit{two} handles.
+\end{example}
+
+
+
+\frmrule 
+
+\textit{Idea: Making the grammar unambiguous could help enforce unique handles}
+
+\frmrule 
+
+
+\textit{Exploring the conditions for unique handles}
+
+In turns out that the conditions for unique handles are \textit{very specific}. 
+The table below shows how many handles a sentential could have. There is 
+only one special case where we can guarantee a sentential form has a unique
+handle, and that is when (i) $G$ is \textit{unambiguous}, 
+(ii) the sentential form is a \textit{rsf} (iii) the sentential form is \textit{terminal}.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{l|lll}
+                        & sf & rsf  & terminal rsf\\ \hline
+    $G$ ambiguous       & $\geqslant 1$ & $\geqslant 1$ & $\geqslant 1$ \\
+    $G$ unambiguous     & $\geqslant 1$ & $\geqslant 1$ & exactly $1$ \\
+    \end{tabular}
+     \caption{Conditions required for unique handles.} 
+\end{table}
+
+In all other cases it is possible that a sentential form has a non unique handle. 
+Intuitively, using rightmost sententials reduce the chances of non-uniqueness. 
+And, using an unambiguous also intuitively reduces the chances of non-uniqueness. 
+These were \textit{good ideas}, but there were not strong enough. 
+We also need a third condition, that the rsf is \textit{terminal}. 
+
+
+\frmrule 
+
+\textit{A rsf $\neq S$ of an umambiguous grammar may have several handles}
+
+\begin{example}
+This grammar is unambiguous:\\
+$S \rightarrow A | a$ \\
+$A \rightarrow AA | B$ \\
+$B \rightarrow AA$ \\
+(a) Show that $AA$ is a right sentential form. \\
+(b) Show that $AA$ has more than one handle.
+
+(a) $S \Rightarrow_{rm} A \Rightarrow_{rm} AA$\\
+(b) $S \Rightarrow_{rm} A \Rightarrow_{rm} B \Rightarrow_{rm}$ AA. \\
+So $AA$ has two handles, $A$ and $B$, in position 0. 
+\end{example}
+
+
+\frmrule 
+
+\textit{A terminal rsf $\neq S$ of an umambiguous grammar has exactly one unique handle}
+
+Recall that G is unambiguous then all rightmost derivations are \textit{unique}. 
+Unique rightmost derivations are important for \textit{two} reasons. 
+First reason, we can only replace \textit{one non-terminal} at a time. 
+This is true for all rightmost derivations. Second reason, 
+there is only \textit{one alternative} that will fit into the proof. 
+Although $X$ may have several altnatives, $\beta_1$, ..., $\beta_n$, 
+only one of these will fit. That is what a \textit{unique} rightmost derivation is.
+
+This means that if we have a rsf (that isn't the start symbol): 
+$S \Rightarrow^{*}_{rm} \alpha \beta_i \gamma$, 
+then when we look at the steps, $S \Rightarrow_{rm} \gamma_1 \Rightarrow_{rm} \gamma_2 ... \gamma_k \Rightarrow_{rm} \alpha \beta_i \gamma$, 
+to take us from $\gamma_i$ to $\gamma_{i+1}$ there is firstly, a unique position to replace a 
+nonterminal (by the fact it is \textit{rightmost}), 
+and secondly a unique alternative (by the fact that is is rightmost \textit{unique}). 
+
+Suppose we have a rsf that isn't the start symbol: $\alpha \beta_i \gamma$.
+Since it is a \textit{rightmost} sentential form, we know that it is part 
+of a rightmost derivation. So in the previous step, there was unique position to replace a 
+nonterminal. A second, because the grammar is unambiguous, this 
+rightmost derivation is \textit{unique}, so there is only one 
+\textit{alternative} that we can replace the rightmost nonterminal with 
+(it is necessary that all other alternatives cannot fit). 
+
+Assume $\beta_i$ was not the handle.
+Hence $\beta_i$ must be the handle.
+
+\highlightdef{If $G$ is unambiguous, then every terminal RSF$\neq S$ has a \textit{unique} handle}
+
+
+This means that every derivation is completely unique. 
+There is no room for choice. At every step, there is exactly 
+one non-terminal to replace and exactly one alternative of this non-terminal that must be chosen. 
+Bottom-up parsing exploits this property. By taking the rightmost derivation 
+of a unambiguous grammar, we can work backwards from some rightmost sentential form 
+and always find our way back to $S$. 
+
+
+\frmrule 
+
+\textit{Introducing Handle-pruning as using handles to construct a bottom-up parse} 
+
+
+Given a unambiguous grammar $G$, 
+the process of constructing a bottom-up parse from these unique handles of rightmost sentential forms
+is called \textit{handle pruning}. 
+
+Assume that input $w$ in $L(G)$. Then $w$ has a unique rightmost derivation. 
+$$S \Rightarrow_{rm} \gamma_1 \Rightarrow_{rm} ... \Rightarrow_{rm} \gamma_k \Rightarrow_{rm} w$$ 
+
+The handle pruning algorithm reconstructs this derivation via the algorithm:
+\begin{lstlisting}
+for i = n to i
+  find: find handle beta_i in gamma_i
+  prune: replace beta_i with X to generate gamma_{i-1}
+\end{lstlisting}
+
+
+\frmrule 
+
+\begin{example}
+Given the following unambiguous grammar. \\
+Using handle pruning, find the bottom-up parse of $w = $.
+\end{example}
+
+\frmrule 
+
+\textit{Highlighting the similarity between the handle-pruning algorithm 
+and the basic bottom-up parsing algorithm} 
+
+
+
+
+\frmrule 
+
+
+%\textit{Refine handle to keep track of positions} 
+
+%\highlightdef{\textit{Redefine:} \textbf{Handle}: if $S \Rightarrow^{*}_{rm} \alpha X \gamma \Rightarrow_{rm} \alpha \beta_i \gamma $ 
+%then }
+
+
+\section{Recognising Handles I}
+
+
+
+
+
+\frmrule 
+
+\textit{Compare the problem of finding a unique handles in LR parsing with the problem 
+predicting rules in LL parsing }
+
+(i) identify the unique handle $\beta$:
+$\gamma_i = \alpha \beta\gamma$\\
+(ii) determine which production to use to give $\gamma_{i-1} = \alpha X \gamma$
+
+\frmrule 
+
+\textit{Recognising handles is a hard problem. }
+
+\highlightdef{There are no known efficient algorithms to recognise handles }
+
+However there are a certain subclass of CFGs where we can efficiently 
+recognise handles. There are called \textsf{LR}($k$) grammars. 
+With such grammars, we can find and prune handles by only looking 
+ahead at most $k$ symbols past the unique handle. 
+
+We will still only consider unambiguous grammars 
+and only consider terminal rightmost sentential forms. 
+If we do this, then the handles are indeed unique. 
+
+\frmrule 
+
+
+
+\textit{Formal definition of} \textsf{LR}$(k)$ \textit{grammars }
+
+
+Formally, a grammar $G$ is $\textsf{LR}(k)$ iff:\\
+$S \Rightarrow^{*}_{rm} \alpha X xz \Rightarrow_{rm} \alpha \beta xz$ \\
+$S \Rightarrow^{*}_{rm} \gamma      \Rightarrow_{rm} \alpha \beta xy$ \\
+$|x| = k$\\
+implies \\
+$\gamma = \alpha X xz$, and $z=y$
+
+Suppose we are only allowed to scan at most $k$ characters 
+past the unique handle of our rsf $\alpha \beta \gamma$.
+We don't know what is remaining so we could have two different 
+strings: $\alpha \beta xy$, $\alpha \beta xz$.
+Suppose we know that for the ending $xz$ we find $X \rightarrow \beta$. 
+What happens in the case where the ending was $xy$. 
+An  $\textsf{LR}(k)$ grammar tells us that this case is exactly 
+the same.
+
+In other words, we only need to consider at most $k$ symbols after the handle,
+to know realise that the proof trees are the same therefore know
+the handle to be applied.
+
+Informally, we can say that a grammar $G$ is $\textsf{LR}(k)$ if 
+given a rsf $\gamma$, we can decide find and prune by scanning 
+$\gamma_i$ from left-to-right going no further than $k$ symbols 
+past the unique handle, $\beta_i$. 
+
+\frmrule 
+
+\textit{Formal definition of} \textsf{LR}$(0)$ \textit{grammars }
+
+Formally, a grammar $G$ is $\textsf{LR}(0)$ iff:\\
+$S \Rightarrow^{*}_{rm} \alpha X z \Rightarrow_{rm} \alpha \beta z$ \\
+$S \Rightarrow^{*}_{rm} \gamma      \Rightarrow_{rm} \alpha \beta y$ \\
+implies \\
+$\gamma = \alpha Xz$, and $z=y$
+
+\frmrule 
+
+
+
+\frmrule 
+
+\begin{example}
+Show that the following if-then-else grammar is \textit{not} \textsf{LR}($0$).\\
+$S \rightarrow ictS | ictSeS | a$ 
+
+We have $S \Rightarrow^{*}_{rm} ictS \Rightarrow_{rm} icta$ \\
+and have $S \Rightarrow^{*}_{rm} ictSea \Rightarrow_{rm} ictaea$, \\
+yet $ictS \neq ictSea$ (and furthermore $a \neq ea$), so the grammar is 
+\textit{not}  \textsf{LR}($0$).
+\end{example}
+
+\frmrule 
+
+\begin{example}
+Show that the following polish postfix grammar \textit{is} \textsf{LR}($0$).\\
+$S \rightarrow SSa | Sb$ 
+\end{example}
+
+\frmrule
+
+
+\textit{Introducing Maximally Right Handles }
+
+\begin{example}
+Consider the ambiguous grammar: \\
+$S \rightarrow Sa | Saa | a$\\
+We have exactly two handles of sentential form $Saa$\\
+$S \Rightarrow Saa$, $S \Rightarrow Sa \Rightarrow Saa$ 
+
+The first handle $Saa$ and the second is $Sa$. Consider 
+where the right end of each handle lies in the sentential form. 
+The first handle's right end is further right than the second's. 
+We say that $Saa$ is a \textit{Maximally Right Handle} for this reason. 
+\end{example}
+
+\highlightdef{\textbf{Maximally Right Handle}: $\beta_i$ is a \textit{maximally-right} handle 
+of a sentential form $\gamma$ if $\beta_i$ is a handle of $\gamma$ and 
+its right-end is maximally far to the right of $\gamma$ when compared with 
+other handles of $\gamma$}
+
+Maximally right handles are \textit{not necesarily unique}. We may have 
+two handles that who have the same right end that is the furthest right.  
+Note we cannot say \textit{the} rightmost handle. There may be several maxima. 
+However when we have a unambiguous grammar and consider a terminal right sentential form, 
+then we know there is only \textit{one} handle. In this case, such a handle 
+is the only handle and so it is trivially the maximally-right handle.
+
+\frmrule 
+
+\textit{Introducing viable prefixes and relating them to handles }
+
+
+\highlightdef{\textbf{Viable Prefix}: We say $\alpha$ is a \textit{viable prefix} (of $G$) if 
+(i) there is some sf $\alpha\beta$ (ii) $\alpha$ does not continue past the rightend 
+of any maximally right handles of $\alpha\beta$ }
+
+This definition is a little tricky. We can translate this to first-order logic: 
+$$viable(\alpha) \leftrightarrow \exists y: rsf(x) \wedge \forall y: (handle(x,y) \wedge maxRight(x,y) \rightarrow \alpha.last < y.last)$$
+The first important point is that it is of the form $\exists\forall$. 
+We need just \textit{some} rsf, $x$, such that $\alpha$ does not continue past \textit{all} handles, $y$
+that are maximally right of $x$. 
+
+% By this definition, it is always possible to add terminal symbols 
+% to the end of $\alpha$ to obtain a right sentential form. 
+
+\frmrule 
+
+\begin{example}
+For the following grammar,\\
+$S \rightarrow cAd$\\
+$A \rightarrow ab | a$
+
+Determine whether the following are viable prefixes. \\
+(a) $cAd$ (b) $\epsilon$ (c) $c$ (d) $cA$
+\end{example}
+
+\frmrule 
+
+\begin{example}
+For the following grammar,\\
+$S \rightarrow cAd$\\
+$A \rightarrow ab | a$
+
+Determine whether the following are viable prefixes. \\
+(a) $cab$ (b) $cad$ (c) $cabd$ (d) $S$
+\end{example}
+
+
+\frmrule 
+
+\begin{example}
+For the following grammar,\\
+$S \rightarrow AaS | b$\\
+$A \rightarrow c | d | B$\\
+$B \rightarrow AgC | AhC | DgC | DhC$\\
+$C \rightarrow c | d | D $\\
+$D \rightarrow eBf $ \\
+Determine whether the following are viable prefixes. \\
+(a) $Aab$ (b) $ca$ (c) $AgCS$
+\end{example}
+
+\frmrule
+
+\begin{example}
+For the previous grammar, is there a longest viable prefix if finite-length?
+(\textit{Hint:} $S \Rightarrow AaS \Rightarrow AaAaS \Rightarrow AaAaAaS \Rightarrow ...$)
+\end{example}
+
+
+\frmrule
+
+
+
+\textit{The start symbol $S$ is always a viable prefix }
+
+Notice that $\alpha = S$ is a prefix of some right-sentential form, 
+namely $\alpha\beta = S$. 
+Recall that the start symbol doesn't have any handles. 
+Therefore,
+$\alpha = S$ doesn't continue past 
+the right end of the maximally right handles of the rsf $\alpha\beta S$ 
+(because the rsf has \textit{no} handles and so has no maximally right handles.)
+
+This is an example of a \textit{vacuous truth} that we saw a lot of in first 
+year logic.
+$$\exists y: rsf(x) \wedge \forall y: (handle(x,y) \wedge maxRight(x,y) \rightarrow \alpha.last < y.last)$$
+If $handle(y)$ is false, then lhs of the implies is false for all $y$, 
+and so the whole for all is true. 
+
+\frmrule 
+
+
+\textit{The viable prefix of a terminal rsf can be extended to a valid rsf by appending terminals }
+
+By adding zero or more Ts to the end of a viable prefix (shifting), a handle 
+can be constructed and reduced.
+
+\frmrule 
+
+\textit{Valid Splits}
+
+Suppose we have a handle $\beta_i$ and $X \rightarrow \beta_i$. 
+Let us split $\beta_i$ into two parts, $\beta_i = \beta_{i}' \beta_{i}''$. 
+$X \rightarrow \beta_{i}' \beta_{i}''$. We put a dot inbetween them 
+to store this split: $X \rightarrow \beta_{i}' \cdot \beta_{i}''$
+
+We say the split $X \rightarrow \beta_{i}' \cdot \beta_{i}''$ is a \textit{valid split} for viable prefix $\alpha\beta_{i}'$ 
+if $S \Rightarrow^{*}_{rm} \alpha X \tau \Rightarrow \alpha \beta_{i}' \beta_{i}'' \tau$.
+
+For a split to be valid for a vaiable prefix, we have that:\\
+(i) \textit{there is some rightmost derivation involving that prefix}, \\
+this is just by definition of a viable prefix, \\
+(ii) \textit{the last step of the rightmost derivation uses the rule seen given the pair} \\
+(iii) \textit{the viable prefix stops at the point where the split has the dot}
+
+\frmrule 
+
+\begin{example}
+For the following grammar, \\
+(a) Give the rightmost derivation of ,\\
+(b) For each right sentential form, give the viable prefixes\\
+(c) For each viable prefix, give the corresponding \textit{valid split}.
+\end{example}
+
+\frmrule 
+
+\begin{example}
+For the right sentential form $abcAde$ given by, \\
+$S \Rightarrow^{*}_{rm} aAde \Rightarrow_{rm} abcAde$. \\
+(a) state the viable prefixes \\
+(b) for each viable prefix, find the corresponding \textit{valid splits}.
+\end{example}
+
+\frmrule 
+
+\begin{example}
+Assume that the $X \rightarrow \delta \cdot$ is a \textit{valid pair} for some viable prefix. \\
+Describe the form of the right sentential form that prefix is viable for. 
+
+\begin{itemize}
+\item By def. we must have $S \Rightarrow^{*}_{rm} \alpha X \tau \Rightarrow \alpha \delta \tau$. 
+The dot of the valid pair tells us that the viable prefix is $\alpha \delta$. That is, the viable prefix 
+extends \textit{as far right as possible} (goes all the way up to the rgiht end of handle $\delta$.
+\end{itemize}
+\end{example}
+
+\frmrule 
+
+\textit{A viable prefix may have several valid splits}
+
+
+
+\frmrule 
+
+Notice that valid split + viable prefix = handle. 
+Note that a split can be valid for several viable prefixes. And, 
+a given viable prefix may have several valid splits. But the pair (valid split, 
+viable prefix) uniquely defines the handle of a right sentential form.  
+
+\highlightdef{
+Knowing the valid items for a given viable preﬁx allows
+a handle to be found 
+}
+and by finding handles, we can thus find the reversed rightmost derivation.
+
+
+\frmrule 
+
+\textit{Valid Pairs}
+
+To reduce the amount of valid splits for a given viable prefix, 
+we add more information to valid splits to make them more distinct. 
+
+We say that the tuple $(X \rightarrow \beta_{i}' \cdot \beta_{i}'', x)$ is a \textit{valid pair} for viable prefix $\alpha\beta_{i}'$ 
+if $S \Rightarrow^{*}_{rm} \alpha X \tau \Rightarrow \alpha \beta_{i}' \beta_{i}'' \tau$.
+and $\textsc{first}_k(\beta_{i}'' \tau) = x$ 
+
+
+\frmrule 
+
+\begin{example}
+Assume that the $(X \rightarrow \delta \cdot , a)$ is a \textit{valid pair} for some viable prefix. \\
+Describe the form of the right sentential form that prefix is viable for. 
+
+By def. we must have $S \Rightarrow^{*}_{rm} \alpha X \tau \Rightarrow \alpha \delta \tau$. 
+The dot of the valid pair tells us that the viable prefix is $\alpha \delta$. That is, the viable prefix 
+is as far right as possible
+The $a$ of the valid pair tells us that the sentential form must have $\textsc{first}(\tau) = \{a\}$. 
+\end{example}
+
+\frmrule 
+
+The previous example shows that
+the pair $(X \rightarrow \delta \cdot , a)$ tells us that 
+the reduction $X \rightarrow \delta$ can only happen when 
+the next input token, $\textsc{first}(\tau)$, is $a$. 
+
+Suppose the question had instead: $(X \rightarrow \delta \cdot \delta', a)$.
+Then such a pair does \textit{not} express that what follows the handle must be an $a$, ($\textsc{first}(\tau) = \{a\}$).
+Instead it expresses that $\textsc{first}(\delta'\tau) = \{a\}$. 
+Items of the form $(X \rightarrow \delta \cdot, a)$ are known as \textit{complete} items.
+
+\frmrule 
+
+
+
+\frmrule 
+
+
+\frmrule 
+
+
+
+
+
+\textit{Defining $\textsf{LR}(1)$ in terms of valid pairs }
+
+Recall the formal definition of $\textsf{LR}(1)$:\\
+$S \Rightarrow^{*}_{rm} \alpha X x\tau \Rightarrow_{rm} \alpha \beta_i x\tau$\\
+$S \Rightarrow^{*}_{rm} \gamma \tau' \Rightarrow_{rm} \alpha \beta_i x\tau''$\\
+implies\\
+$\alpha X = \gamma$\\
+$\tau' = x\tau''$
+
+We can prove that a grammar is $\textsf{LR}(1)$ iff\\
+for all viable prefixes,
+if set of corresponding valid splits, $I$,
+contains a complete item $X \rightarrow \delta \cdot, \{a_1,...,a_n\}$, 
+then\\ 
+(i) no $a_i$ appears immediately to the right of the dot in any item of $I$\\
+(ii) if $B \rightarrow \beta \cdot, \{b_1,...,b_k\}$ is another complete item in $I$, then 
+$a_i \neq b_j$ for all $i \in [1,n], j \in [1,k]$. \\
+
+Here $I$ is the image set of $f(\cdot, v) = I$ for a fixed viable prefix $v$. 
+
+\frmrule 
+
+\textit{Valid Splits help to find handles }
+
+Suppose we are trying to find handles in the rsf 
+$\alpha \beta_{i}' \beta_{i}'' \tau$
+
+Suppose that $X \rightarrow \beta_{i}' \cdot \beta_{i}''$ is 
+the \textit{only} valid split for viable prefix $\alpha\beta_{i}'$, 
+then 
+\begin{itemize}
+\item $\beta_{i}'' = \epsilon$. Then $\beta_{i}'$ is probably the handle. So we reduce 
+by $X \rightarrow \beta_{i}'$
+\item $\beta_{i}'' \neq \epsilon$. Then we shift
+\end{itemize}
+If valid prefix $\alpha\beta_{i}'$ has more than one valid split, then 
+we use the lookahead symbol to decide (assuming that there are more lookaheads available).
+If there are no more lookaheads to help us decide then we fail. 
+
+\frmrule 
+
+
+
+% \highlightdef{The set of viable prefixes is a regular language}
+
+% The set of all viable prefixes of any context-free language is itself a regular language. 
+% This fact is non-obvious but is important. 
+
+% It means that we can build a DFA to recognise the set of viable prefixes. 
+
+
+\begin{sidenote}{$\textsf{LL}(k)$ Grammars vs $\textsf{LR}(k)$}
+LR parsers are generally \textit{more powerful} than LL parsers. 
+This is because LR parsers generally see \textit{more input symbols} 
+when deciding which production to take. LR parsers have seen 
+a prefix and have $k$-symbol lookahead to choose a reduction.  LL parsers 
+only have the lookahead when it does a prediction. 
+As a result, the set of parsable LR(k) grammars is a \textit{super}set of LL(k). 
+Because LR parsers can see more, they usually 
+detect errors \textit{earlier} than LL parsers. 
+\end{sidenote}
+
+
+\section{Recognising Handles II}
+
+
+
+valid pair + viable prefix = handle. 
+
+
+Any sequence of labels along a path in the %LR(0)
+automaton, 
+starting at its start state, is a \textit{viable prefix};
+
+the set of items reached at the end of that path contains the 
+\textit{valid pairs} for that prefix. 
+
+
+Hence any sequence of labels gives us: valid pair + viable prefix, 
+hence gives us a handle. 
+
+\frmrule 
+
+\begin{example}
+We want the automaton to accept when we have found a \textit{viable prefix}.
+Which states are the accepting states? Explain your answer. 
+\end{example}
+
+\frmrule 
+
+Drawing conventions for LR DFAs:
+(i) For the purpose of recognizing the set of
+viable preﬁxes, all drawn states are
+considered accepting.
+(ii) Error transitions and error states are not
+drawn.
+
+\frmrule 
+
+\textit{State Closure Rule}
+
+If $A \rightarrow \alpha \cdot B \beta$ is in $I$ then 
+$B \rightarrow \cdot \gamma$ is in $I$
+
+\textit{Proof}: \\
+We have $A \rightarrow \alpha \cdot B \beta$ is in $I$,  
+therefore, $A \rightarrow \alpha \cdot B \beta$ is a valid pair for some 
+right sentential form, say $\rho$. \\
+To be a valid pair means that we have:
+$$S \Rightarrow^{*}_{rm} \rho A \delta \Rightarrow_{rm} \rho\alpha B\beta\delta$$
+But we have the rule $B \rightarrow \gamma$. 
+If $B$ is the rightmost non-terminal, then an application of the rule gives that:
+$$S \Rightarrow^{*}_{rm} \rho\alpha B\beta\delta \Rightarrow_{rm} \rho\alpha \gamma \beta\delta$$
+For the right sentential form $\rho\alpha \gamma \beta\delta$, 
+we see that $B \rightarrow \cdot \gamma$ is a valid pair for viable prefix $\rho\alpha$
+
+\frmrule 
+
+\textit{Transition Rule}
+
+Let $I,I'$ be the set of valid items for viable prefixes $\rho\alpha$ and $\rho\alpha Y$. \\
+If $X \rightarrow \alpha \cdot Y \beta$ is in $I$ then 
+$X \rightarrow \alpha Y \cdot \beta $ is in $I'$.
+
+\textit{Proof}: \\
+Assume $X \rightarrow \alpha \cdot Y \beta$ is in $I$.  
+Then $X \rightarrow \alpha \cdot Y \beta$ is a valid pair for $\rho$. \\
+To be a valid pair means that we have:
+$$S \Rightarrow^{*}_{rm} \rho X \delta \Rightarrow_{rm} \rho\alpha Y\beta\delta$$
+
+We are given that $\rho Y$ is a viable prefix. 
+So there must be some right sentential form:
+$$S \Rightarrow^{*}_{rm} \rho Y Z \delta'$$
+
+\frmrule 
+
+% \frmrule 
+
+% No ambiguous grammar is LR(k) for any fixed k
+
+% \frmrule 
+
+
+% An \textsf{LR}($k$) parser must be able to recognize the occurrence of the right
+% hand side of a production after having seen all that is derive
+% d from
+% that right hand side with
+% k
+% symbols of lookahead.
+
+% \frmrule 
+
+
+
+% \section{Shift-Reduce Parsing}
+
+
+% \frmrule
+
+% \textit{Introducing Shift-Reduce Parsers}:
+
+
+% \begin{prooftree}
+% \def\defaultHypSeparation{\hskip .01in}
+% \AxiomC{}
+% \LeftLabel{\textsc{shift}}
+% \UnaryInfC{$(\alpha\gamma,a\rho) \leadsto (\alpha\gamma a,\rho)$}
+% \end{prooftree}
+
+
+% \begin{prooftree}
+% \def\defaultHypSeparation{\hskip .01in}
+% \AxiomC{}
+% \LeftLabel{\textsc{reduce}}
+% \RightLabel{$X \rightarrow \gamma \in R$}
+% \UnaryInfC{$(\alpha\gamma,\rho) \leadsto (\alpha X,\rho)$}
+% \end{prooftree}
+
+% \highlightdef{\textbf{Shift}: }
+% \highlightdef{\textbf{Reduce}: }
+% \highlightdef{\textbf{Shift-Reduce Parser}: a \textit{shift-reduce parser} is an implementation of the handle-pruning 
+% algorithm that uses
+% uses state $(\sigma, \rho)$ where $\sigma$ is the stack and $\rho$ is unread input}
+
+
+% \section{Item Push-down Automaton}
+
+
+% \highlightdef{\textbf{Pushdown Automaton}: Like a FSA but \textit{augmented with a stack} }
+% A pushdown automaton is like a FSA (which it be a NFA, DFA). 
+
+
+
+% \frmrule 
+
+
+% \textit{Introducing context-free items. Interpretation of their meaning in context of PDA}
+
+
+
+% \frmrule 
+
+
+
+
+% \section{Recognizing Derivation Handles I}
+
+
+
+
+% \highlightdef{\textbf{Viable Prefix}: $\alpha$ is a \textit{viable prefix} iff 
+% there is a $\omega$ such that\\ $\alpha\omega$ is a stack of the 
+% shift-reduce parser}
+
+% \highlightdef{\textbf{LR(0) Item}: An \textit{LR item} is a rule 
+% with a dot ($\cdot$) in some position on the rhs}
+
+% \highlightdef{All the LR items of $X \rightarrow \gamma$ give all possible $(\sigma, \rho)$ 
+% where we can apply the \textsc{reduce} rule }
+
+% We didn't have to use a dot. We could've used a bar (|) or a pointer/arrow.
+% From literature, dot is the most common choice. This dot is often called the \textit{cursor}.
+
+
+% \highlightdef{Whatever is on the stack must be the prefix of the rhs of some production 
+% (or productions)}
+
+
+
+% \section{Recognizing Derivation Handles II}

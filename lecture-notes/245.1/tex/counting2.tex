@@ -1,0 +1,50 @@
+
+\chapter{Counting II}
+
+
+
+
+\section{Balls:D, Bins:I - Nonempty}
+
+
+
+\highlightdef{$N_m = S_m - C(m+1,1)S_1 + C(m+2,2)S_2 - ... (-1)^n C(m+n, n)S_n$ }
+
+
+
+\textbf{Proof} (\textit{inclusion/exclusion intersection formula})\\
+
+
+\highlightdef{$|A_1'A_2'...A_n'| = N_0 = S_0 - S_1 + S_2 - ... (-1)^n S_n$ }
+
+\begin{itemize}
+\item $S_i$ is the size of $|A_{x_1} \cap A_{x_2} \cap ... \cap A_{x_n}|$ for all $i < j$. 
+That is all paris be in $i$ different sets simultaneously. 
+\item An element in $S_i$ must be in $i$ different sets simultaneously. 
+\end{itemize}
+
+
+\frmrule
+
+\textbf{Proof} (\textit{inclusion/exclusion union formula})\\
+
+
+
+\frmrule
+
+
+\section{Balls:D, Bins:I}
+
+
+\highlightdef{\textbf{Stirling Numbers of the Second Kind}: $S(m,n)$}
+
+\highlightdef{$S(n,b) = T(n,b)/b!$}
+
+
+
+\begin{example}
+What is the probability of a game of Elimination Rock Paper Scissors 
+finishing in one round with $m$ players
+\end{example}
+
+\frameans{}{$P[\text{stop}] = \frac{2}{3^{m-1}} \times S(m, 2)$}

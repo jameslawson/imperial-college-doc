@@ -1,0 +1,51 @@
+\chapter{Vim}
+
+
+\section{Movement}
+
+
+\frmrule 
+
+\textit{Search to Move}
+
+\highlightdef{\textbf{Search}: Press $/$ then regex search pattern}
+
+\highlightdef{\textbf{Next}: Press $n$. \textbf{Back}: Press $N$}
+
+
+
+
+\frmrule 
+
+\textit{Using Relative Numbers}
+
+
+
+
+\section{Maps}
+
+Similar to how Unix has a \lstinline{.cshrc} file
+(\textit{C} \textit{S}hell \textit{R}un \textit{C}ommands file), 
+Vim has a \lstinline{.vimrc} file, a Vim \textit{R}un \textit{C}ommands file.
+You will most likely need to create it - it is not usually there by default.
+
+
+\begin{sidenote}{vimtutor}
+ 
+\end{sidenote}
+
+
+
+
+\begin{sidenote}{Paste to match indentation}
+\lstinline{]p}. This pastes the contents of a buffer just like \lstinline{p} does, 
+but it \textit{automatically adjusts the indent} to match the line the cursor is on. 
+This is useful for moving code around.
+\end{sidenote}
+
+
+\section{Changing}
+
+Single Character - r \\
+Up to The End of Line - c\$ \\
+Entire LIne - cc 

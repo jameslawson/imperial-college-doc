@@ -1,0 +1,299 @@
+\chapter{Markov Chains}
+
+
+
+\section{Introducing Markov Chains}
+
+
+
+
+
+\highlightdef{\textbf{Markov Property}: $\prob{X_{t+1} = j \;|\; X_t = i_t, ..., X_t= i_t} = \prob{X_{t+1} = j \;|\; X_t = i_t}$ }
+
+To work out the next step, we only need to look at the \textit{immediate past}. 
+The past and future are conditionally independent given the present. 
+Any information further back in the past, namely, 
+that fact that $X_n = i_n, ..., X_1 = i_1$ is \textit{out-dated, obselete information}. 
+
+We will look at Markov chains with \textit{stationary transitions}, or \textit{homogeneous transitions}. 
+These are chains tha satisfy the \textit{Time-Homogeneous Property}. 
+
+\highlightdef{\textbf{Time-Homogeneous Property}: $\prob{X_{t+1} = j \;|\; X_t = i} = \prob{X_{t+k+1} = j \;|\; X_{t+k} = i}$ }
+
+This expresses that the transitions of the Markov chain are time-independent. 
+That is, $q_{ij}$ does not depend on time $t$. 
+
+There are several pictorial elements that help us imagine the evolution of a Markov chain. 
+
+\highlightdef{\textbf{Markov Process}: Given $\prob{X_{t+1} = j \;|\; X_t = i}$ for all $i,j \in \Omega$  }
+
+
+\begin{itemize}
+\item \textbf{Chain of States} Represent an evolution $(i_1, i_2, i_3, ...)$ 
+as a chain with nodes $i_1$, $i_2$, $i_3$ ... and an arrows from $(i_1, i_2)$, 
+$(i_2, i_3)$ ... 
+\item \textbf{Graphical Representation} Represent an evolution $(i_1, i_2, i_3, ...)$ 
+on a graph. The $x$-axis is time, $t \in \mathbb{N}$. The $y$-axis is $i \in \Omega$. 
+We plot $(t,i)$ iff at time $t$, we have $X_t = i$. 
+\end{itemize}
+
+The entire Markov chain.
+
+\begin{itemize}
+\item \textbf{Forest}
+\item \textbf{Transition Graph}
+\item \textbf{Transition Matrix}  
+\end{itemize}
+
+
+\section{Transition Matrices}
+
+We let $s = [p_0, p_1, p_2 ..., p_n]$ where $p_i = \prob{X_0 = i}$. 
+This gives pmf of $X_0$, but as a \textit{row vector}.  
+
+Assume we are given a Markov process $(s,Q)$. 
+
+
+\[
+\begin{array}{ll}
+(sQ)_j &= \sum_i s_i q_{ij}\\
+&= \sum_i \prob{X_t = i} \cdot \prob{X_{t+1} = j | X_t = i} \\
+&= \prob{X_{t+1} = j} \\
+&= (s')_j \\
+\end{array}
+\]
+
+
+A more powerful result can be found by looking at the $(i,j)$ entry 
+of powers of the transition matrix. 
+
+Proof by induction.
+
+\[
+\begin{array}{ll}
+(sQ)_j &= \sum_i s_i q_{ij}\\
+&= \sum_i \prob{X_t = i} \cdot \prob{X_{t+1} = j | X_t = i} \\
+&= \prob{X_{t+1} = j} \\
+&= (s')_j \\
+\end{array}
+\]
+
+\frmrule
+
+\begin{example}
+A Markov chain on states $\Omega = \{0,1,2\}$ has transition matrix:
+$$ P = 
+\begin{bmatrix} 
+0.1 && 0.2 && 0.7 \\ 
+0.2 && 0.2 && 0.6 \\
+0.6 && 0.1 && 0.3 \\
+\end{bmatrix}
+$$
+(a) Compute the two-step transition matrix $P^2$. \\
+(b) Hence state (i) $\prob{X_3 = 1 | X_1 = 0}$ (ii) $\prob{X_6 = 1 | X_4 = 0}$ \\
+(c) Determine $\prob{X_3 = 1 | X_1 = 0}$. 
+\end{example}
+
+\frmrule
+
+\begin{example}
+A Markov chain on states $\Omega = \{0,1,2\}$ has transition matrix:
+$$ P = 
+\begin{bmatrix} 
+0 && 0.5 && 0.5 \\ 
+0.5 && 0 && 0.5 \\
+0.5 && 0.5 && 0 \\
+\end{bmatrix}
+$$
+Determine: \\
+(a) $\prob{X_1 = 0 | X_0 = 0}$.\\
+(b) $\prob{X_2 = 0 | X_0 = 0}$.\\
+(c) $\prob{X_3 = 0 | X_0 = 0}$.\\
+(d) $\prob{X_4 = 0 | X_0 = 0}$.
+\end{example}
+
+\frmrule
+
+\begin{example}
+A Markov chain on states $\Omega = \{0,1,2\}$ has transition matrix:
+$$ P = 
+\begin{bmatrix} 
+0.7 && 0.2 && 0.1 \\ 
+0   && 0.6 && 0.4 \\
+0.5 && 0 && 0.5 \\
+\end{bmatrix}
+$$
+Determine the conditional probabilities:\\
+(i) $\prob{X_3 = 1 | X_0 = 0}$ \\
+(ii) $\prob{X_4 = 1 | X_0 = 0}$ 
+\end{example}
+
+\frmrule
+
+
+\begin{example}
+A Markov chain on states $\Omega = \{0,1,2\}$ has transition matrix:
+$$ P = 
+\begin{bmatrix} 
+0.6 && 0.3 && 0.1 \\ 
+0.3 && 0.3 && 0.4 \\
+0.4 && 0.1 && 0.5 \\
+\end{bmatrix}
+$$
+You are given that $X_0 = 1$. \\
+Determine $\prob{X_2 = 2}$. 
+\end{example}
+
+\frmrule
+
+
+\begin{example}
+A Markov chain on states $\Omega = \{0,1,2\}$ has transition matrix:
+$$ P = 
+\begin{bmatrix} 
+0.1 && 0.1 && 0.8 \\ 
+0.2 && 0.2 && 0.6 \\
+0.3 && 0.3 && 0.4 \\
+\end{bmatrix}
+$$
+(a) Determine the conditional probabilities:\\
+(i) $\prob{X_3 = 1 | X_1 = 0}$ \\
+(ii) $\prob{X_2 = 1 | X_0 = 0}$ \\
+(b) What do you notice about these two answers? Explain the result. 
+\end{example}
+
+
+\frmrule
+
+
+\begin{example}
+A Markov chain on states $\Omega = \{0,1,2\}$ has transition matrix:
+$$ P = 
+\begin{bmatrix} 
+0.3 && 0.2 && 0.5 \\ 
+0.5 && 0.1 && 0.4 \\
+0.5 && 0.2 && 0.3 \\
+\end{bmatrix}
+$$
+You are given $s = [0.5,0.5,0]$ as the initial state. \\
+(a) Determine $\prob{X_2 = 0}$ \\
+(b) Determine $\prob{X_3 = 0}$ 
+\end{example}
+
+
+
+
+\section{Multiple-Step Transitions}
+
+
+
+
+
+\section{Steady-States I}
+
+\highlightdef{\textbf{Steady-State}: $s$ is \textit{steady-state} when $sQ = s$}
+
+This intuitively says that the next state $sQ$, is the same as the previous state $s$. 
+And apply this recursively, we see that the state will always be $s$. 
+
+That is an eigenvalue-eigenvector equation when we take the transpose of both sides. 
+The eigenvalue is 1 here. 
+
+\highlightdef{$s$ is in the nullspace of $Q^T$}
+
+In other words, $s$ is in the \textit{left-nullspace} of $Q$. 
+
+A common question for a Markov Chain is: \textit{does this steady-state exist?}. 
+This is the same as asking whether there is a solution to the equation $sQ = s$. 
+If there is a solution, we might wonder whether it is unique? 
+Is it necessary for the Markov chain converge to this steady state?
+How can we compute solutions for this equation?
+
+\frmrule
+
+
+\begin{example}
+A Markov chain on states $\Omega = \{0,1,2\}$ has transition matrix:
+$$ P = 
+\begin{bmatrix} 
+0.6 && 0.4 \\ 
+0.2 && 0.8 \\
+\end{bmatrix}
+$$
+You are given $s = [1,0]$ as the initial state. \\
+(a) Diagonalise $P^T$ into $V\Lambda V^{-1}$. \\
+(b) Hence determine $\lim_{n \rightarrow \infty} (P^T)^{n}$ \\
+(c) Determine the steady-state $s_{\infty}$ \\
+
+\begin{itemize}
+\item One eigenvalue must be $\lambda_1 = 1$. Since $\text{trace}(P) = \lambda_1 + \lambda_2$. 
+We have that $1.4 = 1 + \lambda_2$. So $\lambda_2 = 0.4$. 
+The corresponding eigenvectors are found by looking at the nullspaces for 
+$P - \lambda_1 I$ and $P - \lambda_2 I$ respectively. 
+We see that $v_1 = (1,2)$ and $v_2 = (1,-1)$. So we have:
+
+$$ V\Lambda V^{-1} = 
+\begin{bmatrix} 
+1 && 1 \\ 
+2 && -1 \\
+\end{bmatrix}
+\begin{bmatrix} 
+1 && 0 \\ 
+0 && 0.4 \\
+\end{bmatrix}
+\begin{bmatrix} 
+1/3 && 1/3 \\ 
+2/3 && 1/3 \\
+\end{bmatrix}
+$$
+\item $(P^T)^{n} = V \Lambda^n V^{-1}$
+So 
+$$ (P^T)^{n} = 
+\begin{bmatrix} 
+1 && 1 \\ 
+2 && -1 \\
+\end{bmatrix}
+\begin{bmatrix} 
+1 && 0 \\ 
+0 && (0.4)^n \\
+\end{bmatrix}
+\begin{bmatrix} 
+1/3 && 1/3 \\ 
+2/3 && 1/3 \\
+\end{bmatrix}
+=
+\begin{bmatrix} 
+1/3 + 2/3(0.4)^n && 1/3 + 1/3(0.4)^n \\ 
+2/3 - 2/3(0.4)^n && 2/3 - 1/3(0.4)^n\\
+\end{bmatrix}
+$$
+So taking the limit as $n$ tends to infinity gives us:
+$$ \lim_{n \rightarrow \infty} (P^T)^{n} = 
+\begin{bmatrix} 
+1/3 && 1/3 \\ 
+2/3 && 2/3 \\
+\end{bmatrix}
+$$
+\item 
+The steady-state is therefore given by:
+$s_{\infty} = (P^T)^{n} s_0 = (1/3,2/3)$
+\end{itemize}
+
+\end{example}
+
+\frmrule
+
+
+
+\section{Steady-States II}
+
+
+\highlightdef{\textbf{Irreducible}}
+A better term might be \textit{connected}, but \textit{irreducible} 
+is the standard term for this property. 
+
+
+
+\section{Applications of Markov Chains}
+
+

@@ -1,0 +1,158 @@
+
+\chapter{Probability I}
+
+
+
+\section{Sample Spaces}
+
+
+
+\section{Probabilities as Areas}
+
+
+
+\section{Independence}
+
+\section{Conditional Probability}
+
+
+
+
+
+\section{Tree Diagrams}
+
+First let's prove a simple, yet powerful result.
+\highlightdef{$\prob{A_1 \cap ... \cap A_n} = 
+\prob{A_1} \cdot \prob{A_2|A_1} \cdot \prob{A_3|A_1 \cap A_2} \cdot ... \cdot \prob{A_n|A_1 \cap A_2 \cap ... \cap A_{n-1}}$}
+
+This is sometimes called \textit{the chain rule} (of probability).
+Expand the RHS using the definition of conditional probability.
+
+$$
+\prob{A_1} 
+\cdot \frac{\prob{A_1 \cap A_2}}{\prob{A_1}} 
+\cdot \frac{\prob{A_1 \cap A_2 \cap A_3}}{\prob{A_1 \cap A_2}}
+\cdot ... 
+\cdot \frac{\prob{A_1 \cap A_2 \cap ... \cap A_n}}{\prob{A_1 \cap A_2 \cap ... \cap A_{n-1}}}
+$$
+
+Now we see that the denominator of every fraction cancels with the numerator of the fraction next along the chain:
+
+$$
+\cancel{\prob{A_1}} 
+\cdot \frac{\prob{A_1 \cap A_2}}{\cancel{\prob{A_1}}} 
+\cdot \frac{\prob{A_1 \cap A_2 \cap A_3}}{\prob{A_1 \cap A_2}}
+\cdot ... 
+\cdot \frac{\prob{A_1 \cap A_2 \cap ... \cap A_n}}{\prob{A_1 \cap A_2 \cap ... \cap A_{n-1}}}
+$$
+
+$$
+\cancel{\prob{A_1}} 
+\cdot \frac{\cancel{\prob{A_1 \cap A_2}}}{\cancel{\prob{A_1}}} 
+\cdot \frac{\prob{A_1 \cap A_2 \cap A_3}}{\cancel{\prob{A_1 \cap A_2}}}
+\cdot ... 
+\cdot \frac{\prob{A_1 \cap A_2 \cap ... \cap A_n}}{\prob{A_1 \cap A_2 \cap ... \cap A_{n-1}}}
+$$
+\begin{center}
+...
+\end{center}
+$$
+\cancel{\prob{A_1}} 
+\cdot \frac{\cancel{\prob{A_1 \cap A_2}}}{\cancel{\prob{A_1}}} 
+\cdot \frac{\cancel{\prob{A_1 \cap A_2 \cap A_3}}}{\cancel{\prob{A_1 \cap A_2}}}
+\cdot ... 
+\cdot \frac{\prob{A_1 \cap A_2 \cap ... \cap A_n}}{\cancel{\prob{A_1 \cap A_2 \cap ... \cap A_{n-1}}}}
+$$
+
+To work out $\prob{A_1 \cap ... \cap A_n}$ we can draw a \textit{tree diagram}. 
+Recall from graph theory for every node in a tree, there is a \textit{unique path} 
+from the root the node. So nodes and paths are 
+equivalent. For each node/path we associate a probability.
+
+\highlightdef{\textbf{Tree Diagram}: Node $E_n$ with path: 
+$\text{Root} \rightarrow E_1 \rightarrow E_2 \rightarrow ... \rightarrow E_n$ 
+has associated probability $t(E_n) = \prob{E_n|E_1 \cap E_2 \cap ... \cap E_{n-1}}$. }
+The root node is a special case which has probability of 1 associated. That is, 
+$t(\text{Root}) = 1$. 
+
+With this definition we have the following:
+\highlightdef{$\prob{A_1 \cap ... \cap A_n} = t(A_1)\cdot t(A_2)\cdot ... t(A_n)$}
+In other words, to work out $\prob{A_1 \cap ... \cap A_n}$, 
+we simple need to multiple out the probabilites of the 
+tree probabilities of the nodes along the unique path 
+$\text{Root} \rightarrow A_1 \rightarrow A_2 \rightarrow ... \rightarrow A_n$ 
+This assuming such a path exists in the tree.
+Indeed this only works if there is a path: $\text{Root} \rightarrow A_1 \rightarrow  ... \rightarrow  A_n$. 
+In other words, we need:
+\begin{itemize}
+\item $\prob{A_1} \neq 0$ ($\text{Root} \rightarrow A_1$)
+\item $\prob{A_1 \cap A_2} \neq 0$ ($A_1 \rightarrow A_2$)
+\item $\prob{A_2 \cap A_3} \neq 0$ ($A_2 \rightarrow A_3$)
+\item ... 
+\item $\prob{A_{n-1} \cap A_n} \neq 0$ ($A_{n-1} \rightarrow A_n$)
+\end{itemize}
+In other words, we need $\prob{A_1 \cap ... \cap A_n} \neq 0$
+
+\frmrule
+
+\begin{example}
+Show that $\prob{A_1 \cap A_2 \cap ... \cap A_n} = \prob{A_1 | A_2 \cap ... \cap A_n} \cdot \prob{A_2 \cap ... \cap A_n}$
+\\using:\\
+(a) def. of conditional probability \\
+(b) chain rule of conditional probability
+\end{example}
+
+\frmrule
+
+Another way to work out $\prob{A_1 \cap A_2 \cap ... \cap A_n}$ comes from 
+a formula called \textit{Bayes' Rule}. Say we have an external piece of 
+information $B$, then we can use it to solve the mystery case of: $\prob{A_1 \cap A_2 \cap ... \cap A_n}$, 
+without knowing anything about $A_1$, ..., $A_n$,
+\textit{provided} we know $B$ completely 
+and how it interacts with $\prob{A_1 \cap A_2 \cap ... \cap A_n}$. 
+
+$$\prob{A_1 \cap A_2 \cap ... \cap A_n} = \prob{B}\frac{\prob{A_1 \cap A_2 \cap ... \cap A_n \;|\; B}}{\prob{B \;|\; A_1 \cap A_2 \cap ... \cap A_n}}$$
+
+
+
+\section{A Posteriori Probabilities}
+
+
+\highlightdef{$P[B|A]$ is called \textit{a posteriori} if event $B$ precedes $A$ in time}
+In other words, we think of $B$ happening after $A$. Any conditional probability of 
+the form $P[B|A]$ is technically \textit{a posteriori}, but our definition is that 
+$P[B|A]$ is \textit{a posteriori} only when it is natural to have a timeline 
+and only when it makes sense to think of $A$ happening then $B$ happening in time. 
+
+\begin{example}
+What is $P(A|\emptyset)$? [where $A$ is some event with $P(A) > 0$]
+\end{example}
+
+\frameans{}{undefined}
+
+\begin{example}
+What is $P(\mathcal{U}|\emptyset)$? [where $\mathcal{U}$ is the universal event]
+\end{example}
+
+\frameans{}{undefined}
+
+
+If we treat this as an \textit{a posteriori} condition probability, then 
+what this tells usince $P(\emptyset) = 0$, the event will never happen, and we cannot say about 
+what happens afterwards. Even though we know $P(\mathcal{U}) = 1$, we are asking 
+about the probability of anything happening given an event that will never happen. 
+
+\frmrule
+
+\begin{example}
+\textbf{Deal or No Deal}:\\
+What is the probability of having a perfect game and winning the top prize in the show \textit{Deal or No Deal}.
+Assume that you always accept deal. 
+
+\end{example}
+
+
+
+\section{Probability Tables}
+
+\highlightdef{\textbf{False Positive}: $P[S|\overline{S}]$. \textbf{False Negative}: $P[S|\overline{S}]$. }

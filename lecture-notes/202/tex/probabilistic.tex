@@ -1,0 +1,64 @@
+
+\chapter{Randomized Algorithms}
+
+
+\section{Probabilistic Algorithms}
+
+Often when a problem is intractable, we may 
+be able to solve the problem by using a style that makes it
+known as a \textit{probabilistic algorithm}. This can be done rather than 
+using a deterministic algorithm. As the name suggests, the correctness of 
+probabilistic algorithms is based on a probability. 
+The algorithm itself has been randomized and made non-deterministic. 
+
+Although probabilistic algoriths cannot guarantee that their 
+output is error-free, techniques can be applied to reduce the probability of error 
+to a value that is small enough for the application.
+
+
+\begin{figure}[h]
+\begin{tikzpicture} [
+   every node/.style={node_sty, align=center},
+   edge from parent/.style={edge_sty},
+   edge from parent path={(\tikzparentnode.south) 
+   |- ($(\tikzparentnode.south)!0.5!(\tikzchildnode.north)$) -| (\tikzchildnode.north)},
+   level 1/.style={sibling distance=5cm, level distance = 0.9cm},
+   level 2/.style={sibling distance=3cm},
+   ch/.style={text width=2cm}
+]
+   \node 
+   (root) {Probabilistic Algorithms}
+      child {node {Las Vegas Algorithms}}
+      child {
+        node {Monte Carlo Algorithms}
+        child {node[ch] {Yes-biased}}
+        child {node[ch] {No-biased}}
+      };
+   
+\end{tikzpicture}
+\end{figure}
+
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Monte Carlo Algorithms}
+A \textit{Monte Carlo Algorithm} is a yes/no decision algorithm.
+When \textit{yes-biased} Monte Carlo Algorithm outputs yes, 
+the probability it is correct is 1. And \textit{yes-biased} 
+Monte Carlo Algorithm outputs no, the probability it is correct is $e$ 
+(there may be an error, $e \leqslant 1$). 
+When \textit{no-biased} Monte Carlo Algorithm outputs no, 
+the probability it is correct is 1, and when it outputs 
+yes, the probability it is correct is $e$. 
+
+\item \textbf{Las Vegas Algorithms}
+A \textit{Las Vegas} algorithm may not give an answer at all. 
+There are three outputs: yes, no, or null. 
+When a \textit{Las Vegas} outputs yes, the probability it is correct is $1$.
+When a \textit{Las Vegas} outputs no, the probability it is correct is $1$.
+When a \textit{Las Vegas} outputs null, the probability it is correct is $0$.
+Here the error is whether we fall into the null case. The probability that a 
+yes/no answer is returned is $e$ (there may be an error, $e \leqslant 1$). 
+\end{itemize}
+
+

@@ -1,0 +1,129 @@
+\chapter{Box Model}
+
+\section{Introducing Box Model}
+
+We introduce the CSS$/$2.1 box model. 
+
+
+
+\highlightdef{
+\textbf{Block Elements}: div, p, h1 ...\\
+\textbf{Inline Elements}: span, ...
+ }
+
+Block elements are sometimes called \textit{block-level} elements.
+
+
+\highlightdef{
+\textbf{Nesting Rules}:\\
+Blocks within blocks,\\
+Inline within blocks,\\
+Inline within inline.
+ }
+
+\begin{example}
+Explain whether the following document tree 
+has acceptable block/inline nesting
+
+\end{example}
+
+
+\highlightdef{\textsf{width}, \textsf{height} 
+change the \textit{content area}
+}
+when a width or height is explicitly specified for any block-level element, 
+it only determines the width or height of the visible element, aka, the 
+\textit{content area}. We then apply
+any padding, borders, and margins widths \textit{afterwards}. 
+
+A common mistake is to includes the content, 
+padding and borders within a specified width or height.
+This results in a narrower or shorter rendering of a box 
+than would result following the standard behavior.
+
+The total width and height glued to a particular 
+element is the \textit{computed width}. 
+This is content area width/height, \textit{plus} 
+the widths of the margins and borders. 
+
+
+
+\highlightdef{
+\textbf{Computed Width}: $W = w_c + w_b + w_m$ \\ 
+\textbf{Computed Height}: $H = h_c + h_b + h_m$ }
+
+
+
+
+\section{Collapsing Margins}
+
+
+
+
+In simple terms, 
+this definition indicates that when the 
+vertical margins of two elements are touching, 
+only the margin of the element with the largest margin value will be honored,
+while the margin of the element with the smaller margin value will be collapsed to zero.
+
+
+\highlightdef{\textbf{Collapsing Margins}: margin values can \textit{collapse to zero} }
+
+
+\frmrule 
+
+\textit{Collapsing Margins Between Adjacent Elements}
+
+\begin{example}
+$[(\textsf{div\#e1}, \{\textsf{margin} \mapsto 0 \}),$\\
+$(\textsf{div\#e2}, \{\textsf{margin-top} \mapsto 40px, \textsf{margin-bottom} \mapsto 25px\})$\\
+$(\textsf{div\#e3}, \{\textsf{margin-top} \mapsto 20px \})]$
+\end{example}
+
+
+\frmrule 
+
+\textit{Collapsing Margins Between Parent and Child Elements}
+
+\frmrule 
+
+\textit{Negative margins}
+
+In the case where one element has a negative margin, 
+the margin values are added together to determine the final value. 
+
+If both are negative, the greater negative value is used.
+
+
+\section{IE Box Model Bug}
+
+
+
+
+
+
+\frmrule 
+
+\textit{IE7 and the collapsing margins}
+
+
+
+
+\highlightdef{\textbf{Quirks Mode}: an \textit{incorrect} version of the box model}
+
+
+\highlightdef{Using an \textit{incomplete doctype}, 
+or having \textit{no doctype} will cause $\leqslant$ IE8 to
+switch to quirks mode }
+
+
+\frmrule 
+
+\begin{example}
+Explain which of the following doctypes will cause $\leqslant$ IE8 to switch to 
+quirks mode.
+\end{example}
+
+\frmrule 
+
+

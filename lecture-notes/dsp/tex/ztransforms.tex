@@ -1,0 +1,32 @@
+\chapter{Z-Transforms}
+
+
+
+\section{Introducing the Z-Transform}
+
+
+\section{Properties of the Z-Transform}
+
+
+\begin{sidenote}{Shifts: Laplace, Fourier DFT, DTFT, $Z$-Transform}
+Let's compare all the shifting theorems of all the transforms 
+we have seen so far. 
+\end{sidenote}
+
+
+
+
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{l|lll}
+                        & first shift & second shift \\ \hline
+    Laplace             & $\mathcal{L}\{e^{at}f(t)\} = F(s-a)$ & $\mathcal{L}\{f(t-a)u(t-a)\} = e^{-sa}F(s)$ \\
+    Fourier             &  & $\mathcal{F}\{f(t-t_0)\} = e^{-j2\pi st_0}F(s)$ \\
+    DFT                 &  & \\
+    DTFT                &  & \\
+    $Z$-Transform       & $x^{n}_0 z[n] \leftrightarrow X(z/z_0)$ & $x[n-m] \leftrightarrow z^{-m}X(z)$ \\
+
+    \end{tabular}
+     \caption{Comparing shift theorems for linear transforms} 
+\end{table}

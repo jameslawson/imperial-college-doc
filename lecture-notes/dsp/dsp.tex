@@ -1,0 +1,16 @@
+\documentclass[a4paper, draft, 10pt]{book}
+
+% BEGIN PACKAGE IMPORT
+% =============================================================================
+\usepackage{../docstyle}
+% =============================================================================
+
+\newcommand{\ket}[1]{\ensuremath{\left|#1\right\rangle}} % Dirac Kets
+\newcommand{\bra}[1]{\ensuremath{\left\langle#1\right|}} % Dirac Bras
+\newcommand{\braket}[2]{\ensuremath{\left\langle#1 | #2\right\rangle}}
+
+\begin{document}
+\input{./tex/dft.tex}
+\input{./tex/linearsystem.tex}
+\input{./tex/ztransforms.tex}
+\end{document}

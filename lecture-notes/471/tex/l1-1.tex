@@ -1,0 +1,1152 @@
+
+\chapter{$\mathcal{L}_1$ Language I}
+
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+
+\section{Introducing $\mathcal{L}_1$}
+
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+
+Here we define a new language $\mathcal{L}_1$ to begin our study of 
+object-oriented language. 
+$\mathcal{L}_1$ has support for classes that contain fields and methods. 
+There is no support for inheritence, abstract classes, overriding
+or interfaces. 
+
+The work in this chapter will be on giving a formal description of $\mathcal{L}_1$ 
+consists of
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Syntax} 
+\item \textbf{Operational Semantics} 
+\item \textbf{Type System} We will see how to prove \textit{type soundness}, 
+demonstrated through an important theorem called the \textit{subject reduction theorem}.
+\end{itemize} 
+
+The \textit{structure} of an $\mathcal{L}_1$ program is defined by the function
+\highlightdef{ $Prog = ClassId \rightarrow 
+((FieldId \rightarrow type) 
+\times (MethodId \rightarrow meth))$ }
+
+where $meth$ and $type$ have a syntax defined by:
+\begin{flalign*}
+meth &::= type\, m (type\, x) \{ x \} &\\
+type &::= \text{bool} | c \\
+e    &::= \text{if}\, e \text{then}\, e\, \text{else}\, e | e.f | e.f := e 
+               | e.m(e) | \text{new}\, c | x | \text{this} | \text{true} 
+               | \text{false} | \text{null}
+\end{flalign*}
+with the identiﬁer conventions: $c \in ClassId$  for class identifiers,
+$f \in FieldId$ for field identifiers and $m \in MethId$  for method 
+identifiers.
+
+\frmrule
+
+
+\begin{example}
+Here is an example program
+\begin{lstlisting}
+class Book {
+	bool good;
+	Person owner;
+	bool readBy(Person x) {this.good := true}
+}
+class Person {
+	Book like;
+	Book meet (Person x) {this.like := x.like}
+}
+\end{lstlisting}
+
+which has the following representation:
+
+
+\[ \begin{array}{lllll}
+P_{PB} & = & \text{Book}   & \mapsto & ((\text{good} \mapsto \text{bool}, 
+                                   \text{owner} \mapsto \text{Person}), \\
+       &   &               &         &  (\text{readBy} \mapsto \text{bool readBy(Person x)}
+                                    \{ \text{this.good} := \text{true} \})), \\
+       &   & \text{Person} & \mapsto & ((\text{like} \mapsto \text{Book}), \\
+       &   &               &         &  (\text{meet} \mapsto \text{Book meet(Person x)}
+                                    \{ \text{this.like} := \text{x.like} \}))	 \\
+\end{array}\] 
+
+
+\end{example}
+
+
+
+\begin{example}
+For the following program, find the representation in $\mathcal{L}_1$.
+
+\begin{lstlisting}
+class B {
+	D m (E x) { true }
+	C f
+}
+\end{lstlisting}
+\end{example}
+
+\frmrule
+
+\[ \begin{array}{lllll}
+P_B & = & \text{B}   & \mapsto & ((\text{f} \mapsto \text{C}), \\ 
+    &   &            &         &  (\text{m} \mapsto \text{D m (E x)}
+                                    \{ \text{true} \})) \\
+\end{array}\] 
+
+\frmrule
+
+\begin{example}
+For the following program $P_{FG}$, find the representation in $\mathcal{L}_1$.
+
+\begin{lstlisting}
+class F {
+  C f
+  D e
+  H g
+  T m1 (H x) { this }
+  R m2 (D x) { true }
+}
+class G {
+  M a
+  N b
+}
+\end{lstlisting}
+\end{example}
+
+\frmrule
+
+\[ \begin{array}{lllll}
+P_{FG} & = & \text{F}   & \mapsto & ((\text{f} \mapsto \text{C},
+                                  \text{e} \mapsto \text{D}, 
+                                  \text{g} \mapsto \text{H}), \\ 
+    &   &            &         &  (\text{m1} \mapsto \text{T m1 (H x)}\{ \text{this} \}, \\
+    &   &            &         &  \text{m2} \mapsto \text{R m2 (D x)}\{ \text{true} \})) \\
+    &   & \text{G}   & \mapsto & (\text{a} \mapsto \text{N},
+                                  \text{b} \mapsto \text{N})
+\end{array}\] 
+
+\frmrule
+
+For program $P$, and identiﬁers $c$, $f$, $m$, we define 
+a \textit{field lookup function} and a \textit{method lookup functions}.
+
+\highlightdef{The \textbf{Field Lookup Function} 
+$\mathcal{F}(\text{P},\text{c},\text{f}) 
+= \text{P}(\text{c}) \downarrow_{1} (\text{f})$ \\
+The \textbf{Method Lookup Function} 
+$\mathcal{M}(\text{P},\text{c},\text{m}) 
+= \text{P}(\text{c}) \downarrow_{2} (\text{m})$}
+
+We also define the \textit{field set function} as 
+$\mathcal{Fs}(\text{P},\text{c}) = \{ f\, |\, 
+\mathcal{F}(\text{P},\text{c}, \text{f})\, \text{is defined} \}$
+and the \textit{method set function} as
+$\mathcal{Ms}(\text{P},\text{c}) = \{ m\, |\, 
+\mathcal{M}(\text{P},\text{c}, \text{m})\, \text{is defined} \}$
+If you give the field set function a program and class, it gives 
+you the fields inside that class. If you give the method set 
+function a program and a class, it outputs the methods inside the class. 
+
+\section{Stack Frames and Heaps}
+
+We now begin defining our runtime environment for our language. 
+Most object oriented language have the notion of \textit{objects}, 
+\textit{references}, \textit{stack frames} and a \text{heap}. 
+We will give a model for all of these.
+
+First we define an \textit{address} as a greek 
+iota symbol subscripted with a natural number. 
+For example, the first address is $\iota_0$, second address is $\iota_1$, and so on.
+We therefore define the set all possible addresses, the \textit{address set}, as follows.
+
+\highlightdef{\textbf{Address Set}: $addr = \{ \iota_i\, |\, i \in \{0,1,2,...\} \}$ }
+
+Under this scheme, we can work with a \textit{countably infinite} 
+number of memory addresses. 
+But we will see soon that when we define operational semantics
+we will use a \textit{finite} a number of computation 
+steps limiting the computation to using a finite number of addresses. 
+So this model doesn't limit the applicability to real machines.
+
+Next we define a \textit{value} to be either true, false, null, \textit{or 
+an address} (in the same way addresses were a previously defined). 
+So the set of all possible values, 
+the \textit{value set}, can be defined as follows.
+
+\highlightdef{\textbf{Value Set}: $val = \{ \text{true, false, null} \} \cup addr $}
+
+A field can only have values that are taken from this value set. 
+In fact, this coindices exactly with how we define an \textit{object}. 
+An object can be seen as an instance 
+of a class where we assign values to the fields of the objects. 
+The values assigned have to be from the value set.
+
+\highlightdef{\textbf{Objects}: $object = ClassId \times (FieldId \rightarrow val)$}
+
+Recall that we said a value is either true, false, null, or 
+an address. Well, a value that is an address is called a
+ \textit{pointer} and say that the value points to the contents of memory.
+In our model, \textit{pointers only point to addresses on heap}. 
+Furthermore, the \textit{heap can only contain objects}. 
+An object is a stateful version of a class. 
+An object is an instance of some class where all of the fields of have been assigned values. 
+
+
+A pointer cannot point to other pointers nor can they point 
+to the primitive language values: true. false, null. 
+They can only point to objects that lie on the heap.
+To formalise this, we define our memory, the stack 
+frame $\phi$ and heap $\chi$.
+
+\highlightdef{\textbf{Heap}: $heap = addr \rightarrow object$}
+
+The heap is a function that maps address to objects. 
+This definition tells us that the heap can only store objects. 
+This is definition is also how we deference pointers. When we 
+dereference a pointer, the result is an object. This tells us that 
+pointers can only point to objects.
+
+Finally we have a stack frame.
+\highlightdef{\textbf{Stack Frame}: $stack frame = addr \times val$ }
+The stack frame is a tuple with two elements. The first component gives an address for the this
+pointer in the current execution context. We give an object on the heap for \textit{this} 
+to point to. The second component of the tuple gives a value for x in the 
+current execution context. Recall that right now, our methods always have exactly
+one parameter called x. The second component of the stack frame gives a value to this x. 
+
+\frmrule
+
+\begin{example}
+Below shows how we an example of a stack frame $\phi_0$ and heap $\chi_0$ 
+for some execution context of $P_{BP}$. 
+
+
+Below shows how we might visualise the stack frame and heap.
+
+\end{example}
+
+\frmrule
+
+\begin{example}
+Below shows a visualising of the stack frame and heap for 
+some execution context of $P_{BP}$.
+Write out formally the heap $\chi_9$ and frame $\phi_9$ 
+which correspond to the following diagram:
+
+\end{example}
+
+
+\frmrule
+
+\begin{example}
+True or false: \\
+\textbf{(a)} \textit{this} always points to an object \\
+\textbf{(b)} x is always a value \\
+\textbf{(c)} x can be null \\
+\textbf{(d)} \textit{this} can be null
+\end{example}
+
+\frameans{}{\textbf{(a)} T \textbf{(b)} T  \textbf{(c)} T \textbf{(d)} F }
+
+
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+
+\section{Updating Execution Contexts}
+
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+
+To describe an execution context update, we use the notation 
+$A[s \mapsto t]$ which says informally \textit{take A, and update
+$s$ to $t$}. Here $A$ is can be anything that makes up our execution context 
+(like the heap) and $s$ is a particular stateful element of $A$ that is to be 
+updated to the new element, $t$. This notation was used in 
+\textit{Models of Computation} when we defined the operation semantics of the 
+while language.
+
+In $\mathcal{L}_1$ we are interesting in updating two things, (i) fields inside objects and 
+(ii) the heap. Before we do this, recall that we defined an object as a 
+function with signature $object = ClassId \times (FieldId \rightarrow val)$ 
+and we defined the heap as a function with signature
+$heap = addr \rightarrow object$. With these signatures in mind lets see 
+how to define updating.
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Updating Heap}
+Given heap $\chi$, we define $\chi[\iota \mapsto o]$ as a new, updated heap.
+This says informally, \textit{take the heap $\chi$ and update the 
+object at address $\iota$ to have object $o$}.
+
+Firstly we have: $\chi[\iota \mapsto o](\iota) = o$. 
+This tells us that new heap has the object $o$ at address $\iota$.
+We also require, $\chi[\iota \mapsto o](\iota') = \chi(\iota')$ if $\iota' \neq \iota$. 
+This says that the address that are not $\iota$ must stay the same.
+The update only updates on field at a time. We want to change just $\iota$ and leave 
+the other addresses alone.
+\item \textbf{Updating Fields} 
+Given object $o$, we define $o[f \mapsto v]$ as a new, updated object.
+This says informally, \textit{take the object $o$ and update the 
+value of its field $f$ to have a new value $v$}.
+
+First the update must satisfy: $o[f \mapsto v] \downarrow_1 = o \downarrow_1$. 
+This is a requirement that the new object has the same class id as the old one.
+Next the update must change the field: $o[f \mapsto v] \downarrow_2 (f) = v$.
+The field $f$ of the new object must have value $v$. 
+Finally we require, $o[f \mapsto v] \downarrow_2 (f') = f'$ if $f' \neq f$. 
+This says that the fields that are not $f$ must stay the same.
+The update only updates on field at a time.
+\end{itemize}
+
+\highlightdef{\textbf{Updating}:
+$o[f \mapsto v]$ describes \textit{field update} and
+$\chi[z \mapsto v]$ describes \textit{heap update}}
+
+
+Let's see some examples of how we can use these two definitions 
+to update a given execution context.
+
+\frmrule
+
+% Slide 19 typo, update express has extra left bracket. 
+% Diagram has \chi_9 but should read \chi_1, also 
+% it should have good:true and owner has the pointer (not good)
+
+\begin{example}
+Modify the diagram below, so that it describes the 
+update: $$\chi_1 = \chi_0[\iota_3
+\mapsto (\chi_0(\iota_3)[\text{good} \mapsto \text{true}])]$$
+
+\begin{figure}[h]
+\begin{tikzpicture}[
+  title/.style={},
+  object/.style={rectangle split, rectangle split draw splits=false,
+  draw, text width=2cm}
+]
+
+  % text labels
+  \node (stackflabel) {$\phi_0$};
+  \node  [below=1cm of stackflabel] (heaplabel) {$\chi_0$};
+
+  % stack frame
+  \node[rectangle split, rectangle split horizontal,
+  rectangle split parts=2, rectangle split draw splits=false, draw, 
+  text width=1cm, anchor=center, text centered, right=0.2cm of stackflabel]
+  (stackframe){ this \nodepart{two} x};
+
+  % objects
+  \node[object,rectangle split parts=3, below=0.5cm of stackframe] 
+  (book){ \nodepart{one} :Book \nodepart{two} good: false
+    \nodepart{three} owner: };
+  \node[object,rectangle split parts=2, right=1cm of book] 
+  (person1) {\nodepart{one} :Person \nodepart{two} like: null};
+  \node[object, rectangle split parts=2, right=1cm of person1] 
+  (person2) { \nodepart{one} :Person \nodepart{two} like:};
+
+  % draw lines on first nodepart splits for the objects
+  \draw(book.one split west) -- (book.one split east);
+  \draw(person1.one split west) -- (person1.one split east);
+  \draw(person2.one split west) -- (person2.one split east);
+
+  % draw lines connecting stack frame and objects. Respectively:
+  % this to book, x to person1, book to person2, person2 to person2
+  \path[draw,>=triangle 45, ->] (stackframe.one south) -- ++(0,0.1) 
+      -- ++(0,-0.4) -| (person2.north);
+  \path[draw,>=triangle 45, ->] (stackframe.two east) -- ++(-0.2,0) 
+      -| (person1.north);
+  \path[draw,>=triangle 45, ->] (book.three east) -- ++(-0.2,0) 
+      -- ++(0.6,0) -- ++(0,-0.6) -| (person2.south);
+  \path[draw,>=triangle 45, ->] (person2.two east) -- ++(-0.2,0) 
+      -- ++(1,0) |- (person2.east);
+ 
+
+\end{tikzpicture}
+\end{figure} 
+
+\end{example}
+
+\frmrule
+
+\begin{figure}[h]
+\begin{tikzpicture}[
+  title/.style={},
+  object/.style={rectangle split, rectangle split draw splits=false,
+  draw, text width=2cm}
+]
+
+  % text labels
+  \node (stackflabel) {$\phi_0$};
+  \node  [below=1cm of stackflabel] (heaplabel) {$\chi_0$};
+
+  % stack frame
+  \node[rectangle split, rectangle split horizontal,
+  rectangle split parts=2, rectangle split draw splits=false, draw, 
+  text width=1cm, anchor=center, text centered, right=0.2cm of stackflabel]
+  (stackframe){ this \nodepart{two} x};
+
+  % objects
+  \node[object,rectangle split parts=3, below=0.5cm of stackframe] 
+  (book){ \nodepart{one} :Book \nodepart{two} good: true
+    \nodepart{three} owner: };
+  \node[object,rectangle split parts=2, right=1cm of book] 
+  (person1) {\nodepart{one} :Person \nodepart{two} like: null};
+  \node[object, rectangle split parts=2, right=1cm of person1] 
+  (person2) { \nodepart{one} :Person \nodepart{two} like:};
+
+  % draw lines on first nodepart splits for the objects
+  \draw(book.one split west) -- (book.one split east);
+  \draw(person1.one split west) -- (person1.one split east);
+  \draw(person2.one split west) -- (person2.one split east);
+
+  % draw lines connecting stack frame and objects. Respectively:
+  % this to book, x to person1, book to person2, person2 to person2
+  \path[draw,>=triangle 45, ->] (stackframe.one south) -- ++(0,0.1) 
+      -- ++(0,-0.4) -| (person2.north);
+  \path[draw,>=triangle 45, ->] (stackframe.two east) -- ++(-0.2,0) 
+      -| (person1.north);
+  \path[draw,>=triangle 45, ->] (book.three east) -- ++(-0.2,0) 
+      -- ++(0.6,0) -- ++(0,-0.6) -| (person2.south);
+  \path[draw,>=triangle 45, ->] (person2.two east) -- ++(-0.2,0) 
+      -- ++(1,0) |- (person2.east);
+ 
+
+\end{tikzpicture}
+\end{figure} 
+
+The only change is that the book.good is now true instead of false.
+
+Now if we were to write out formally the new heap.
+\[ \begin{array}{lllll}
+\chi_1(\iota_3) & = & ... \\ 
+\chi_1(\iota_4) & = & ... \\
+\chi_1(\iota_5) & = & ... \\
+\end{array}\] 
+
+\frameans{Complete the definition of $\chi_1$}{
+$\chi_1(\iota_3) = (\text{Book}, (\text{good} \mapsto \text{true}),
+\text{owner} \mapsto \iota_5)) $ \\ 
+$\chi_1(\iota_4) = (\text{Person}, (\text{like} \mapsto \iota_3))$ \\
+$\chi_1(\iota_5) = (\text{Person}, (\text{like} \mapsto \text{null}))$
+}
+
+
+
+Note: there is no operation which changes the class of an object.
+Once an object has been created at runtime, it is has a \textit{static binding}
+to the class. Also notice that there is no operation to change the stack frame.
+In object-oriented languages, changing the values of this isn't usually done.
+Also, changing directly the values of arguments isn't too common. 
+
+
+
+\section{Inference Rules Revision}
+
+We need to be describe the type system and the operational semantics of $\mathcal{L}_1$.
+We will do this using \textit{inference rules}. An
+inference rules have a set of \textit{premises}, and one \textit{conclusion}.
+There can be any number of premises (including zero), 
+but there is always exactly one conclusion. 
+We use a line to separate premises from the conclusion. 
+Premises (if any) are put above the line, the conclusion is put below the line.
+
+\inference[\textsc{rulename}]{P_1 & P_2 &  ... & P_n }{Q}
+
+This can be read as \textit{if you can establish $P_1$, $P_2$ ... $P_n$, 
+then you can establish $Q$}". We often give an interfence rule a name 
+that is written on the side or nearby.
+
+Such inference rules can be used to give an \textit{axiomatic deﬁnition}.
+Once we have a set of axioms defined, we can combine 
+them to prove \textit{theorems}. For example, below shows 
+axiomatic definitions for the natural numbers. 
+It is a recursive definition that makes use of a successor function.
+
+\inference*[\textsc{zero}]
+{}
+{\text{Z is a natural number}}
+
+\inference*[\textsc{succ}]
+{\text{n is a natural number}}
+{\text{S(n) is a natural number}}
+
+By using these two axiomatic definitions, we
+can give a derivation for the theorem: \textit{$S(S(Z))$ is a natural number}.
+As you can see from the derivation, the idea is that we combine the axioms 
+together in a tree like structure to arrive at the result we want. 
+We match conclusion of one rule to the premise of another. 
+
+Given axioms, we can write axioms that represent operations.
+For example, we can write a definition for addition using two rules.
+
+\inference*[\textsc{addzero}]
+{}
+{\text{add(Z,n) = n}}
+
+\inference*[\textsc{addsucc}]
+{}
+{\text{add(Z,n) = n}}
+
+
+ 
+We can also give an axiomatic definitions for the addition relation.
+
+
+
+\section{Operational Semantics I}
+
+We now define the operational semantics of $\mathcal{L}_1$.
+We will use \textit{big-step semantics}.
+Each premise and conclusion is written in terms 
+of a \textit{full evaluation}. 
+We can think of this as an evaluation or an execution.
+
+\highlightdef{We define \textbf{Big-Step Semantics} relation, $\leadsto$}
+
+We are given an input expression $e \in expr$ and our context
+of stack frame $\phi$ and heap $\chi$. This expression can 
+be evaluated to some value $v$. 
+By writing $(e, \phi, \chi) \leadsto (v,\phi, \chi')$ we are 
+saying that we can work out the value and 
+the state of the stack and heap afterwards. 
+When we evaluate this, 
+the stack frame won't change but the heap may.
+Since we know the stack won't change we can write 
+$(e, \phi, \chi) \leadsto (v, \chi')$ instead.
+
+\highlightdef{\textbf{Expression Evaluation}:
+$(e, \phi, \chi) \leadsto (v, \chi')$ denotes
+that $e$ evaluates to $v$ where the execution context starts 
+at $(\phi, \chi)$ and ends up at $(\phi, \chi')$}
+
+Below we introduce a few definitions to get us started. 
+These rules (plus a few others later) make up operation semantics of 
+$\mathcal{L}_1$.
+
+\inference*[\textsc{val}]
+{}
+{(v, \phi, \chi) \leadsto (v,\chi) }
+
+\inference*[\textsc{this}]
+{}
+{(\text{this}, (\iota_i, v), \chi) \leadsto (\iota_i,\chi) }
+
+\inference*[\textsc{param}]
+{}
+{(x, (\iota_i, v), \chi) \leadsto (v,\chi) }
+
+\inference[\textsc{if-true}]
+{(e, \phi, \chi) \leadsto (\text{true}, \chi') & 
+(e_1, \phi, \chi) \leadsto (v,\chi'')}
+{(\text{if} \,e\, \text{then} \,e_1\, \text{else} \,e_2, \phi, \chi') 
+\leadsto (v,\chi'') }
+
+\inference[\textsc{if-false}]
+{(e, \phi, \chi) \leadsto (\text{false}, \chi') & 
+(e_2, \phi, \chi) \leadsto (v,\chi'')}
+{(\text{if} \,e\, \text{then} \,e_1\, \text{else} \,e_2, \phi, \chi) 
+\leadsto (v,\chi'') }
+
+\inference[\textsc{field}]
+{(\text{e}, \phi, \chi) \leadsto (\iota, \chi')}
+{(\text{e.f}, \phi, \chi) \leadsto (\chi'(\iota)\downarrow_{2}(f),\chi') }
+
+
+\frmrule
+
+\begin{example}
+Write out the derivation for evaluating the following expression
+under the given evaluation context, $\phi_0$, $\chi_0$. 
+
+$$\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, \text{false}$$
+
+\begin{figure}[h]
+\begin{tikzpicture}[
+  title/.style={},
+  object/.style={rectangle split, rectangle split draw splits=false,
+  draw, text width=2cm}
+]
+
+  % text labels
+  \node (stackflabel) {$\phi_0$};
+  \node  [below=1cm of stackflabel] (heaplabel) {$\chi_0$};
+
+  % stack frame
+  \node[rectangle split, rectangle split horizontal,
+  rectangle split parts=2, rectangle split draw splits=false, draw, 
+  text width=1cm, anchor=center, text centered, right=0.2cm of stackflabel]
+  (stackframe){ this \nodepart{two} x};
+
+  % objects
+  \node[object,rectangle split parts=3, below=0.5cm of stackframe] 
+  (book){ \nodepart{one} :Book \nodepart{two} good: true
+    \nodepart{three} owner: };
+  \node[object,rectangle split parts=2, right=1cm of book] 
+  (person1) {\nodepart{one} :Person \nodepart{two} like:};
+  \node[object, rectangle split parts=2, right=1cm of person1] 
+  (person2) { \nodepart{one} :Person \nodepart{two} like:null};
+
+  % draw lines on first nodepart splits for the objects
+  \draw(book.one split west) -- (book.one split east);
+  \draw(person1.one split west) -- (person1.one split east);
+  \draw(person2.one split west) -- (person2.one split east);
+
+  % draw lines connecting stack frame and objects. Respectively:
+  % this to book, x to person1, book to person2, person1 to book
+  \path[draw,>=triangle 45, ->] (stackframe.one south) -- ++(0,0.1) 
+      -- ++(0,-0.3) -| (book.north);
+  \path[draw,>=triangle 45, ->] (stackframe.two east) -- ++(-0.2,0) 
+      -| (person1.north);
+  \path[draw,>=triangle 45, ->] (book.three south) -- ++(0,0.1) 
+      -- ++(0,-0.4) -| (person2.south);
+  \path[draw,>=triangle 45, ->] (person1.three south) -- ++(0,0.1) 
+      -- ++(0,-0.4) -- ++(-1.5,0) |- (book.east);
+ 
+
+\end{tikzpicture}
+\end{figure} 
+
+\frmrule
+
+It helps to work from the bottom up.
+The expression only pattern-matches the bottom of 
+\textsc{if-true} and \textsc{if-false}. We can 
+see from the diagram that \text{this.good} is true.
+So we can guess that the last rule must be \textsc{if-true}. 
+We just need to work out how to branch upwards.
+Hopefully we will reach the base cases allowing our derivation tree complete. 
+
+
+\inference[\textsc{if-true}]
+{
+   \dotsm & \dotsm
+}
+{
+(\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, 
+\text{false}, \phi_0, \chi_0)
+\leadsto
+\dotsm
+}
+
+We can start by evaluating $\text{this.good}$.
+
+\inference[\textsc{if-true}]
+{
+   (\text{this.good}, \phi_0, \chi_0) \leadsto \dotsm & \dotsm
+}
+{
+(\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, 
+\text{false}, \phi_0, \chi_0)
+\leadsto
+\dotsm
+}
+
+\frmrule
+
+If we do pattern-matching on conclusions for $\text{this.good}$,
+the only matching conclusion is that in the \textsc{field} rule.
+So we should branch upwards using the \textsc{field} rule.
+
+
+\inference[\textsc{if-true}]
+{
+   \inference[\textsc{field}]
+   {\dotsm}
+   {(\text{this.good}, \phi_0, \chi_0) \leadsto \dotsm}
+   & \dotsm
+}
+{
+(\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, 
+\text{false}, \phi_0, \chi_0)
+\leadsto
+\dotsm
+}
+
+This means we need to evaluate $\text{this}$.
+
+\inference[\textsc{if-true}]
+{
+   \inference[\textsc{field}]
+   {(\text{this}, \phi_0, \chi_0) \leadsto \dotsm}
+   {(\text{this.good}, \phi_0, \chi_0) \leadsto \dotsm}
+   & \dotsm
+}
+{
+(\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, 
+\text{false}, \phi_0, \chi_0)
+\leadsto
+\dotsm
+}
+
+\frmrule
+
+If we do pattern-matching on conclusions for $\text{this}$,
+the only matching conclusion is that in the \textsc{this} rule.
+So we should branch upwards using the \textsc{this} rule.
+
+\inference[\textsc{if-true}]
+{
+  \inference[\textsc{field}]
+  {
+    \inference[\textsc{this}]
+    {}
+    {(\text{this}, \phi_0, \chi_0) \leadsto \dotsm}
+  }
+  {
+  (\text{this.good}, \phi_0, \chi_0) \leadsto \dotsm
+  }
+  & \dotsm
+}
+{
+(\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, 
+\text{false}, \phi_0, \chi_0)
+\leadsto
+\dotsm
+}
+
+Given that $\phi_0 = (\iota_3, \iota_4)$,
+by using the \textsc{this} rule we can
+complete the evaluation for this.
+
+\inference[\textsc{if-true}]
+{
+  \inference[\textsc{field}]
+  {
+    \inference[\textsc{this}]
+    {}
+    {(\text{this}, \phi_0, \chi_0) \leadsto (\iota_3, \chi_0)}
+  }
+  {
+  (\text{this.good}, \phi_0, \chi_0) \leadsto \dotsm
+  }
+  & \dotsm
+}
+{
+(\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, 
+\text{false}, \phi_0, \chi_0)
+\leadsto
+\dotsm
+}
+
+Now we can move downwards and complete the missing evaluations. 
+According to \textsc{field}, the field access evaluates to 
+$\chi_0(\iota_3) \downarrow_{2} (\text{good})$ which equals ...
+
+\frameans{}{true}
+
+So we have 
+
+\inference[\textsc{if-true}]
+{
+  \inference[\textsc{field}]
+  {
+    \inference[\textsc{this}]
+    {}
+    {(\text{this}, \phi_0, \chi_0) \leadsto (\iota_3, \chi_0)}
+  }
+  {
+  (\text{this.good}, \phi_0, \chi_0) \leadsto (\text{true}, \chi_0)
+  }
+  & \dotsm
+}
+{
+(\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, 
+\text{false}, \phi_0, \chi_0)
+\leadsto
+\dotsm
+}
+
+
+\end{example}
+
+
+
+Now that we've done the left subtree for \textsc{if-true},
+let's do the right subtree. This begins by evaluating $\text{x.like}$.
+
+\inference[\textsc{if-true}]
+{
+  \inference[\textsc{field}]
+  {
+    \inference[\textsc{this}]
+    {}
+    {(\text{this}, \phi_0, \chi_0) \leadsto (\iota_3, \chi_0)}
+  }
+  {
+  (\text{this.good}, \phi_0, \chi_0) \leadsto (\text{true}, \chi_0)
+  }
+  & 
+  (\text{x.like}, \phi_0, \chi_0) \leadsto \dotsm
+}
+{
+(\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, 
+\text{false}, \phi_0, \chi_0)
+\leadsto
+\dotsm
+}
+
+\frmrule
+
+If we do pattern-matching on conclusions on the expression $\text{x.like}$,
+the only matching conclusion is that in the \textsc{field} rule.
+So we will branch upwards using the \textsc{field} rule.
+
+\inference[\textsc{if-true}]
+{
+  \inference[\textsc{field}]
+  {
+    \inference[\textsc{this}]
+    {}
+    {(\text{this}, \phi_0, \chi_0) \leadsto (\iota_3, \chi_0)}
+  }
+  {
+  (\text{this.good}, \phi_0, \chi_0) \leadsto (\text{true}, \chi_0)
+  }
+  &
+  \inference[\textsc{field}]
+  {
+  \dotsm
+  }
+  {
+  (\text{x.like}, \phi_0, \chi_0) \leadsto \dotsm
+  } 
+}
+{
+(\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, 
+\text{false}, \phi_0, \chi_0)
+\leadsto
+\dotsm
+}
+
+This means we need to evaluate x.
+
+\inference[\textsc{if-true}]
+{
+  \inference[\textsc{field}]
+  {
+    \inference[\textsc{this}]
+    {}
+    {(\text{this}, \phi_0, \chi_0) \leadsto (\iota_3, \chi_0)}
+  }
+  {
+  (\text{this.good}, \phi_0, \chi_0) \leadsto (\text{true}, \chi_0)
+  }
+  &
+  \inference[\textsc{field}]
+  {
+  (\text{x}, \phi_0, \chi_0) \leadsto \dotsm
+  }
+  {
+  (\text{x.like}, \phi_0, \chi_0) \leadsto \dotsm
+  } 
+}
+{
+(\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, 
+\text{false}, \phi_0, \chi_0)
+\leadsto
+\dotsm
+}
+
+\frmrule
+
+Now we do pattern matching checking which 
+rules match expression $x$ in their conclusions.
+The only matching conclusion is in the \textsc{param} rule.
+So we will branch upwards using the \textsc{param} rule.
+
+\inference[\textsc{if-true}]
+{
+  \inference[\textsc{field}]
+  {
+    \inference[\textsc{this}]
+    {}
+    {(\text{this}, \phi_0, \chi_0) \leadsto (\iota_3, \chi_0)}
+  }
+  {
+  (\text{this.good}, \phi_0, \chi_0) \leadsto (\text{true}, \chi_0)
+  }
+  &
+  \inference[\textsc{field}]
+  {
+    \inference[\textsc{param}]
+    {}
+    {(\text{x}, \phi_0, \chi_0) \leadsto \dotsm}
+  }
+  {
+  (\text{x.like}, \phi_0, \chi_0) \leadsto \dotsm
+  } 
+}
+{
+(\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, 
+\text{false}, \phi_0, \chi_0)
+\leadsto
+\dotsm
+}
+
+Given that $\phi_0 = (\iota_3, \iota_4)$,
+by using the \textsc{param} rule we can
+complete the evaluation for x.
+
+\inference[\textsc{if-true}]
+{
+  \inference[\textsc{field}]
+  {
+    \inference[\textsc{this}]
+    {}
+    {(\text{this}, \phi_0, \chi_0) \leadsto (\iota_3, \chi_0)}
+  }
+  {
+    (\text{this.good}, \phi_0, \chi_0) \leadsto (\text{true}, \chi_0)
+  }
+  &
+  \inference[\textsc{field}]
+  {
+    \inference[\textsc{param}]
+    {}
+    {(\text{x}, \phi_0, \chi_0) \leadsto (\iota_4, \chi_0)}
+  }
+  {
+  (\text{x.like}, \phi_0, \chi_0) \leadsto \dotsm
+  } 
+}
+{
+(\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, 
+\text{false}, \phi_0, \chi_0)
+\leadsto
+\dotsm
+}
+
+\frmrule
+
+Now we can move downwards and complete the missing evaluations. 
+According to \textsc{field}, the field access evaluates to 
+$\chi_0(\iota_4) \downarrow_{2} (\text{like})$ which equals ...
+
+\frameans{}{$\iota_3$}
+
+So the field evaluation gives 
+
+\inference[\textsc{if-true}]
+{
+  \inference[\textsc{field}]
+  {
+    \inference[\textsc{this}]
+    {}
+    {(\text{this}, \phi_0, \chi_0) \leadsto (\iota_3, \chi_0)}
+  }
+  {
+    (\text{this.good}, \phi_0, \chi_0) \leadsto (\text{true}, \chi_0)
+  }
+  &
+  \inference[\textsc{field}]
+  {
+    \inference[\textsc{param}]
+    {}
+    {(\text{x}, \phi_0, \chi_0) \leadsto (\iota_4, \chi_0)}
+  }
+  {
+  (\text{x.like}, \phi_0, \chi_0) \leadsto (\iota_3, \chi_0)
+  } 
+}
+{
+(\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, 
+\text{false}, \phi_0, \chi_0)
+\leadsto
+\dotsm
+}
+
+We can finish the evaluation of the if statement.
+
+\inference[\textsc{if-true}]
+{
+  \inference[\textsc{field}]
+  {
+    \inference[\textsc{this}]
+    {}
+    {(\text{this}, \phi_0, \chi_0) \leadsto (\iota_3, \chi_0)}
+  }
+  {
+    (\text{this.good}, \phi_0, \chi_0) \leadsto (\text{true}, \chi_0)
+  }
+  &
+  \inference[\textsc{field}]
+  {
+    \inference[\textsc{param}]
+    {}
+    {(\text{x}, \phi_0, \chi_0) \leadsto (\iota_4, \chi_0)}
+  }
+  {
+  (\text{x.like}, \phi_0, \chi_0) \leadsto (\iota_3, \chi_0)
+  } 
+}
+{
+(\text{if} \,(\text{this.good})\, \text{x.like} \, \text{else} \, 
+\text{false}, \phi_0, \chi_0)
+\leadsto
+(\iota_3, \chi_0)
+}
+
+
+
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+
+\section{Operational Semantics II}
+
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+
+
+We now introduce more rules.
+
+\begin{prooftree}
+\AxiomC{$(e,\phi, \chi) \leadsto (\iota, \chi')$}
+\AxiomC{$(e',\phi, \chi') \leadsto (v, \chi'')$}
+\LeftLabel{\textsc{assign}}
+\RightLabel{$\begin{smallmatrix}
+                    \chi'(\iota) \text{ is defined} \\
+                    \chi''' = \chi''[\iota \mapsto \chi''(\iota)[f \mapsto v]]
+                  \end{smallmatrix}$}
+\BinaryInfC{$(\text{e.f := e'},\phi, \chi) \leadsto (v, \chi''')$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$(e_0,\phi, \chi_1) \leadsto (\iota, \chi_2)$}
+\AxiomC{$(e_1,\phi, \chi_2) \leadsto (v, \chi_3)$}
+\AxiomC{$(e_2,\phi, \chi_3) \leadsto (v, \chi_4)$}
+\LeftLabel{\textsc{method}}
+\RightLabel{$\begin{smallmatrix}
+                    \chi_3(\iota) \downarrow_1 = \text{c} \\
+                    \mathcal{M}(\text{P},\text{c}, \text{m})\, = t_1 m (t_2 x) \{ e_2 \}
+                  \end{smallmatrix}$}
+\TrinaryInfC{$(\text{e}_0.\text{m}(\text{e}_1),\phi, \chi) \leadsto (v, \chi_4)$}
+\end{prooftree}
+
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{ }
+\LeftLabel{\textsc{new}}
+\RightLabel{$\begin{smallmatrix}
+              \chi' = \chi[\iota \mapsto (c, (f_1 \mapsto v_1, \dotsm, f_r \mapsto v_r))] \\
+              \mathcal{Fs}(\text{P},\text{c})\, = \{f_1, \dotsm, f_r\} \\
+              \forall l \in 1, ..., r: \; v_l \text{ is init val for } 
+              \mathcal{F}(\text{P},\text{c},\text{f}_1)
+            \end{smallmatrix}$}
+\UnaryInfC{$(\text{new c},\phi, \chi) \leadsto (\iota, \chi')$}
+\end{prooftree}
+
+%\rotatebox{90}{\parbox{4.5cm}{Long Header Over Several Lines}}
+
+
+
+
+
+
+\begin{figure}[h]
+\begin{tikzpicture}
+  \node[rotate=90] (first) {
+
+    \parbox{14.5cm}{
+    \begin{prooftree}
+      \def\defaultHypSeparation{\hskip .01in}
+      \AxiomC{ }
+      \LeftLabel{\textsc{new}}
+      \RightLabel{$\begin{smallmatrix}
+                    \chi' = \chi[\iota \mapsto (c, (f_1 \mapsto v_1, \dotsm, f_r \mapsto v_r))] \\
+                    \mathcal{Fs}(\text{P},\text{c})\, = \{f_1, \dotsm, f_r\} \\
+                    \forall l \in 1, ..., r: \; v_l \text{ is init val for } 
+                    \mathcal{F}(\text{P},\text{c},\text{f}_1)
+                  \end{smallmatrix}$}
+      \UnaryInfC{$(\text{new c},\phi, \chi) \leadsto (\iota, \chi')$}
+      \end{prooftree}
+    }
+  };
+\end{tikzpicture}
+\end{figure} 
+
+
+
+\frmrule
+
+
+
+\begin{example}
+Write out the derivation for executing \\
+\textbf{(a)} $\text{x.like.good := false}, \phi_0, \chi_0$ \\
+\textbf{(b)} $\text{this.owner.meet(x)}, \phi_0, \chi_0$ \\
+for the following execution context:
+
+\begin{figure}[h]
+\begin{tikzpicture}[
+  title/.style={},
+  object/.style={rectangle split, rectangle split draw splits=false,
+  draw, text width=2cm}
+]
+
+  % text labels
+  \node (stackflabel) {$\phi_0$};
+  \node  [below=1cm of stackflabel] (heaplabel) {$\chi_0$};
+
+  % stack frame
+  \node[rectangle split, rectangle split horizontal,
+  rectangle split parts=2, rectangle split draw splits=false, draw, 
+  text width=1cm, anchor=center, text centered, right=0.2cm of stackflabel]
+  (stackframe){ this \nodepart{two} x};
+
+  % objects
+  \node[object,rectangle split parts=3, below=0.5cm of stackframe] 
+  (book){ \nodepart{one} :Book \nodepart{two} good: true
+    \nodepart{three} owner: };
+  \node[object,rectangle split parts=2, right=1cm of book] 
+  (person1) {\nodepart{one} :Person \nodepart{two} like:};
+  \node[object, rectangle split parts=2, right=1cm of person1] 
+  (person2) { \nodepart{one} :Person \nodepart{two} like:null};
+
+  % draw lines on first nodepart splits for the objects
+  \draw(book.one split west) -- (book.one split east);
+  \draw(person1.one split west) -- (person1.one split east);
+  \draw(person2.one split west) -- (person2.one split east);
+
+  % draw lines connecting stack frame and objects. Respectively:
+  % this to book, x to person1, book to person2, person1 to book
+  \path[draw,>=triangle 45, ->] (stackframe.one south) -- ++(0,0.1) 
+      -- ++(0,-0.3) -| (book.north);
+  \path[draw,>=triangle 45, ->] (stackframe.two east) -- ++(-0.2,0) 
+      -| (person1.north);
+  \path[draw,>=triangle 45, ->] (book.three south) -- ++(0,0.1) 
+      -- ++(0,-0.4) -| (person2.south);
+  \path[draw,>=triangle 45, ->] (person1.three south) -- ++(0,0.1) 
+      -- ++(0,-0.4) -- ++(-1.5,0) |- (book.east);
+ 
+
+\end{tikzpicture}
+\end{figure} 
+
+
+\end{example}
+
+
+\frmrule
+
+There is no rule that changes a object completely.
+We can only update objects, on a field-by-field basis.
+Also notice that we can add objects to the heap using \textsc{new},
+but there are no rules which remove objects from the heap. 
+We could end up with objects that are never referenced. 
+An extension to L1 could be to implement a garbage-collecting scheme.
+
+
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%
+%--------------------------------------------------------------------------------------------%

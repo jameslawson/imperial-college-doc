@@ -1,0 +1,59 @@
+
+\chapter{Hilbert Spaces}
+
+
+\section{Linear Maps}
+
+\begin{example}
+Below we define the \textit{two-point butterfly} operation.
+$$(a,b,w) \mapsto (a + wb, a-wb)$$
+Show that this is a \textit{linear} map from $\mathbb{C}^3 \rightarrow \mathbb{C}^2$. 
+\end{example}
+
+
+\highlightdef{\textbf{Dual}: 
+The dual of a vector is a linear map that performs the inner product
+}
+
+
+\highlightdef{\textbf{Bilinear map}: 
+$B(u,v)$, fixing $u$ gives a linear map $B_u(v)$ and fixing $v$ gives a linear map $B_v(u)$
+}
+Bilinear maps will become useful later when we look at \textit{tensor products}.
+
+\begin{example}
+Let $B(a1,a2)$ denote the determinant of the 2x2 matrix with columns a1 and a2.
+Prove that $B$ is a bilinear map. 
+\end{example}
+
+
+\begin{example}
+Show that the \textit{covariance} of two random variables $cov(X,Y)$ is a bilinear map. 
+\end{example}
+
+
+\section{Inner Products}
+
+
+\highlightdef{\textbf{Hermitian Inner Product}: }.
+
+This is often called the \textit{complex inner product}. 
+
+
+
+
+\highlightdef{$\bra{u}\ket{v}$ is treated the same as $\braket{u}{v}$  }
+which is treated the same as $\langle u,v \rangle$. In this text, 
+they \textit{all} denote the Hermitian inner product. 
+
+One might think that $\bra{u}\ket{v}$ is the multiplication of $u$ with $v$.
+After all, we have a row vector next to a column vector. 
+However this operation is not useful in Hilbert spaces.  
+Instead we treat $\bra{u}\ket{v}$ as $\braket{u}{v}$. The complex 
+inner product of two vectors is used far more and we will be seeing it often. 
+The multiplication of $u$ with $v$ using normal vector dot products is not seen
+in Quantum Mechanics and none of our notations will ever denote this kind of product. 
+
+We join the two vertical lines of $\bra{u}\ket{v}$ to form one vertical line. 
+in $\braket{u}{v}$. We will rarely write $\bra{u}\ket{v}$ because it is 
+slightly shorter to write $\braket{u}{v}$. 

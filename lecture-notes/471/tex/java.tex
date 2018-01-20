@@ -1,0 +1,322 @@
+
+\chapter{Java Implementation}
+
+
+
+\section{Introducing Java Bytecode}
+
+
+
+
+\section{$\mathcal{JVM}_{00}$ Language I}
+
+formalizes a subset of the possible instructions.
+For simplicity, we fix a method and fix the class. 
+We only need to know the argument types 
+$t_1$, $t_2$, ... $t_n$, the result type $t$ and 
+$\text{Stack} = I_1$, $\text{Locals} = I_2$, $\text{ArgsSize} = I_3$.
+
+The syntax is defined below. Notice that there is no recursion in 
+this definition. 
+
+$$instruction ::= \text{inc } | \text{ pop } | \text{ store } x\; | \text{ load } x\; | \text{ if } L\; | \text{ halt}$$
+
+where $x$ is the number (we define semantics, this will be for the local variable $x \leqslant \text{Locals}$)  
+and $L$ is a label of some instruction.
+
+\frmrule
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Program} A function $P: 0..k \rightarrow instruction$ stands for the program. 
+The integer $k$, when adding one, tells us how many the bytecode instructiona there are. 
+\item \textbf{Program Counter} $pc$ is the program counter. $P[pc]$, gives us the 
+the current instruction. 
+\item \textbf{Local Variables} A function $f: 0..j \rightarrow integer$ 
+describes the contents of local variables. Here $integer$
+represents both integers and addresses. The value of $j$, after adding one,
+tells us the number of local variables we have ($= \text{Locals}$).
+\item \textbf{Stack} The operand stack $s$ is a list of values. 
+The maximal length of the list is $\text{Stack}$.
+\end{itemize} 
+
+Execution has the format $P \vdash (pc, f, s) \leadsto (pc', f', s')$. 
+After execution, the program counter may have changed, the local variables may have changed, 
+and the stack contents may have changed.
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$P[pc] = \text{inc}$}
+\LeftLabel{\textsc{inc}}
+\UnaryInfC{$P \vdash (pc, f, n \cdot s) \leadsto (pc+1, f, (n+1) \cdot s)$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$P[pc] = \text{pop}$}
+\LeftLabel{\textsc{pop}}
+\UnaryInfC{$P \vdash (pc, f, v \cdot s) \leadsto (pc+1, f, s)$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$P[pc] = \text{load}$}
+\LeftLabel{\textsc{load}}
+\UnaryInfC{$P \vdash (pc, f, s) \leadsto (pc+1, f, f(x) \cdot s)$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$P[pc] = \text{store}$}
+\LeftLabel{\textsc{store}}
+\UnaryInfC{$P \vdash (pc, f, v \cdot s) \leadsto (pc+1, f[x \mapsto v], s)$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$P[pc] = \text{if } L$}
+\AxiomC{$n = 0$}
+\LeftLabel{\textsc{if-false}}
+\BinaryInfC{$P \vdash (pc, f, n \cdot s) \leadsto (pc+1, f, s)$}
+\end{prooftree}
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$P[pc] = \text{if } L$}
+\AxiomC{$n \neq 0$}
+\LeftLabel{\textsc{if-true}}
+\BinaryInfC{$P \vdash (pc, f, n \cdot s) \leadsto (L, f, s)$}
+\end{prooftree}
+
+\frmrule
+
+\begin{example}
+Which instructions increment the program counter?
+\end{example}
+
+\begin{example}
+Why is there no operational semantics rule for halt?
+\end{example}
+
+\frmrule
+
+\begin{example}
+Write out the derivation tree for the execution of the following.
+\end{example}
+
+
+
+\frmrule
+
+We now look at the type system for $\mathcal{JVM}_{00}$. 
+The only types we consider for $\mathcal{JVM}_{00}$ are integers and 
+classes. Hence the set of types is:
+
+$$Type = \{ \text{ int } \} \cup \{ \text{ A } | \text{ A is the name of a class } \} $$
+
+The type of the stack can be seen as a \textit{vector of types}. Similarly, 
+for convenience, we can think of the types for local variables can 
+being a \textit{vector of types}. 
+For example, $\text{int} \cdot \text{A} \cdot \text{int}$ is an example 
+of such a vector, where A is the name of some class.
+
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Local Variable Type Vector} We have $F_i$ which 
+is a vector of types for local variables immediately before executing the $i$th instruction
+For example, $F_3[2]$ is the type of the 2nd local variable before executing instruction 3.
+\item \textbf{Stack Type Vector} We have $S_i$ which 
+is a vector of types for local variables as indexed  immediately before executing the $i$th instruction
+For example, $S_3[2]$ is the type of the 2nd operand immediately before executing instruction 3.
+\end{itemize} 
+
+\frmrule
+
+The judgement $F, S, i \vdash P$ asserts that the i-th instruction of 
+P is \textit{well-formed with respect to F and S}. 
+We will now define this judgement recursively over the structure of $instruction$. 
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{
+$
+\begin{matrix}
+P[i] = \text{inc} \\
+F_{i+1} = F_{i}\\
+S_{i+1} = S_{i} = \text{int} \cdot \alpha  \\
+i+1 \in dom(P)
+\end{matrix}
+$
+}
+\LeftLabel{\textsc{inc.wftype}}
+\UnaryInfC{$F, S, i \vdash P$}
+\end{prooftree}
+
+Firstly, we pattern match on the $i$th instruction being the inc instruction. Recall 
+that the inc instruction increments the value on top of the stack. 
+We assert that the type vectors for the stack and local variables \textit{must not change}. 
+So we have $F_{i+1} = F_{i}$ and $S_{i+1} = S_{i}$. Furthermore, we require the top of the stack 
+to be of type $\text{int}$. We can only increment integers. Increment is undefined for other types.
+Finally, after having incremented the program counter, we 
+expect program $P$ to be have an instruction for the new program counter. In other words, 
+$i+1$ must be in the domain of function $P$. 
+
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{
+$
+\begin{matrix}
+P[i] = \text{pop} \\
+F_{i+1} = F_{i}\\
+\text{t} \cdot S_{i+1} = S_{i}  \\
+i+1 \in dom(P)
+\end{matrix}
+$
+}
+\LeftLabel{\textsc{pop.wftype}}
+\UnaryInfC{$F, S, i \vdash P$}
+\end{prooftree}
+
+We pattern match on the $i$th instruction being the pop instruction. 
+Next, we assert that local variable type vector does change, $F_{i+1} = F_{i}$. 
+However the stack changes in a pop instruction, so we expect the stack type vector 
+to change. In particular, the old stack type vector is the same as the old one, but with some 
+type on the front. $\text{t} \cdot S_{i+1} = S_{i}$. Finally, after having incremented $pc$, we 
+expect $P$ to be have an instruction for this new program counter. 
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{
+$
+\begin{matrix}
+P[i] = \text{store } x \\
+x \in dom(F_i) \\
+F_{i+1} = F_{i}[x \mapsto t]\\
+\text{t} \cdot S_{i+1} = S_{i}  \\
+i+1 \in dom(P)
+\end{matrix}
+$
+}
+\LeftLabel{\textsc{store.wftype}}
+\UnaryInfC{$F, S, i \vdash P$}
+\end{prooftree}
+
+We pattern match on the $i$th instruction being the store instruction. 
+Recall that \textit{store} pops the value from top of the stack 
+and stores it onto the  $x$th local variable. 
+Because we are storing into the  $x$th local variable, the type vector
+must have an mapping. In other words, $x \in dom(F_i)$, where $dom(F_i)$ 
+represents all the local vars (roughly thinking of $F_i$ as a function from local vars 
+to types). The new local var type vector $F_{i+1}$ is the same as before but
+it has the type of $x$ updated to $t$ for $x$ where 
+type $t$ is the type of the value we popped top of the stack, $S_i = t \cdot S_{i+1}$. 
+Finally, we increment $pc$, and assert that $P$ must have the new instruction. 
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{
+$
+\begin{matrix}
+P[i] = \text{load } x \\
+x \in dom(F_i) \\
+F_{i+1} = F_{i}\\
+S_{i+1} = F_{i}[x] \cdot S_{i}  \\
+i+1 \in dom(P)
+\end{matrix}
+$
+}
+\LeftLabel{\textsc{load.wftype}}
+\UnaryInfC{$F, S, i \vdash P$}
+\end{prooftree}
+
+We pattern match on the $i$th instruction being the load instruction. 
+Recall that \textit{load} pushes a local variable onto the stack. 
+We are pushing the  $x$th local variable, so the type vector
+must have an mapping for $x$. In other words, $x \in dom(F_i)$, again where $dom(F_i)$ 
+represents all the local vars that correspond to the types in the type vector. 
+We are only reading local variables. There are no writes so the type vector for local 
+variables remains unchanged, $F_{i+1} = F_{i}$. However the stack is updated.
+The new stack is the same as the old except the top has the local variable $x$. 
+So the stack \textit{type vector} is the same as the old, except that 
+top should have the \textit{type} of the local variable $x$, which is $F_{i}[x]$. 
+Hence $S_{i+1} = F_{i}[x] \cdot S_{i}$. 
+Finally, we increment $pc$, and assert that $P$ must have the new instruction. 
+
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{
+$
+\begin{matrix}
+P[i] = \text{if } x \\
+F_{i+1} = F_L = F_{i}\\
+t \cdot S_{i+1} = t \cdot S_L \cdot S_{i}  \\
+i+1 \in dom(P), L \in dom(P)
+\end{matrix}
+$
+}
+\LeftLabel{\textsc{if.wftype}}
+\UnaryInfC{$F, S, i \vdash P$}
+\end{prooftree}
+
+We pattern match on the $i$th instruction being the if instruction. 
+Recall that \textit{if} pops the stack, checks it it is zero and branches 
+accordingly. This is a rule for types and not for operational semantics. 
+So we are unsure which branch is taken. So we will assert that \textit{both} 
+paths are well formed with respect to $F$ and $S$, regardless of the 
+fact that only one path is actually taken during exection.
+
+The equation $t \cdot S_{i+1} = t \cdot S_L \cdot S_{i}$ 
+tells us that $S_L$ and $S_{i+1}$ have had a value of type $t$ popped off. 
+The stack has been popped no matter which path has been taken. 
+If we branch to instruction $L$, the stack, $S_L$ has been popped, if we 
+don't jump to $L$ and continue to instruction $i+1$, the stack $S_{i+1}$ has still been 
+popped. We are only reading local variables, there are no writes.
+So the type vector for local variables remains unchanged, $F_{i+1} = F_{i}$.
+
+Because we type check both branches, we type check that 
+the next instruction exists for both branches. Hence we require  
+$i+1 \in dom(P)$ (as usual), but \textit{also require}, $L \in dom(P)$ to hold.
+
+
+\frmrule
+
+\begin{example}
+Look at the rule \textsc{if.wftype}. 
+Notice that we assert that some value $t$ has been popped from the operand stack but,
+there is no assertion that $t$ is of \textit{type int}. Look at the operational semantics 
+and explain what happens if an object is popped off during an if instruction. 
+It is necessary to assert that $t$ must be of \textit{type int}?
+
+\frmrule
+
+If the value isn't an int, then, looking at the operational semantic rules 
+we can be sure that the if evaluates to true. And object popped off the stack 
+causes an if statement to evaluate to true. In fact, the rules \textsc{if-true} 
+and \textsc{if-false} together tell us that so long as the top of the stack is 
+not the integer zero, an the if-statement evaluates to true. 
+
+It is not necessary to assert that $t$ must be of type int. 
+Our operational semenatics allow us to evaluate objects for if statements and 
+so we have written our type system to reflect this. 
+
+\end{example}
+
+\frmrule
+
+\begin{example}
+Which instructions require the next instruction to be defined in $P$?
+\end{example}
+
+\begin{example}
+Which instructions leave the local variable type vector unmodified?
+\end{example}
+
+
+\section{$\mathcal{JVM}_{00}$ Language II}
+
+
+
+\section{Dynamic Linking and Loading}

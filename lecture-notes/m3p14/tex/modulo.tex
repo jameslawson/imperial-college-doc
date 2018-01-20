@@ -1,0 +1,112 @@
+
+\chapter{Modulo Arithmetic}
+
+
+\section{Introducing Modulo Arithmetic}
+
+
+\highlightdef{\textbf{Weaken mod}: $x mod N = y$ implies $x mod N \equiv y$}
+
+
+\highlightdef{\textbf{Strengthen mod}: ($x mod N \equiv y $ and $0 \leqslant y < N$) implies $x mod N = y$  }
+
+
+
+
+\highlightdef{\textbf{Idempotent}: $(x mod N) mod N = x mod N$}
+
+
+\highlightdef{$(x + y) mod N \equiv (x mod N + y mod N)$}
+
+
+\highlightdef{$(xy) mod N \equiv x(y mod N)$}
+
+
+\[ 
+\begin{array}{ll >{\scriptstyle}l}
+xy mod N &= \underbrace{(y + y + ... + y)}_{x \text{ times}} mod N & \text{def of multiplication}  \\
+         &\equiv (y + y + ... + y) mod N & \text{weaken mod}  \\
+         &\equiv y mod N + y mod N + ... + y mod N & \text{weak mod distributes}\\
+         &\equiv x(y mod N) & \text{def of multiplication}\\
+\end{array}
+\]
+
+\frmrule
+
+\begin{example}
+\[ 
+\begin{array}{ll}
+(2 \times 13) mod 5 &\equiv 2 \times (13 mod 5)  \\
+                    &\equiv 2 \times 3  \\
+                    &\equiv 6  \\
+                    &\equiv 1  \\
+\end{array}
+\]
+\end{example}
+
+
+\frmrule
+
+
+
+
+\highlightdef{$x^n mod N \equiv (x mod N)^n$}
+
+\frmrule
+
+
+\section{Parity}
+
+\begin{example}
+Show that even mod even is even. That is, $a mod b$ is even when $a > b$ and $a$,$b$ are even. 
+
+The remainder is $r = a - qb = \text{even} - q \times \text{even}$. Now, $q \times \text{even}$ is an even.
+And an even added/subtracted to/from another even is \textit{even}. So $r$ is even. Hence $a mod b$ is even.
+\end{example}
+
+
+
+\section{Problems}
+
+
+\textbf{Linked List Cycle Detection - Tortoise.Hare}
+
+Suppose we have a linked list that has been corrupted in the sense 
+that there is a back-edge that creates a loop. We can detect 
+the loop \textit{and} find where the start of the loop is using a 
+clever trick. 
+
+\highlightdef{$T$ always moves \textit{one} step forward. $H$ always moves \textit{two} steps forward.}
+
+Suppose we had just the loop. Number the nodes of the 
+loop 0...$n-1$. We can reason about how the 
+tortoise and hare move around this loop using modular 
+arithmetic. Idea: moving $i$ steps forward from node 
+$x$ puts you at node number $[x + i]_n$. 
+
+Now suppose $T$ started at $[0]_n$, and $H$ started 
+at some $[k]_n$. Now consider what happens after $n-k$ time steps. 
+Clearly $T$ will be at $[n-k]_n$ (as it moves forward one node per time step). 
+But where will $H$ be. Recall that $H$ moves forwarsd two nodes per time step. 
+Since $H$ started at $k$ we have that $H$ finishes at node:
+$[k+2(n-k)]_n = [k]_n + [2n]_n - [k]_n = [-k]_n = [n-k]_n$. 
+So after $n-k$ steps, $T$ and $H$ land on the same node. And this works 
+for any choice of $k$. 
+
+Suppose $T$ starts at 0. 
+\highlightdef{For any $k$, if $H$ starts at $k$ then $T$ and $H$ will meet at $[n-k]_n$.}
+%Tortoise vs Hare problems. 
+%The greatest common divisor is related to problems that we shall call \textit{Tortoise vs Hare} problem. 
+
+We can now solving the original problem of finding the start of the loop. I.e. 
+find exactly where $[0]_n$ is. Suppose we prepend nodes $-r, ..., -2, -1$ to the loop. 
+If we let $k = r$. Then $T$ and $H$ will both start at the ROOT/HEAD, and 
+after $n-r$ time steps meet at $n-r$. We can then have helper tortoises hares $T_1$
+and $T_2$. One at the head $n-r$, one at $-r$ and then advance time forward 
+until $T_1$ and $T_2$ meet. This is where the start is. 
+
+\frmrule
+
+\begin{example}
+Modify the algorithm to find the \textit{end} of the loop.
+\end{example}

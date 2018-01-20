@@ -1,0 +1,118 @@
+
+\chapter{Greatest Common Divisors}
+
+
+
+
+
+\section{Gear problems}
+
+The greatest common divisor arises most naturally in problems relating to \textit{gears}. 
+
+In a gear mechanism, the driving cogwheel shall move two other free cogwheels.
+The first free cogwheel has $a$ cogs and the second has $b$ cogs. 
+A full turn of each of the free wheels shall correspond to several full 
+turns of the driving wheel. \\
+What are the possible cogs numbers can that driving wheel can have? \\
+What is the largest number of cogs the driving wheel can have?\\
+
+\highlightdef{Number of teeth = Number of dips}
+
+Although this result is simple, reading the formal reasoning will be useful.  
+We can perform off-by-one error analysis. We can \textit{unwrap} the 
+circlular shape of a gear and put it on a line. Then it is clear 
+that if it starts with a tooth, it must end with a dip. And if 
+it starts with a dip, it must end with a tooth. 
+
+\frmrule
+
+We can view gears instead by simple gears. 
+
+
+\highlightdef{\textbf{Division (Gears)}: $a$ \textit{divides} $b$, $a | b$ iff when $B$ has finished one complete revolution,
+\\ $A$ has made $k$ \textit{complete} revolutions }
+
+\frmrule
+
+\begin{example}
+Explain, using gears, why $1 | b$.
+\end{example}
+
+\frmrule
+
+\begin{example}
+Explain, using gears, why $a | b$ implies $a | kb$
+\end{example}
+
+\frmrule
+
+\begin{example}
+Explain, using gears, why $a | b$ and $b | c$ implies $a | c$
+\end{example}
+
+
+\frmrule
+
+We can also combine several gears together to form a larger gear. 
+
+\frmrule
+
+\begin{example}
+Explain, using gears, why $a | b$ and $a | c$ implies $a | (k_1b + k_2c)$
+
+Assume $a | b$ and $b | c$. \\
+Then, when gear $B$ makes a complete revolution, gear $A$ has made some complete number of revolutions say $k$.
+And, when gear $C$ makes a complete revolution, gear $A$ makes a complete number of revolutions say $k'$.
+
+Now consider gear $D$, with $k_1b + k_2c$ teeth. Let's turn $A$. \\
+Well, when $A$ has made $k$ complete revolutions, $D$ has turned $b$ teeth. \\
+So when $A$ has made $k_1k$ complete revolutions, $D$ has turned $k_1b$ teeth.  \\
+And when, $A$ has made $k_1k + k'$ complete revolutions, $D$ has turned $k_1b + c$ teeth. \\
+And when, $A$ has made $k_1k + k_2k'$ complete revolutions, $D$ has turned $k_1b + k_2c$ teeth.
+
+So $D$ has made a complete revolution, $A$ has made some number of complete revolutions. 
+Hence $a | (k_1b + k_2c)$.
+\end{example}
+
+\frmrule
+
+It shouldn't surprise you that we can apply the previous result for more than two cogs. 
+In general we have: $a | b_1$ and $a | b_2$ and ... and  $a | b_n$ implies $a | (k_1b_1 + k_2b_2 + ... + k_nb_n)$
+
+
+
+
+
+\section{Greatest Common Divisor}
+
+
+\frmrule 
+
+\begin{example}
+Explain, using gears, why $\text{gcd}(a,b) = g$ implies $\text{gcd}(a/g,b/g) = 1$
+
+Let's assume $a \neq b$.\\ 
+Without loss of generality, we can take $a < b$.\\
+Assume $\text{gcd}(a,b) = g$. \\
+Then gear $G$ is the largest gear such that once $A$ has made one complete revolution $B$ have made several revolutions, 
+$G$ has made some number of complete revolutions, say $k$. \\
+
+Suppose $G$ makes one revolution, then $A$ has turned $a/g$ teeth and $B$ has turned $k'b/g$ \\
+Suppose we form two new gears, $A'$ with $a/g$ teeth and $B'$ with $b/g$ teeth.
+
+When $g$ made $k$ revolutions, $A$ turned $a$ teeth, so if $G$ makes $1$ revolution, 
+then $A$ turns $a/g$ teeth. And when $g$ made $k$ revolutions, $B$ made several revolutions, and so turned 
+by $k'b$ teeth, for some $k'$. So if G makes one revolution, then $B$ makes $k'/g b$
+
+
+
+\end{example}
+
+
+
+% Detecting cycles in a linked list
+
+
+\section{Euclidean Algorithm I}
+
+\section{Linear Diophantine Equations I}

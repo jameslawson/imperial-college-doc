@@ -1,0 +1,74 @@
+
+\chapter{Friends}
+
+\section{Friend Functions}
+
+
+% credit: yet another insignificant programming notes... %
+
+A \textit{friend function} of a class, 
+marked by the \lstinline{friend} keyword.
+A friend function is a function defined outside the class, 
+yet it has unrestricted access to all the class members.
+
+
+\begin{lstlisting}
+#include <iostream>
+using namespace std;
+
+// Set function is defined outside the class
+void set(Point & point, int x, int y) {
+  point.x = x;  // can access private data x and y
+  point.y = y;
+}
+
+class Point {
+   // The set function is defined outside this class, but it can access all
+   // class members via parameter names matching member variables names 
+   friend void set(Point & point, int x, int y);  // prototype
+   private:
+      int x, y;
+   public:
+      Point(int x = 0, int y = 0) : x(x), y(y) { }
+      void print() const { cout << "(" << x << "," << y << ")" << endl; }
+};
+ 
+int main() {
+   Point p1;
+   p1.print();   // (0, 0)
+   set(p1, 5, 6);
+   p1.print();   // (5, 6)
+}
+\end{lstlisting}
+
+
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item A friend function acts as a regular function, \textit{not} a 
+member function of the class. It is invoked \textit{without the dot operator} 
+in the form of set(p1, 5, 6), instead of p1.set(5, 6) for a member function.
+\item The above example is meant for illustration. 
+This operation is better served by a member function void set(int x, int y), instead of friend function.
+\item The friend function prototype is provided inside the class declaration. 
+You do not need to provide another prototype outside the class declaration, 
+but merely provide its implementation.
+\item Friend functions can enhance the performance by directly accessing the 
+private data members, eliminating the overhead of going thru the public member functions.
+\item Friend functions are neither public nor private, and it can be declared anywhere 
+inside the class. As friends are part of the extended interface of the class, 
+you may group them together with the public functions.
+Friend functions will not be inherited by the subclass. 
+\item Friends can't be virtual, as friends are not class member.
+\end{itemize}
+
+
+\section{Friend Classes}
+
+To declare all member functions of a class (says Class1) friend functions of 
+another class (says Class2), declared \lstinline{friend class Class1;} in Class2. 
+Friends are not \textit{symmetric}. That is, if Class1 is a friend of Class2, 
+it does not imply that Class2 is a friend of Class1. 
+Friends are also not \textit{transitive}. That is, if Class1 is a friend of Class2, and Class2 is a friend of Class3, it does not imply that Class1 is a friend of Class3.
+Use friend with care. Incorrect use of friends may corrupt the concept 
+of \textit{information hiding and encapsulation}.

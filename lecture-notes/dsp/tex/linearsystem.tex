@@ -1,0 +1,74 @@
+\chapter{Linear Systems}
+
+
+
+\section{Introducing Linear Systems}
+
+
+
+
+\highlightdef{\textbf{Linear System}: A system is \textit{linear} when }
+
+
+
+\highlightdef{\textbf{Time-invariant System}: A system is \textit{time-invariant} when:\\
+for all $q$, $y[n] = Hx[n]$ implies $y[n-q] = Hx[n-q]$ 
+}
+
+This expresses the idea that the system behaves the same \textit{no matter when} the input is applied. 
+
+A system that is \textit{not} time-invariant is called time-varying.
+Time-invariant systems are sometimes called \textit{shift-invariant} systems. 
+
+
+
+\frmrule 
+
+\begin{example}
+Show that the \textit{Moving Average} system is time-invariant.
+
+Assume $y[n] = Hx[n]$. \\
+$RHS = Hx[n-q] = \frac{1}{2}(x[n-q] + x[n-q-1]) = y[n-q] = LHS$ \\
+\end{example}
+
+\frmrule 
+
+\begin{example}
+Show that the \textit{Decimation} system is \textit{time varying}.
+
+Assume $y[n] = Hx[n]$. \\
+$RHS = Hx[n-q] = x[2(n-q)]$ by def our assumption and def of $H$. \\
+$LHS = x[n-q]$. \\
+Clearly, $x[2(n-q)] \neq x[n-q]$ for some $q$, hence 
+the system is \textit{not} time-invariant. It is \textit{time varying}. 
+
+\end{example}
+
+
+\frmrule 
+
+\highlightdef{\textbf{Linear Time-invariant System}: A system is \textit{linear time-invariant} when:\\
+it is both linear \textit{and} time-invariant.
+}
+
+
+
+\section{Properties of LTI Systems}
+
+
+
+\highlightdef{Toeplitz property: $h_{i,j} = h_{i+q,j+q}$}
+
+All the entries in a Toeplitz matrix can be expressed as 
+in terms of the entries of either 
+(i) the 0th column \\
+(ii) the 0th row.
+
+(i) \\
+$(H)_{n,m} = h_{n,m} = h_{n-m,0}$ by Toeplitz property\\
+$= h[n-m]$. 
+
+(ii)\\
+$(H)_{n,m} = h_{n,m} = h_{0,m-n}$ by Toeplitz property\\
+
+\section{Convolution}

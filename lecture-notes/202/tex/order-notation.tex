@@ -1,0 +1,69 @@
+
+\chapter{Order Notation}
+
+
+\section{Introducing Order-Notation}
+
+
+\highlightdef{\textbf{Monotonic Increasing}: $f(n+1) \geqslant f(n)$ }
+Equivalently, a function is monotonic increasing when $m < n \rightarrow f(m) \leqslant f(n)$. 
+
+% Eg: cdfs in stats are monotonic increasing functions
+
+\begin{example}
+Prove that $\log_r(n)$ is a monotonic increasing function for any base $r$.
+\end{example}
+
+
+\section{Big-O Notation}
+
+
+\highlightdef{\textbf{Big-O}: $f(x) = O(g(n))$ iff $\exists n_0 \; \exists c \;(n \geqslant n_0 \rightarrow cf(n) \geqslant g(n))$ }
+
+The Big-O notation allows us to use a function $g(n)$ to characterise an \textit{asymptotic} upper bound. 
+We see whether a function $f$, after it has been scaled, 
+has $g(n)$ as a upper bound for $n$, \textit{after some point} $n_0$. 
+Big-O notation is purposely inexact. We abstract away constant factors 
+and only care about inputs that are sufficiently large. We cannot prove that 
+using Big-O notation is correct. It just so happens that it, in practice, the 
+notation has the perfect level of abstraction to allow us to compare algorithms 
+and describe their behaviour without fixing a particular machine. 
+
+\frmrule
+
+\begin{example}
+
+\end{example}
+
+\frmrule
+
+One way to think about the Big-O notation is to consider where $cf(n)$ and $g(n)$ intersect. 
+Assume $f(n) = O(g(n))$. Fix $c$. Then there are three cases, (i) no intersection (ii) exactly one point of intersection 
+(iii) more than one points of intersection.
+
+The value of $n_0$ can be any value greater than or equal to $I_0$.
+
+
+
+
+\section{Big-Omega Notation}
+
+\section{Big-Theta Notation}
+
+
+\section{Equivalences}
+
+
+
+%\section{Little-o and Little-omega}
+
+
+\section{Equivalent Definitions}
+
+\section{Advanced Problems}
+
+\section{Justification}
+
+Why should we use the order notation?
+
+%Turing Machines have \textit{linear speedup}. 

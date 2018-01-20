@@ -1,0 +1,264 @@
+
+\chapter{Portfolio Theory I}
+
+
+
+
+
+
+
+\section{Asset Returns}
+
+
+\highlightdef{\textbf{Asset}: Investment instrument that can be bought/sold}
+
+
+
+\section{Portfolios}
+
+The word \textit{return} can refer to either the total return
+or the rate of return. So whenever caution needed to ensure
+which interpretation is meant. In these notes, 
+it will be clear from the context.
+
+$r = R - 1$ \\
+$= \sum^{n}_{i = 1} w_i R_i  - 1$ \\
+$= \sum^{n}_{i = 1} w_i R_i  - \sum^{n}_{i=1}w_i$ \\
+$= \sum^{n}_{i = 1} w_i (R_i - 1)$ \\
+$= \sum^{n}_{i = 1} w_i r_i $ \\
+
+%\textit{total}: $R = \sum^{n}_{i = 1}w_i R_i$,
+
+Let $\mathbf{r} = (r_1,r_2,...,r_n)$ be the vector of return rates
+and $\mathbf{w} = (w_1,w_2,...,w_n)$ be the vector of weights. 
+The $i$th component of these vectors gives the $i$th asset's return rate/weight. 
+
+
+\highlightdef{
+\textbf{Portfolios}:\\
+\textit{Return Rate}:  $r_P = \bm{w}^T\bm{r}$ \\
+\textit{Expected Return Rate}:  $\overline{r}_P = \bm{w}^T\bm{\overline{r}}$ \\
+\textit{Variance}:  $\sigma_P = \bm{w}^T\bm{\Sigma}\bm{w}$
+}
+
+
+
+From now on, we will be working with \textit{return rates} (as apposed to total returns). 
+The idea is that we will develop a model that can find 
+optimal return rates. Once we have optimal return rates, $r^{*}_i$ 
+we can simply find the optimal returns $R^{*}_i = 1 + r^{*}_i$.
+
+
+
+
+
+
+
+
+
+\section{Portfolio Diagram}
+
+
+
+\highlightdef{\textbf{Portfolio Diagram}: 
+A plot ($\overline{r}, \sigma$) of return vs risk. 
+\\Each coordinate corresponds to a particular portfolio.
+}
+Here portfolio equivalence is up to return and risk. 
+
+Each point corresponds to a vector of weights. 
+
+
+\highlightdef{
+\textbf{Minimum Variance Set}: bullet \\
+\textbf{Efficient Frontier}: curve
+}
+
+
+For two assets, the curve goes through both points. 
+
+For three assets, 
+
+
+\section{Risk-free and Short Selling}
+
+If both borrowing and lending are allowed, an infinite
+triangular region is obtained.
+
+If only lending is allowed, the region will have a
+triangular front end, but will curve for larger $\sigma$
+
+
+\highlightdef{The covariance of the risk-free return $r_f$ with $r_i$ must be zero.}
+That is $\text{cov}(r_f, r_i)$. 
+
+
+\section{Markowitz Model I}
+
+
+
+
+Given a target $\overline{r}$, we want to scan right until 
+we hit the the efficient frontier. 
+
+
+
+
+We differentiate the Lagrangian $L(\bm{w}, \lambda, \mu)$, with respect to $\bm{w}$.
+
+$$\frac{\partial L}{\partial \bm{w}} = 
+\frac{\partial}{\partial \bm{w}} \left(\frac{1}{2} \bm{w}^T\bm{\Sigma}\bm{w} 
+- \lambda \left[\bm{w}^{T}\overline{\bm{r}} - \overline{r}_P\right]
+- \mu \left[\bm{w}^{T}\bm{e} - 1 \right] \right)$$
+
+$$= 
+\left(\frac{1}{2} \cdot 2 \cdot \bm{\Sigma}\bm{w} 
+- \lambda \left[\overline{\bm{r}} \right]
+- \mu \left[\bm{e}\right] \right)
+$$
+
+All of the $\bm{w}^{T}$'s disappear. All constant's disappear. 
+Also note that a factor of 2 appear when we differentiated $\bm{w}^T\bm{\Sigma}\bm{w}$. 
+It is for this very reason that we added a $\frac{1}{2}$ in the original formulation of the problem.
+Because we added the $\frac{1}{2}$ in front, it will nicely cancel with this 
+factor of 2. With this, optimality condition of the Lagrangian can be neatly expressed as:
+
+$$
+\bm{\Sigma}\bm{w} - \lambda \overline{\bm{r}} - \mu \bm{e} = \bm{0}
+$$
+
+Overall, our optimality conditions are: 
+(i) $\bm{\Sigma}\bm{w} - \lambda \overline{\bm{r}} - \mu \bm{e} = \bm{0}$
+(ii) $\bm{r}^{\top}\bm{w} = \overline{r}_P$
+(iii) $\bm{e}^{\top}\bm{w} = 1$
+
+We can express this conditions in a single vector/matrix equation.
+We have a $(n+2) \times (n+2)$ matrix multiplying a $(n+2)$-component column vector 
+to give another $(n+2)$-component column vector. 
+
+The solution requires us to invert the matrix. 
+This matrix is invertible only when $\bm{\Sigma}$ has \textit{full rank}
+and when $\overline{\bm{r}}$ is \textit{not a multiple} of $\overline{\bm{e}}$. 
+The final solution is a linear program that can be solved using an algorithm like
+\textit{Gaussian elimination}. 
+
+\highlightdef{We \textit{cannot} find the Markowitz solution for portfolios with risk-free
+assets, the covariance matrix \textit{does not} have full rank. }
+
+In the next section, we will look at the Two-fund theorem that will 
+help us deal with risk-free assets.
+
+
+\frmrule
+
+\begin{example}
+
+\end{example}
+
+\frmrule
+
+So far, we looked at the solving the Markowitz Model \textit{with short-selling}. 
+The solution was a linear program. However, if we now remove short-selling, 
+the solution cannot be reduced to a set of linear equations. 
+Instead we have a \textit{quadratic program}. The solution 
+can be found via computer programs (e.g. quadprog in Matlab). 
+
+The difference is that we added the constraint $\bm{w} \geqslant \bm{0}$. 
+
+\frmrule
+
+\begin{example}
+What if we choose an $\overline{r}$ that's below the bullet and 
+obtain the Markowitz solution.  
+\end{example}
+
+\frmrule
+
+Investors seeking efﬁcient portfolios need only invest in
+combinations of two efﬁcient funds.
+
+Under the assumptions of the mean-variance model,
+there is no need for anyone to buy individual stocks.
+
+
+\section{Markowitz Model II}
+
+
+\highlightdef{\textbf{Affine Function}: $f(x) = \bm{s}{x} + \bm{t}$ }
+
+The vector is taking linear combinations of 
+the columns of the inverse matrix. We don't know what 
+these columns are, but the point is that such a linear combiation 
+will be affine function of $\overline{r}_P$. 
+
+$\bm{A}^{-1} \bm{x} = 0\bm{A} - \overline{r}_P \bm{b} - \bm{c} = -\bm{b}\overline{r}_P - \bm{c}$
+
+This affine property of the Markowitz solution allows us to easily 
+prove an important theorem called the \textit{Two-fund Theorem}. 
+
+
+Let two portfolios $P'$ and $P''$ with Markowitz solutions $f(\overline{r}_{P}')$ and $f(\overline{r}_{P}')$,
+we have that for a portfolio, $P$ that is combination $P'$ and $P''$, 
+$\overline{r}_{P} = \alpha \overline{r}_{P}' + (1 - \alpha) \overline{r}_{P}''$,
+then optimal solution can be found easily by:
+
+\highlightdef{\textbf{Two-fund Theorem}: $f(\overline{r}_{P}) = \alpha f(\overline{r}_{P}') + (1 - \alpha) f(\overline{r}_{P}'')$ }
+
+It is simply the linear combination of the already given Markowitz solutions.
+We use the weighting of portfolios for the weighting of the Markowitz solutions. 
+
+To prove the theorem, we only see that: 
+$f(\overline{r}_{P}) = \alpha f(\overline{r}_{P}') + (1 - \alpha) f(\overline{r}_{P}'')$
+
+\[
+\begin{array}{ll}
+f(\alpha r' + (1 - \alpha)r'') 
+&= -\bm{b} (\alpha r' + (1-\alpha)r'') - \bm{c} \\
+&=  \alpha (- \bm{b} r' - \bm{c}) + (1 - \alpha)(-\bm{b}r'' - \bm{c}) - \bm{c} + \alpha \bm{c} + (1-\alpha)\bm{c} \\
+&=  \alpha (- \bm{b} r' - \bm{c}) + (1 - \alpha)(-\bm{b}r'' - \bm{c}) - (1-\alpha)\bm{c} + (1-\alpha)\bm{c}  \\
+&=  \alpha (- \bm{b} r' - \bm{c}) + (1 - \alpha)(-\bm{b}r'' - \bm{c})  \\
+&=  \alpha f(r') + (1 - \alpha)f(r'')  \\
+\end{array}
+\]
+
+
+Notice that it is necessary for the weights to sum to 1. 
+The result doesn't hold for any linear combination of portofolios. 
+To see this, let's repeat the but now, we are take a 
+\textit{general combination}. 
+
+
+\[
+\begin{array}{ll}
+f(\alpha r' + \beta r'') 
+&= -\bm{b} (\alpha r' + \beta r'') - \bm{c} \\
+&=  \alpha (- \bm{b} r' - \bm{c}) + \beta(-\bm{b}r'' - \bm{c}) - \bm{c} + \alpha \bm{c} + \beta\bm{c} \\
+&=  \alpha (- \bm{b} r' - \bm{c}) + \beta(-\bm{b}r'' - \bm{c}) - \bm{c} ( 1- [\alpha + \beta])  \\
+&=  \alpha (- \bm{b} r' - \bm{c}) + \beta(-\bm{b}r'' - \bm{c}) \text{ exactly when: } \alpha+\beta = 1 \\
+&=  \alpha f(r') + \beta f(r'') \text{ exactly when: } \alpha+\beta = 1 \\
+\end{array}
+\]
+
+\frmrule
+
+Recall that we could not solve the Markowitz problem 
+for assets that were risk-free. The covariance matrix has 
+a column of zeros, implying has linearly dependent columns, 
+and so we cannot invert the matrix to find the solution. 
+
+With the establishment of the two-fund theorem, 
+we can now consider portfolios that have risk-free assets. 
+The idea is that we'll first form a portfolio using weight $\alpha$ 
+for the risk-free asset and $1-\alpha$ for the risky asset. 
+
+This portfolio has a return-risk given by:
+$$\overline{r}_P = \bm{w}^{T}\overline{\bm{r}} = \alpha r_f + (1-\alpha)\overline{r}$$
+$$\sigma^{2}_P = \bm{w}^{T} \bm{\Sigma}\bm{w} = (1-\alpha)^{2}\sigma^{2}$$
+
+
+
+
+
+\section{Revision: Statistical Estimators}
+
+

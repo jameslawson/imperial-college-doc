@@ -1,0 +1,43 @@
+\chapter{Normalisation}
+
+
+
+\section{Keys}
+
+
+\section{Second Normal Form}
+
+
+
+\section{Third Normal Form}
+
+
+
+\section{Project-Join Dependency}
+
+
+We often decompose relations into \textit{subrelations}. 
+
+A join dependency over attribute set $\alpha$ 
+is an expression: $\bowtie[X_1, ..., X_n]$ 
+where $\{X_1, ...,  X_n\}$ $\subseteq \alpha$ 
+and $\bigcup^{n}_{i=1} X_i = U$.
+
+A relation $R$ over $\alpha$ satisfies a 
+join dependency
+iff $R = \bowtie^{n}_{j=0} \pi_{X_j}(R)$.
+
+A relation $R$ over $\alpha$ satisfies a 
+lossless join with respect to FDs $F$ 
+iff for all possible extents of $R$ 
+satisfying $S$, we have $R = \bowtie^{n}_{j=0} \pi_{X_j}(R)$. 
+
+
+
+
+Join dependencies that involve $n$ attributes is called an 
+$n$-ary project-join dependency. 
+2-ary project-join dependencies are a special case. 2-ary prjection-join dependencies 
+are called \textit{multivalued dependencies}. 
+
+

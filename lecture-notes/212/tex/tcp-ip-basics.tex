@@ -1,0 +1,697 @@
+\chapter{TCP/IP: Basics}
+
+
+\section{Reliable Communication I}
+
+\frmrule 
+
+\textit{Reliable and Unreliable Channels}
+
+
+We can \textit{informally} discuss the notion of what it means 
+for a channel to be reliable and unreliable. 
+
+Examples:\\
+Talking in a quiet room - reliable
+Talking in a nightclub - unreliable
+Sending a message in a bottle - unreliable \\
+
+If we assume there is only one channel to communicate on, 
+then there is no way to achieve mutual belief. 
+
+\frmrule 
+
+\textit{Acknowledgements Messages}
+
+Adding acknowledgement messages doesn't help the problem. 
+The problem occurs again. We can try an acknowledgement 
+of the acknowledgement but that also won't help. 
+Adding acknowledgements only adds recursion to no end. 
+
+\frmrule 
+
+\textit{Bit Transmission Problem}
+
+\highlightdef{\textbf{Bit Transmission Problem}: it is impossible to 
+achieve mutual belief that a bit has been sent correctly over an 
+unreliable channel.}
+
+
+
+\highlightdef{\textbf{BER}: }
+
+From this definition of BER, we can formally define what it means 
+for a channel to be reliable. 
+
+
+\highlightdef{
+\textbf{Reliable}: $BER = 0$\\
+\textbf{Unreliable}: $BER > 0$
+}
+
+A channel with a $BER = 1$ is completely useless. 
+A channel that is unreliable is also called a \textit{noisy channel} 
+or a \textit{best-effort channel}. 
+
+\frmrule 
+
+\textit{Providing a reliable layer of abstraction on top of unreliable layer}
+
+Idea:\\
+Provide a reliable logical medium on top of an unreliable medium. \\
+We attempt to hide or abstract away the unreliable medium. 
+At the same time, we are delegating the responsibility to the 
+unreliable layer. 
+
+Consider the service elements:\\
+\textsf{RSEND} reliable send \\
+\textsf{USEND} unreliable send \\
+\textsf{RRECEIVE} reliable receive \\
+\textsf{URECEIVE} unreliable receive 
+
+
+\textsf{LINK}.\textsf{RSEND} $\rightarrow$ \textsf{PHYSICAL}.\textsf{USEND}\\
+\textsf{LINK}.\textsf{RRECEIVE} $\leftarrow$ \textsf{PHYSICAL}.\textsf{URECEIVE}\\
+
+
+\section{Reliable Communication II}
+
+
+
+\frmrule 
+
+
+\highlightdef{
+\textbf{Send States}: $S_i$: about to send $i$th message, received $< i$ messages\\
+\textbf{Ack States}: $A_i$: sent $i$th message, waiting for $i$th ack\\
+\textbf{Receive States}: $R_i$: about to receive $i$th message, received $< i$ messages
+}
+
+\frmrule 
+
+
+\begin{example}
+Below shows the state machine diagram. \\
+(a) If the channel never drops acks, which edges are never used\\
+(b) If the channel always drop acks, which edges are never used
+\end{example}
+
+
+\frmrule 
+
+\begin{example}
+If the channel never drops acks, but drops data messages with probability $0.4$, 
+determine the expected number of data messages sent to send three messages.
+\\ \textit{Hint: consider sending a data message as a Bernoulli trail}
+\end{example}
+
+
+\frmrule 
+
+\begin{example}
+If the channel drops any message with probability $q$, 
+determine the expected number of messages sent to send the 1 message.
+\end{example}
+
+\frmrule 
+
+Let $p = 1-q$ denote success of sending. \\
+We want to find $E[X+Y]$ where r.v. $X$ is the no of messages 
+needed to send to get $R_0 \rightarrow R_1$, 
+and r.v. $Y$ is the no of messages needed to send to get $A_0 \rightarrow S_1$. 
+Both $X$ and $Y$ are geometric random variables 
+(first-success rvs of Bernoulli trails with success prob. $p$). 
+Hence $E[X] = E[Y] = 1/p$. 
+
+$E[X+Y] = E[X] + E[Y] = 1/p + 1/p = 2/p = 2/(1-q)$.
+
+
+\frmrule 
+
+\textit{Average number of messages}
+
+In general, the total number of messages (data or acknowledge) 
+sent on the network to reach $S_n$.
+
+\highlightdef{ \textbf{No. Messages}: $E[N] = \frac{2n}{1-q}$}
+
+Notice that as $q \rightarrow 0$, we have $E[N] \rightarrow 2n$. 
+That is, when we have a reliable channel, every message gets through 
+and so we send a total of $n$ messages and $n$ acknowledgements 
+to get to $S_n$. So $E[N] \rightarrow 2n$ is reasonable. 
+And when $q \rightarrow 1$, we have $E[N] \rightarrow \infty$. 
+That is, when our channel is useless, every message suffers 
+from noise, there won't be a finite numbr of messages sent for 
+we will never achieve communication and never reach state $S_n$. 
+
+
+\frmrule 
+
+\textit{Expressing message-drop probabilty q, in terms of BER}
+
+$q = 1-(1-BER)^{c+s}$
+where $c$ is the number of bits in the control information in the PDU 
+and $s$ is the number of bits in the payload of the PDU. 
+
+\highlightdef{ \textbf{No. Messages}: $E[N] = \frac{2n}{(1-BER)^{c+s}}$}
+
+
+\frmrule 
+
+\textit{Link Utilisation}
+
+
+
+\highlightdef{ \textbf{Link Utilisation}: $U = T_I/T_R$}
+
+where $T_I$ is the time an $I$-frame spends in transit 
+and $T_R$ is the round trip time.  
+
+Assuming no processor delays:
+\highlightdef{ $U = T_I/(T_I + 2T_P + T_A)$}
+
+Notice that if we multiply the top and bottom by the bandwidth $B$ 
+we have a second formula: $U = s/(s + 2\eta + c)$, where 
+$\eta = BT_P$ can be interpreted as the number of bits that fill the channel.
+We sometimes call $\eta$ the \textit{bandwidth, propagation-delay product}. 
+Using this formula, we see that to improve $U$ by decreasing the terms on the denominator. 
+
+Decreasing $\eta$ means decreasing bit rate having a smaller distance. 
+Decreasing the bit rate is not ideal as we are essentially slowing the channel 
+down. Having a smaller distance is usually not possible due to physical constaints. 
+Normally a well-designed protocol will have $c$ as small possible already. 
+
+So it seems like the only way to improve $U$ is to increasing $s$. 
+However by increasing $s$, we increase $E[N] = \frac{2n}{(1-BER)^{c+s}}$. 
+That is, we increase the chances of messages suffering errors and 
+having to retransmit more acknowledgements. 
+
+\frmrule
+
+\begin{sidenote}{Idle RQ Algorithms}
+Here we show how we can implement the state machine as 
+two algorithms, one to be implemented on the sender, 
+the other, implemented on the receiver.  
+
+\end{sidenote}
+
+\frmrule 
+
+\textit{Reducing states of the state machine to use parity of message index}
+
+
+\highlightdef{
+\textbf{Send States}: About to send $n$th packet\\
+$n-1$ arrived or $n$ is first packet\\
+$S_0$: $n \text{ mod} 2 = 0$, $S_1$: $n \text{ mod} 2 = 1$ 
+}
+
+\highlightdef{
+\textbf{Receive States}: About to receive $n$th packet\\
+$n-1$ already arrived or $n$ is first packet\\
+$R_0$: $n \text{ mod} 2 = 0$, $R_1$: $n \text{ mod} 2 = 1$ 
+}
+
+\section{Reliable Communication III}
+
+\frmrule 
+
+\textit{Introducing Loss}
+
+We have previously dealt with noisy channels, 
+but we now deal with \textit{noisy and lossy} channels. 
+That is, channels that introduce bit errors (noisy), but can 
+also \textit{loose packets}.
+
+
+\frmrule 
+
+\textit{Using timers to handle loss}
+
+
+\highlightdef{
+\textbf{Acks}: acknowledgements handle \textit{noise}\\
+\textbf{Timers}: timers handle \textit{loss}
+}
+
+\frmrule 
+
+\textit{How can we have the notion of a timer in a state diagram?}
+
+Time itself is stateful. If we model time as \textit{discrete} set of points: 
+$T= 0,1,2...$, then do we need to have several states, one for each value of time?
+Our state diagram could become quite complicated. Perhaps, needlessly complicated.
+
+
+\frmrule
+
+\highlightdef{
+\textbf{Go-Back-N w/Timer}: Reliable communication over noisy and lossy channel
+}
+
+\frmrule 
+
+\textit{Reducing states of the state machine to use parity of message index}
+
+
+This protocol (that uses the parity of the message index) 
+is known as the \textit{alternating bit protocol}.
+
+
+\section{Reliable Communication IV}
+
+
+\highlightdef{
+\textbf{Piggybacking}: 
+}
+Acknowledgments are, so-called, \textit{piggybacked} on data messages.
+
+
+
+\section{IP Addresses and Subnets}
+
+
+
+\frmrule 
+
+\textit{Binary Trees and Binary Numbers}
+
+
+\highlightdef{The leaves of a binary tree with $N$ levels correspond to $[0,2^{N})$}
+and vice versa. 
+
+If we use $[0,2^{N})$ as addresses. Then each address has a corresponding 
+leaf in $T_N$, the full binary tree with $N$ levels. What is interesting is 
+that we can \textit{group addresses according to what subtree they fall under}. 
+
+
+We define an \textit{address block} as a \textit{contiguous} set of numbers, $B = [b_0,b_0+k)$ such that:\\
+(i) the number of addresses, $k$, is a \textit{power of two}\\
+(ii) the first address, $b_0$, is a multiple of the number of addresses
+
+When we look at a block of addresses, we see some interesting properties. \\
+1. Each block is uniquely defined by a \textit{subtree} of $T_N$\\
+2. Each block is uniquely defined by a \textit{binary prefix} 
+
+The binary representation of each address in a block has a \textit{common prefix}. 
+
+
+\frmrule 
+
+\textit{Thinking of Address Blocks using Trees}
+
+
+\frmrule 
+
+\textit{Given a prefix, we can find a block}
+
+
+
+
+\frmrule 
+
+\textit{Slash Notation}
+
+\highlightdef{A block $B$ can be uniquely identified by $(b,n)$}
+where $b \in B$ is any address in the block and $n$ is a natural number 
+that tells how long prefix is for the block. We can extract the prefix 
+from $b$ by $p = b \text{ div } n$. 
+
+Given the prefix, 
+we can use the techniques previously discussed to then find the
+block, $[b_0,b_0+k)$. Specifically:\\
+Number of addresses: $k = 2^{N-n}$ \\
+First Address, $b_0 = p \times 2^{N-n} $ 
+
+Hence the complete expression for finding a block given the pair $(b,n)$ is:
+\highlightdef{$(b,n) \leftrightarrow [b \text{ div } n,\; b \text{ div } n +2^{N-n}]$}
+
+
+
+\begin{sidenote}{Ceiling and Floor to multiples of $k$}
+$\ceil{x}_k = \ceil{x/k} \times k$\\
+$\floor{x}_k = \floor{x/k} \times k$\\
+We use these formulas again in 210 Architecture when dealing with caches, to find 
+the block a memory address belongs to. 
+\end{sidenote}
+
+\frmrule 
+
+\textit{Splitting a block into further blocks}
+
+
+\frmrule 
+
+\textit{IP Addresses use $T_{32}$, the binary tree with 32 levels}
+
+\frmrule 
+
+\textit{The dotted decimal notation}
+
+
+\highlightdef{\textbf{Dotted Decimal}: 
+$\textsf{s}.\textsf{t}.\textsf{u}.\textsf{v} = \textsf{s} \times 2^{24} + \textsf{t} \times 2^{16}+ \textsf{u} \times 2^{8}+\textsf{v}$}
+where $0 \leqslant \textsf{s},\textsf{s},\textsf{s},\textsf{s} \leqslant 255$ and 
+are usually written in denary. 
+
+\frmrule 
+
+\textit{Network Address and Broadcast Address}
+
+
+
+\frmrule 
+
+\textit{IP Address classes}
+
+Class A: subtree with prefix 0 \\
+Class B: subtree with prefix 10 \\
+Class C: subtree with prefix 110 \\
+Class D: subtree with prefix 1110 \\
+Class E: subtree with prefix 1111
+
+
+
+\begin{figure}[h]
+\begin{tikzpicture}[
+]
+% leaves
+\coordinate(a) at (4,0);
+\coordinate(b) at (6,0);
+\coordinate(c) at (7,0);
+\coordinate(d) at (7.5,0);
+\coordinate(e) at (8,0);
+\coordinate(aroot) at ($(0.0cm,4.0cm)+($(0cm,0cm)!0.5!(a)$)$);
+\coordinate(broot) at ($(0.0cm,3.0cm)+($(a)!0.5!(b)$)$);
+\coordinate(croot) at ($(0.0cm,2.0cm)+($(b)!0.5!(c)$)$);
+\coordinate(droot) at ($(0.0cm,1.0cm)+($(c)!0.5!(d)$)$);
+\coordinate(eroot) at ($(0.0cm,1.0cm)+($(d)!0.5!(e)$)$);
+\coordinate(r3) at ($(0.0cm,1.0cm)+($(droot)!0.5!(eroot)$)$);
+\coordinate(r2) at ($(0.0cm,1.0cm)+($(croot)!0.5!(r3)$)$);
+\coordinate(r1) at ($(0.0cm,1.0cm)+($(broot)!0.5!(r2)$)$);
+\coordinate(r0) at ($(0.0cm,1.0cm)+($(aroot)!0.5!(r1)$)$);
+%
+\filldraw[fill=black!10] (0,0) -- (a) -- (aroot) -- (0,0);
+\filldraw[fill=black!10] (a) -- (b) -- (broot) -- (a);
+\filldraw[fill=black!10] (b) -- (c) -- (croot) -- (b);
+\filldraw[fill=black!10] (c) -- (d) -- (droot) -- (c);
+\filldraw[fill=black!10] (d) -- (e) -- (eroot) -- (d);
+%
+\draw (r0) -- node[above left]{\textsf{0}} (aroot); \draw (r0) -- node[above right]{\textsf{1}} (r1);
+\draw (r1) -- node[above left]{\textsf{0}} (broot); \draw (r1) -- node[above right]{\textsf{1}} (r2); 
+\draw (r2) -- node[left]{\textsf{0}} (croot); \draw (r2) -- node[right]{\textsf{1}} (r3); 
+\draw (r3) -- node[left]{\textsf{0}} (droot); \draw (r3) -- node[right]{\textsf{1}} (eroot); 
+%
+\filldraw (aroot) circle (1pt);
+\filldraw (broot) circle (1pt);
+\filldraw (croot) circle (1pt);
+\filldraw (droot) circle (1pt);
+\filldraw (eroot) circle (1pt);
+%
+% Text labels
+\node [above=0.1cm of r0] {$T_{32}$};
+\node at ($1/3*($(0,0)+(a)+(aroot)$)$) {$A$};
+\node at ($1/3*($(a)+(b)+(broot)$)$) {$B$};
+\node at ($1/3*($(b)+(c)+(croot)$)$) {$C$};
+\draw ($1/3*($(c)+(d)+(droot)$)$) -- ++(1.0cm,-1.0cm) -- ++(1.0cm,0.0cm) -- node[right]{$D, (6.25\%)$} ++(0.0cm,0.0cm);
+\draw ($1/3*($(d)+(e)+(eroot)$)$) -- ++(1.5cm,0.0cm) -- node[right]{$E, (6.25\%)$} ++(0.0cm,0.0cm);
+\draw[|-|] (0,0) -- node[below] {$50\%$} (a);
+\draw[|-|] (a) -- node[below] {$25\%$} (b);
+\draw[|-|] (b) -- node[below] {$12.5\%$} (c);
+\draw[|-|] (c) -- node[below] {} (d);
+\draw[|-|] (d) -- node[below] {} (e);
+\end{tikzpicture}
+\end{figure} 
+
+Recall that given a prefix, we can find the blocks using the floor-to-k, ceil-to-k 
+technique we used before. 
+With the above prefixes, we see that the blocks for each class are:\\
+$A = [0.0.0.0, 128.0.0.0)$\\
+$B = [128.0.0.0, 192.0.0.0)$\\
+$C = [192.0.0.0, 224.0.0.0)$\\
+$D = [224.0.0.0, 240.0.0.0)$\\
+$E = [240.0.0.0, 255.255.255.255]$
+
+
+\frmrule 
+
+\textit{Classful address blocks}
+
+Blocks can be assigned to organisations using a different scheme 
+that uses \textit{classful address blocks}. Each class 
+has used \textit{fixed size blocks} that are given to organisations.  
+
+Out of all $2^{32}$ addresses (leaves of $T_{32}$), 
+we already know that A occupies $50\%$, B occupies $25\%$, C occupies $12.5\%$ 
+and D and E occupy $6.25\%$.  In turns out that each class has blocks of the following size \\
+Class A: $2^{31} \rightarrow$ $2^{7}$ blocks of size $2^{24}$ \\
+Class B: $2^{30} \rightarrow$  $2^{14}$ blocks of size $2^{16}$ \\
+Class C: $2^{29} \rightarrow$  $2^{21}$ blocks of size $2^{8}$ \\
+Class D: unavailable\\
+Class E: unavailable\\
+
+These scheme is quite inflexible.
+A class A and B block can be often too large for the organisation. 
+A class C block is often too small. The result is that 
+addresses are wasted. Class E is reserved for future use - 
+and so far only a few have been used - meaning that even more addresses 
+are wasted. 
+
+\highlightdef{Classful addressing has been mostly replaced by classless addressing}
+
+Note that a classful address block can itself, 
+be divided a subtree of blocks, and each of those block, 
+be further divided a subtree of blocks.
+
+\frmrule 
+
+
+\begin{example}
+You have one class C network 194.16.3.0 but want 5 subsets. \\
+(a) How many bits are needed to identify the subset?\\
+(b) How many uniquely identifiable hosts are there per subset?\\
+(c) What is the subnet mask?
+
+(a) Subnets must be a power of 2. So we need 8 subsets. We need 3 bits.\\
+(b) We are left with 5 bits. So $2^{5} = 32$ unique addresses. 
+We subtract two for network and broadcast. Giving 30 hosts per subnet. 
+(c) Subnet mark is given with 1s over the network number. 
+Most significant 3 bits gives: 128 + 64 + 32 = 224. 
+So subnet mask of 255.255.255.224
+\end{example}
+
+
+
+\section{Host to Host}
+
+\frmrule 
+
+\textit{Learning objectives}
+
+\begin{itemize}[nosep]
+\renewcommand{\labelitemi}{$\Box$}
+\item \textit{understand}: the problem of host-to-host routing.
+\item \textit{be able to}: define host-to-host connection
+\item \textit{know}: when a host-to-host connection is connection-oriented and when it is connection-less. 
+\item \textit{appreciate}: that IP is responsible for host-to-host routing.
+\item \textit{know}: what entities and service access points lie on the network layer.
+\item \textit{appreciate}: IP addresses $*$do not$*$ uniquely identify end-hosts.
+\item \textit{know}: how many interfaces entities, routers and hosts are permitted to have. 
+\end{itemize}
+
+\frmrule
+
+% \highlightdef{\textbf{Circuit Switching}: }
+\highlightdef{\textbf{Packet Switching}: }
+
+\highlightdef{\textbf{Datagram Switching}: }
+
+
+\frmrule
+
+\textit{Routers and Routing Tables}
+
+
+\highlightdef{\textbf{Routers}: a device use to implement datagram switching }
+
+We can think of a router as a \textit{node in our routing graph}. 
+Each router has a finite set of network layer service access points that we 
+call \textit{interfaces}.
+Each interface corresponds to an \textit{edge in our routing graph}. 
+
+\highlightdef{IP addresses uniquely identify \textit{interfaces}, not entities}
+A entities with more than one interface may have more than one IP
+address
+
+\highlightdef{\textbf{Routing Graph}: a simple graph that is undirected }
+
+Recall that by \textit{simple}, we mean that there are no loops 
+and that there there at most one edge connecting two nodes.
+
+
+\frmrule
+
+\textit{How can we tell if an entity is a Host or a Router?}
+
+
+\frmrule
+
+\begin{sidenote}{Repeaters and Hubs}
+If you have heard the terms \textit{repeater} and \textit{hub}, then 
+your thinking ahead. These terms are right now meaningless 
+as we have not looked at the lower half of the Data-link layer 
+nor the physical layer. We will expore repeaters and hubs 
+when we learn about Ethernet and Network Interface cards in the 
+Advanced area. 
+\end{sidenote}
+
+\begin{sidenote}{Routers vs Switches}
+\end{sidenote}
+
+\frmrule
+
+
+\highlightdef{\textbf{Message Switching}: }
+Message switching is sometimes called \textit{store-and-forward}. 
+
+
+\frmrule
+
+\textit{Our communication is no longer reliable}
+
+\frmrule
+
+\textit{Our communication is no longer connection-oriented}
+
+\frmrule
+
+\textit{Next time...}
+
+The next time we visit the Network layer, we will 
+look at routing algorithms. We will also look 
+in more details at \trxtit{more advanced fields} that are in IP datagram. 
+We'll see what they are and how they change from entity to entity.
+
+\frmrule
+
+\textit{These Network Layer routing ideas are used for protocols of $*$other layers$*$}
+
+\begin{sidenote}{Circuit-switching is at the physical Layer}
+If you have heard the term \textit{circuit-switching}, then 
+you're thinking ahead. What we define as circuit switching 
+will come \textit{later}. This is because our definition of 
+circuit switching it is not implemented at the network 
+or transport layer, but at the \textit{physical layer}. 
+\end{sidenote}
+
+\begin{sidenote}{Virtual Circuit Switching is at the datalink Layer}
+If you have heard the term \textit{Virtual-Circuit}, then 
+you're thinking ahead. We will later define 
+what a Virtual Circuit is and it does switching \textit{later}.
+Virtual circuits are not implemented at the network 
+or transport layer, but at the \textit{datalink layer}. 
+\end{sidenote}
+
+
+\section{Application to Application}
+
+Full picture
+
+\highlightdef{\textbf{Transport Layer}: responsible for 
+\textit{process-to-process delivery} }
+Or if you prefer, \textit{application} to \textit{application}. 
+
+
+\highlightdef{Transport layer runs on \textit{hosts only}, not on switches }
+And for each host, the protocols and their details that we discuss here will 
+be typically implemented in the \textit{operating system kernel}. 
+
+\highlightdef{\textbf{Socket}: }
+
+\highlightdef{\textbf{Flow}: A \textit{flow} is a four-tuple: $(\nu_A,\rho_A,\nu_B,\rho_B)$}
+
+
+
+\highlightdef{\textbf{TCP}: $[\rho \textsf{S},\rho \textsf{D}, \textsf{S}, \textsf{A},..., \textsf{D}]$}
+
+
+
+\frmrule
+
+\textit{How can TCP, which uses the services of IP, a connection-less protocol, be connection-orieted?}
+
+\frmrule 
+
+\textit{Implementing connection-oriented on top of connection-less}
+
+
+\frmrule
+
+\textit{How can TCP, which uses the services of IP, an reliable protocol, be reliable?}
+
+\frmrule 
+
+\textit{Implementing unreliable on top of reliable}
+
+
+
+
+\frmrule
+
+\textit{Despite the Datalink layer being reliable, we need to implement reliability $*$again$*$ at the Transport layer}
+
+
+\highlightdef{We need to implement reliability \textit{again} at the Transport layer}
+
+So we shall look back at the techniques we learned to implement reliable communication. 
+It turns out that TCP uses a sliding window to implement reliable communication. 
+However it is slightly different to the one we saw in when we implemented reliable 
+communication in the datalink layer. \\
+(i) The sliding window in TCP is \textit{byte-oriented}. The Datalink one was \textit{message oriented}. \\
+(ii) The sliding window in TCP has a \textit{variable size}. The Datalink one was \textit{fixed size}.\\
+(iii) The sliding window in TCP uses \textit{piggybacking}. The Datalink one doesn't have to use piggybacking. 
+
+We will implement reliable communication for a channel that is both noisy and lossy. 
+This means we need to use both acknowledgements and timeouts. 
+Notice that a TCP connection consists of is a \textit{full-duplex link}. 
+Therefore, there are \textit{two streams}. And so there are \textit{two sequence numbers}
+being maintained simultaneously that can increment independently. 
+
+\frmrule
+
+\textit{TCP Sequence numbers use $iG$ not $i$ } 
+
+One small discrepancy to get out of the way is the way TCP deals with sequence numbers. 
+
+\highlightdef{\textbf{TCP Sequences}: TCP Sequence numbers use $\textsf{S} = iG$ not $\textsf{S} = i$ }
+
+for $i = 0,1,2,...$, where $G$ is some constant. 
+Sequence numbers will work in exactly the same way. But they have been 
+scaled by $G$. This will later make sense
+
+
+\begin{sidenote}{The Two-army Problem}
+
+\end{sidenote}
+
+
+\frmrule 
+
+\textit{Using ports to uniquely identify a service access point }
+
+
+The IANA (Internet Assigned Number Authority) has partitoned the port number set, $\mathcal{P} = [0, 2^{16})$ 
+into three ranges, \textit{well-known}, $\mathcal{W} = [0,2^{10})$, \textit{registered} $\mathcal{R}=[2^{10},49152)$ 
+and \emph{dynamic}, $\mathcal{D} = [49152,2^{16})$. 
+
+
+\highlightdef{
+\textbf{Ephemeral Port Number}: client program port, $\rho_C \in \mathcal{D}$ chosen \textit{arbitrarily}\\
+\textbf{Well-known Port Number}: server program port, $\rho_S \in \mathcal{W}$ that is \textit{predefined} 
+}
+Ephemeral Port Numbers can be called a \textit{Temporary} Port Numbers. 
+
+
+\frmrule 
+
+\textit{Mutliplexing}

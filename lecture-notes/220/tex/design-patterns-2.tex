@@ -1,0 +1,103 @@
+
+\chapter{Design Patterns II}
+
+
+
+\section{Visitor Pattern I}
+
+Polymorphic dispatch means a single call site could branch to one of several different implementations. 
+C function calls are not polymorphic; Objective-C methods and C++ virtual methods are polymorphic.
+
+
+\highlightdef{\textbf{Method Resolution}: method to be executed within the calling context}
+
+
+\highlightdef{\textbf{Overloading}: resolution at compile time }
+
+
+\highlightdef{\textbf{Dynamic Dispatch}: resolution at runtime }
+
+
+\highlightdef{\textbf{Overriding}:  resolution at runtime  }
+It's called \textit{single} dispatch because only \textit{one} argument to the function is used
+for resolution, implicit \textit{this} parameter in curly bracket languages.
+
+
+
+For example, methods can be dispatched based on the run time type its arguments. 
+Instead of using  \textit{one} parameter, we are using \textit{multiple} parameters.
+This is known as \textit{Multiple dispatching}.
+
+\highlightdef{\textbf{Multiple Dispatch}: Dynamic Dispatching based on the runtime (dynamic) types}
+
+In pseudocode, the code \lstinline{manager.handle(y)} could call different 
+implementations of \lstinline{handle} depending on current runtime 
+\textit{types} of \lstinline{manager} and \lstinline{y}. 
+
+Often we care about just two object types. A multiple dispatch that 
+uses two types to do dynamic dispatching is called a \textit{double dispatch}. 
+
+
+
+
+
+
+C++ and Java are examples of single dispatch languages. 
+
+Python, Ruby, Smalltalk and Objective-C are examples of a Dynamic dispatch language.
+
+\frmrule
+
+In Lisp, you have multiple dispatch, so you can do something like this
+
+\begin{lstlisting}
+(defgeneric write (generator instrument))
+
+(defmethod write ((g portfolio-generator) (s share))
+(format t "portfolio-generator: a share"))
+
+(defmethod write((g portfolio-generator) (p preference-share))
+(format t "portfolio-generator: a preference share"))
+\end{lstlisting}
+
+And when you call \lstinline{(write ...)} with a report-generator 
+instance and either a share or preference-share instance, you will get the expected result!
+
+In fact, in Lisp, if you have two (or more) type hierarchies you can 
+choose to specialize the method at \textit{any} point in the hierarchy of \textit{any} 
+of the parameters. 
+
+Haskell supports multiple dispatch 
+via Multi-parameter type classes.
+
+
+
+\frmrule
+
+\highlightdef{\textbf{Inline Caching}: optimization technique used in multiple dispatch}
+Careful design of the method dispatch caching allows even prototype based languages 
+such as Javascript to have high performance method dispatch.
+
+
+
+
+\section{Visitor Pattern II}
+
+\highlightdef{\textbf{Visitor Pattern}: implement \textit{double dispatch} in single dispatch languages}
+
+Used to perform operations specific to the dynamic type of nodes in a data structure without 
+having to change the definition of the nodes.
+
+
+
+\section{Visitor Pattern III}
+
+
+\highlightdef{The Visitor Pattern eliminates enums from the Observer Pattern}
+
+
+
+
+
+
+

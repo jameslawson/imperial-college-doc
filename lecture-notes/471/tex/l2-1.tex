@@ -1,0 +1,37 @@
+
+\chapter{$\mathcal{L}_2$ Language I}
+
+
+\section{Introducing $\mathcal{L}_2$}
+
+Here extend the language $\mathcal{L}_1$ and create a new language 
+$\mathcal{L}_2$. $\mathcal{L}_2$ has  inheritence.
+
+The work in this chapter will be on giving a formal description of $\mathcal{L}_1$ 
+consists of
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Syntax} 
+\item \textbf{Operational Semantics} 
+\item \textbf{Type System} We will see how to prove \textit{type soundness}, 
+demonstrated through an important theorem called the \textit{subject reduction theorem}.
+\end{itemize} 
+
+The \textit{structure} of an $\mathcal{L}_1$ program is defined by the function
+\highlightdef{ $Prog = ClassId \rightarrow  (ClassId \times 
+(FieldId \rightarrow type) 
+\times (MethodId \rightarrow meth))$ }
+
+where $meth$ and $type$ have a syntax defined by:
+\begin{flalign*}
+meth &::= type\, m (type\, x) \{ x \} &\\
+type &::= \text{bool} | m \\
+e    &::= \text{if}\, e \text{then}\, e\, \text{else}\, e | e.f | e.f := e 
+               | e.m(e) | \text{new}\, c | x | \text{this} | \text{true} 
+               | \text{false} | \text{null}
+\end{flalign*}
+with the identiﬁer conventions: $c \in ClassId$  for class identifiers,
+$f \in FieldId$ for field identifiers and $m \in MethId$  for class 
+identifiers.
+
+\frmrule

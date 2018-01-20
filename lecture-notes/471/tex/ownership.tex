@@ -1,0 +1,144 @@
+
+\chapter{Ownership Types}
+
+
+\section{Owners as Dominators}
+
+
+
+Taking all paths from the root, $a_r$ to $a'$, 
+$a$ \textit{dominates} $a'$ iff $a$ is always one of the objects 
+on the path. In other words, we always have to go through 
+$a$ to reach $a'$ from the root. 
+
+Fix objects from $\chi$. For all paths from $a_r$ to $a'$, $a_r \ll a_1, \dotsm, a_k \gg a'$, we have:
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$\chi \vdash a_r \ll a_1, \dotsm, a_k \gg a'$ implies $a = a_i$ for some $i \in \{ 1 \dotsm k \}$}
+\LeftLabel{\textsc{dom}}
+\UnaryInfC{$\chi \vdash a \text{ dom } a'$}
+\end{prooftree}
+
+We have that $a$ is always on the path, on of the 
+
+\frmrule
+
+
+\begin{example}
+Does $\chi \vdash a \text{ dom } a$ hold for all objects $a$? 
+That is, is it possible for an object to dominate itself. Explain why/why not.
+\end{example}
+
+\frmrule
+
+\begin{example}
+Does $\chi \vdash a \text{ dom } a'$ imply that $\chi \vdash a \ll \dotsm \gg a'$?
+That is, does a node dominating another node imply that the nominated 
+node is reachable by the nominating node? 
+\end{example}
+
+\frmrule
+
+\begin{example}
+Does $\chi \vdash a \text{ dom } a'$ and $\chi \vdash a \text{ dom } a''$ imply that $a' = a''$?
+That is, is it impossible for an object to dominate two distinct objects at the same time. 
+\end{example}
+
+\frmrule
+
+\begin{example}
+Does $\chi \vdash a' \text{ dom } a$ and $\chi \vdash a'' \text{ dom } a$ imply that $a' = a''$?
+That is, is it impossible for an object to be dominated by two distinct objects. 
+\end{example}
+
+\frmrule
+
+\begin{example}
+Does $\chi \vdash a \text{ dom } a'$ and $\chi \vdash a' \text{ dom } a''$ imply  
+$\chi \vdash a \text{ dom } a''$. That is, is the dom relation transitive?
+\end{example}
+
+\frameans{Find a counterexample or prove it to be true.}{No.}
+
+Below shows a counterexample. 
+
+
+
+\frmrule
+
+\begin{example}
+For the following heap, find the dom relation.
+\end{example}
+
+
+\frmrule
+
+Recall the ownership mapping, $\text{own}: Addr \rightarrow Addr$. 
+This mapping is defined by the type system and code written
+in the programming language. 
+
+Now that we have dominations defined, 
+we can define the notion of object owners dominating the objects 
+that they own. 
+
+This is the notion of \textit{owners as dominators}. 
+We say that a given ownership mapping \textit{respects} the 
+dom relationship iff for all objects, their owners are their 
+dominators. 
+
+For all objects $a$, we have: 
+
+\begin{prooftree}
+\def\defaultHypSeparation{\hskip .01in}
+\AxiomC{$\chi \vdash a' \text{ dom } a$}
+\LeftLabel{\textsc{own-dom}}
+\RightLabel{$\text{own}(a) = a'$}
+\UnaryInfC{$\text{own} \vdash \chi \lozenge$}
+\end{prooftree}
+
+
+\highlightdef{\textbf{Ownership Respecting Domination}: $\text{own} \vdash \chi \lozenge$}
+
+
+\frmrule 
+
+
+
+
+\highlightdef{\textbf{Direct Owner Access}: $\chi \vdash a \ll a, a' \gg \text{ implies } \exists \text{own}^k{a} = \text{own}(a')$}
+
+That is, a reference from $a$ to $a’$ is only legal if $a$ owns $a'$, 
+or the owner of $a$ owns $a'$ or, the owner of the owner of $a$ owns $a'$, ...
+
+\begin{example}
+Which arrows are legal in the following diagram under \textit{direct owner access}
+\end{example}
+
+\frmrule 
+
+
+\begin{example}
+Given a heap with ownership types $\chi$, if 
+$\chi$ satisfies \textit{direct owner access}, is it true that
+
+$$\chi \vdash a \ll \dotsm \gg a'  \text{ imply } \exists \text{own}^k{a} = \text{own}(a')$$
+
+for all paths and all objects $a, a'$? 
+That is, are indirect references valid if the owner of $a'$ is an ancestral owner of $a$?
+\end{example}
+
+
+
+\frmrule 
+
+If heap has direct owner access has then we have:
+\highlightdef{\textbf{Access Control}: $a$ controls $a'$ iff $a$ owns $a'$ and there is a path from $a$ to $a'$}
+
+
+The ownership boxes and the dom relationship are not part of 
+definition of the heap $\chi$. Ownership types are predetermined 
+by the code. The ownership types are not changed when the 
+state $\chi$ is updated. 
+The dom relation can easily change when the state $\chi$ is updated.
+

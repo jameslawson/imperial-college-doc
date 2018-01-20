@@ -1,0 +1,741 @@
+
+\chapter{Quantum Algorithms I}
+
+
+\section{Parallel Hadamard Gates}
+
+
+
+
+
+
+\highlightdef{\textbf{Parity Inner Product}: 
+$[\textsf{x}, \; \textsf{y}] = \bigoplus^n_{i=1} \textsf{x}_i \wedge \textsf{y}_i$}
+
+In other words, we component-wise, take the \textsc{and} operation, and then \textsc{xor} these together.
+$$[\textsf{x}, \; \textsf{y}] = (x_1 \wedge y_1) \oplus (x_2 \wedge y_2) \oplus \dotsm \oplus (x_n \wedge y_n)$$
+
+We call this an \textit{inner product} because we are taking the inner product 
+of two vectors and outputting a number. Here our vectors our strings of binary digits
+and the number outputting is $\{0,1\}$. In fact, we will show soon that this 
+inner product behaves quite similarly with the inner product used for Euclidean spaces (dot product) 
+and the inner product used for Hilbert spaces (Hermitian inner product) .
+
+We call this the \textit{parity} inner product because we will soon that this product 
+outputs one if and only if the \textit{product string} has an odd number of ones.
+By \textit{product string}, we mean the the string that results 
+from doing a component-wise \textsc{and} operation.
+
+\frmrule
+
+\begin{example}
+Determine $[\textsf{0011}, \; \textsf{0101}]$ 
+\end{example}
+
+\frameans{}{$0$}
+
+
+\frmrule
+
+This may seem like a useless way to write the Hadamard operation but it was done in preparation 
+for understanding how \textit{parallel} Hadamard gates operate. 
+
+\highlightdef{$H\ket{x} = \frac{1}{\sqrt{2}} [(-1)^{[x,0]} \ket{0} + (-1)^{[x,1]} \ket{1}]$  }
+
+
+
+\frmrule
+
+\begin{example}
+Show that $(-1)^{[u,v]}\ket{i} \otimes (-1)^{[x,y]}\ket{j} = (-1)^{[ux,vy]}\ket{ij}$ 
+where $u,v,x,y,i,j$ are bits.
+\end{example}
+
+\frmrule
+
+$(-1)^{u \wedge v} (-1)^{x \wedge y} \ket{i} \ket{j} = $\\
+$(-1)^{u \wedge v + x \wedge y} \ket{ij} = $\\
+$(-1)^{[u \wedge v + x \wedge y]\text{mod } 2} \ket{ij} = $\\
+$(-1)^{u \wedge v \oplus x \wedge y} \ket{ij} = $
+$(-1)^{[ux, vy]} \ket{ij} $
+
+
+\frmrule
+
+\begin{example}
+Show that $(-1)^{[ux,vy]}\ket{ij} \otimes (-1)^{[s, t]}\ket{k} = (-1)^{[uxs,vyt]}\ket{ijk}$ 
+\end{example}
+
+\frmrule
+
+After doing the previous examples, it's now not too hard to what happens 
+in the general case. 
+
+$(-1)^{x_1 \wedge y_1}\ket{i_1} \otimes
+(-1)^{x_2 \wedge y_2}\ket{i_2} \otimes
+\dotsm \otimes
+(-1)^{x_n \wedge y_n}\ket{i_n} = $ 
+
+$(-1)^{x_1 \wedge y_1 + x_2 \wedge y_2 + \dotsm + x_n \wedge y_n}\ket{i_1 i_2 \dotsm i_n} = $
+
+$(-1)^{[x_1 \wedge y_1 + x_2 \wedge y_2 + \dotsm + x_n \wedge y_n] \text{mod } 2}\ket{i_1 i_2 \dotsm i_n}$
+
+$(-1)^{(x_1 \wedge y_1) \oplus (x_2 \wedge y_2) \oplus \dotsm \oplus (x_n \wedge y_n)}
+\ket{i_1 i_2 \dotsm i_n} =$
+
+$(-1)^{[x_1 x_2 \dotsm x_n, \; y_1 y_2 \dotsm y_n]}
+\ket{i_1 i_2 \dotsm i_n}$
+
+We will use this next.
+
+\frmrule
+
+
+\begin{example}
+Determine $H^{\otimes n}\ket{x}$.
+\end{example}
+
+
+$H^{\otimes n}\ket{x}$
+
+$= 
+\frac{1}{\sqrt{2}} \left[(-1)^{x_1 \wedge 0} \ket{0} + (-1)^{x_1 \wedge 1} \ket{1} \right] \otimes
+\frac{1}{\sqrt{2}} \left[(-1)^{x_2 \wedge 0} \ket{0} + (-1)^{x_2 \wedge 1} \ket{1} \right] \otimes
+\dotsm 
+\\ \otimes \frac{1}{\sqrt{2}} \left[(-1)^{x_n \wedge 0} \ket{0} + (-1)^{x_n \wedge 1} \ket{1} \right]
+$
+
+$= \sum_{y_1 y_2 \dotsm y_n \in \{0,1\}^n}
+\frac{1}{\sqrt{2}} [(-1)^{x_1 \wedge y_1}\ket{y_1}] \otimes \frac{1}{\sqrt{2}} [(-1)^{x_2 \wedge y_2}\ket{y_2}] 
+\otimes \dotsm \otimes \frac{1}{\sqrt{2}} [(-1)^{x_n \wedge y_n}\ket{y_n}]
+$
+
+$= 
+\frac{1}{\sqrt{2}^n} \sum_{y_1 y_2 \dotsm y_n \in \{0,1\}^n}
+(-1)^{x_1 \wedge y_1 + x_2 \wedge y_2 + \dotsm + x_n \wedge y_n} \ket{y_1 y_2 \dotsm y_n}
+$
+
+$= 
+\frac{1}{\sqrt{2}^n} \sum_{y_1 y_2 \dotsm y_n \in \{0,1\}^n}
+(-1)^{[x_1 \wedge y_1 + x_2 \wedge y_2 + \dotsm + x_n \wedge y_n] \text{mod } 2 } \ket{y_1 y_2 \dotsm y_n}
+$
+
+$= 
+\frac{1}{\sqrt{2}^n} \sum_{y_1 y_2 \dotsm y_n \in \{0,1\}^n}
+(-1)^{(x_1 \wedge y_1) \oplus (x_2 \wedge y_2) \oplus \dotsm \oplus (x_n \wedge y_n)} \ket{y_1 y_2 \dotsm y_n}
+$
+
+$= 
+\frac{1}{\sqrt{2}^n} \sum_{y_1 y_2 \dotsm y_n \in \{0,1\}^n}
+(-1)^{[x_1 x_2 \dotsm x_n, \; y_1 y_2 \dotsm y_n]} \ket{y_1 y_2 \dotsm y_n}
+$
+
+
+
+\highlightdef{
+\textbf{Parallel Hadamard}: 
+$H^{\otimes n}\ket{\textsf{x}} = 
+\frac{1}{\sqrt{2}^n} \sum_{\textsf{y} \in \{0,1\}^n}
+(-1)^{[\textsf{x}, \; \textsf{y}]} \ket{\textsf{y}}$  }
+
+This is known as \textit{Fourier Samping}. 
+
+\frmrule
+
+\highlightdef{ $h_{(i,j)} = \frac{1}{\sqrt{N}}(-1)^{[i,j]}$ }
+
+where $h_{(i,j)}$ denotes the element of $H^{\otimes n}$ at row $i$ and column $j$, 
+where we number row/columns from 0 to $N-1$. 
+
+
+\frmrule
+
+\begin{example}
+Write out explicitly $H^{\otimes 3}$ 
+\end{example}
+
+\frmrule
+
+\begin{example}
+Write out explicitly the 7th column of $H^{\otimes 4}$ 
+\end{example}
+
+\frmrule
+
+\begin{example}
+Prove by induction over $N$ that $h_{(i,j)} = \frac{1}{\sqrt{N}}(-1)^{[i,j]}$
+\end{example}
+
+\frmrule
+
+\begin{example}
+Using the previous result, what is $H^{\otimes n}\ket{\textsf{00..0}}$?
+\end{example}
+
+We insert $\textsf{x} = \textsf{00..0}$ into the Parallel Hadamard equation to get:\\
+$H^{\otimes n}\ket{\textsf{00..0}} = 
+\frac{1}{\sqrt{2}^n} \sum_{\textsf{y} \in \{0,1\}^n}
+(-1)^{[\textsf{00..0}, \; \textsf{y}]} \ket{\textsf{y}}$
+$ = \frac{1}{\sqrt{2}^n} \sum_{\textsf{y} \in \{0,1\}^n} \ket{\textsf{y}}$
+
+\frmrule
+
+This is a special case of Fourier Sampling where here, instead of 
+using a general $\ket{\textsf{x}}$, we are using $\textsf{x} = \textsf{00..0}$. 
+Notice how this gives a superposition of all $2^n$ computational basis vectors 
+for an $n$ qubit system.
+
+\highlightdef{An $n$-qubit \textbf{Uniform Superposition}
+is given by $H^{\otimes n}\ket{\textsf{00..0}}$
+}
+In other words, by connecting $n$ Hadamards in parallel each with input $\ket{0}$. 
+
+What happens if we give $H^{\otimes n}$ a string that is not all zeros. 
+Well, we actually still get an $n$-qubit superposition, but there will 
+be some \textit{minus signs}.
+
+\frmrule
+
+\begin{example}
+Given that $H$ is its own inverse, prove that $H^{\otimes n}$ is its own inverse.
+\end{example}
+
+\frmrule
+
+Because $H^{\otimes n}$ is it's own inverse, we have the following result. 
+
+\highlightdef{
+\textbf{Undo Superposition}:
+$H^{\otimes n}
+(\frac{1}{\sqrt{2}^n} \sum_{\textsf{y} \in \{0,1\}^n}
+(-1)^{[\textsf{x}, \; \textsf{y}]} \ket{\textsf{y}}) 
+= \ket{\textsf{x}}$ 
+}
+
+\frmrule
+
+This is a special case where the superposition is undone and $\ket{\textsf{x}}$ is recoverd. 
+It is not always the case that taking the Hadamard of a superposition performs this undoing action. 
+It just so happened to work in this case because the superposition had a 
+special structure having $(-1)^{[\textsf{x}, \; \textsf{y}]}$ and using 
+all the computational basis vectors, $\textsf{y} \in \{0,1\}^n$.
+
+We can consider a more general case of taking $H^{\otimes n}$ 
+for a \textit{general} superposition of $\sum_x \alpha_x H^{\otimes n} \ket{x}$. 
+The coefficients of this superposition are a general $\alpha_x$ and we do not have to 
+use the $n$ computational basis vectors. 
+
+\highlightdef{
+\textbf{Hadamard of Superposition}:
+$H^{\otimes n} (\sum_x \alpha_x \ket{x}) 
+= \sum_x \sum_{y \in \{0,1\}^n} \alpha_x (-1)^{[x,y]} \ket{y}$
+}
+
+\frmrule
+
+\begin{example}
+By substituting the superposition 
+$\sum_x \alpha_x \ket{x} = \sum_{\textsf{x} \in \{0,1\}^n} (-1)^{[\textsf{x}, \; \textsf{z}]}\ket{\textsf{x}}$
+into the formula above, show that the result is $\ket{\textsf{z}}$
+\end{example}
+
+
+\frmrule
+
+\begin{tikzpicture}
+    %
+    \matrix[row sep=0.1cm, column sep=0.8cm] (circuit) {
+    % row
+    \node (q1) {$H$};  & \coordinate (uf1); & &;
+    \coordinate (end1); \\
+    % next row:
+    \node (q2) {\ket{\textsf{x}_2}}; & & &
+    \coordinate (end2);\\
+    % next row:
+    \node (qx) {...};  & & &
+    \coordinate (endx); \\
+    % next row:
+    \node (q3) {\ket{\textsf{x}_n}}; & & &;
+    \coordinate (end3); \\
+     % next row:
+    \node (q4) {\ket{-}}; & & \coordinate (uf2); &;
+    \coordinate (end4); \\
+    };
+
+    \begin{pgfonlayer}{background}
+        \draw[thick] (q1) -- (end1)  (q2) -- (end2) (q3) -- (end3) (q4) -- (end4);
+    \end{pgfonlayer}
+
+    \begin{pgfonlayer}{foreground}
+        \node [draw=black, fill=black!5, drop shadow, inner sep=5pt, outer sep=5pt, fit={(uf1) (uf2)}] {$U_f$};
+    \end{pgfonlayer}
+    %
+\end{tikzpicture}
+
+
+
+\section{Bernstein-Vazirani Algorithm}
+
+The \textit{parity problem}.
+
+\highlightdef{
+\textbf{Parity Problem}: Input a function $f: \{0,1\}^n \rightarrow \{0,1\}$
+where $f(x) = [\textsf{u},\; \textsf{x}]$ for some hidden $\textsf{u} \in \{0,1\}^n$, 
+output $\textsf{u}$ 
+}
+
+\highlightdef{The \textbf{Bernstein-Vazirani Algorithm} solves the \textit{Parity Problem}}
+
+The definition of $f$ is that it acts as a \textit{parity mask} (similar to a bit mask except that 
+we are outputting parities rather than bits). 
+$f(x) = 0$ only when $\textsf{x}$ 
+We want to use as few queries to $f$ as possible. 
+
+\begin{tikzpicture}
+    %
+    \matrix[row sep=0.1cm, column sep=0.8cm] (circuit) {
+    % row
+    \node (q1) {\ket{\textsf{x}_1}};  & \coordinate (uf1); & &;
+    \coordinate (end1); \\
+    % next row:
+    \node (q2) {\ket{\textsf{x}_2}}; & & &
+    \coordinate (end2);\\
+    % next row:
+    \node (qx) {...};  & & &
+    \coordinate (endx); \\
+    % next row:
+    \node (q3) {\ket{\textsf{x}_n}}; & & &;
+    \coordinate (end3); \\
+     % next row:
+    \node (q4) {\ket{-}}; & & \coordinate (uf2); &;
+    \coordinate (end4); \\
+    };
+
+    \begin{pgfonlayer}{background}
+        \draw[thick] (q1) -- (end1)  (q2) -- (end2) (q3) -- (end3) (q4) -- (end4);
+    \end{pgfonlayer}
+
+    \begin{pgfonlayer}{foreground}
+        \node [draw=black, fill=black!5, drop shadow, inner sep=5pt, outer sep=5pt, fit={(uf1) (uf2)}] {$U_f$};
+    \end{pgfonlayer}
+    %
+\end{tikzpicture}
+
+
+
+\highlightdef{
+$U_f\ket{\textsf{x}}\ket{-} = (-1)^{f(\textsf{x})} \ket{\textsf{x}}\ket{-}$
+}
+
+The output is the same except that whenever $f(\textsf{x}) = 1$, 
+the output picks up a relative phase of minus one.
+
+Now suppose we add a parallel Hadamard before $U_f$.
+Instead of inputting $\ket{x}$, we input $H^{\otimes n}\ket{\textsf{00..0}}$. 
+Recall from our previous work on parallel Hadamard gates that:
+$H^{\otimes n}\ket{\textsf{00..0}} 
+= \frac{1}{\sqrt{2}^n} \sum_{\textsf{y} \in \{0,1\}^n} \ket{\textsf{y}}$
+
+
+
+\begin{tikzpicture}[thick]
+    %
+    \matrix[row sep=0.1cm, column sep=0.8cm] (circuit) {
+    % row
+    \node (q1) {\ket{0}}; &
+    \coordinate (hn1); & & \coordinate (uf1); & &
+    \coordinate (end1); \\
+    % next row:
+    \node (q2) {\ket{0}}; & & & & &
+    \coordinate (end2);\\
+    % next row:
+    \node (qx) {...}; & & & & &
+    \coordinate (endx); \\
+    % next row:
+    \node (q3) {\ket{0}}; & &
+    \coordinate (hn2); & & &
+    \coordinate (end3); \\
+    % next row:
+    \node (q4) {\ket{-}}; & & & & \coordinate (uf2); &
+    \coordinate (end4); \\
+    };
+    % Draw bracket on right with resultant state.
+    \draw[decorate,decoration={brace},thick]
+        ($(end1.east)+(0.1cm,0.3cm)$)
+        to node[midway,right] (bracket) {$\ket{\phi'}$}
+        ($(end4.east)+(0.1cm,-0.3cm)$);
+    \begin{pgfonlayer}{background}
+        % Draw circuit parallel lines.
+        \draw[thick] (q1) -- (end1)  (q2) -- (end2) (q3) -- (end3) (q4) -- (end4);
+    \end{pgfonlayer}
+
+    \begin{pgfonlayer}{foreground}
+        \node [draw=black, fill=black!5,drop shadow, inner sep=5pt, outer sep=5pt, fit={(hn1) (hn2)}] {$H^{\otimes n}$};
+        \node [draw=black, fill=black!5,drop shadow, inner sep=5pt, outer sep=5pt, fit={(uf1) (uf2)}] {$U_f$};
+    \end{pgfonlayer}
+    %
+\end{tikzpicture}
+
+The output is now the following.
+
+\[ 
+\begin{array}{lll}
+ \ket{\phi'} &= U_f [(H^{\otimes n} \otimes I)(\ket{\textsf{0}^n}) \otimes \ket{-})]  & \text{from circuit} \\
+  &= U_f [(H^{\otimes n}\ket{\textsf{0}^n}) \otimes (I\ket{-})]  & \text{multiplication property} \\
+  &= U_f [H^{\otimes n}\ket{\textsf{0}^n}\ket{-}]  & \text{identity matrix} \\
+  &= U_f [(\frac{1}{\sqrt{2}^n} \sum_{\textsf{x} \in \{0,1\}^n} \ket{\textsf{x}}) \ket{-}] & \text{Hadamard superposition} \\
+  &= U_f [\frac{1}{\sqrt{2}^n} \sum_{\textsf{x} \in \{0,1\}^n} \ket{\textsf{x}} \ket{-}]  
+  & \text{distributivity of } \otimes  \text{over } + \\  
+  &= \frac{1}{\sqrt{2}^n} \sum_{\textsf{x} \in \{0,1\}^n} U_f \ket{\textsf{x}} \ket{-}  & \text{linearity of } U_f \\
+  &= \frac{1}{\sqrt{2}^n} \sum_{\textsf{x} \in \{0,1\}^n} (-1)^{f(x)} \ket{\textsf{x}} \ket{-}  
+  & U_f \text{ with } \ket{\textsf{x}}\ket{-} \text{ result} \\
+  &= \frac{1}{\sqrt{2}^n} \sum_{\textsf{x} \in \{0,1\}^n} (-1)^{[u,\;x]} \ket{\textsf{x}} \ket{-}  
+  & \text{def of } f(x)  \\
+  &= (\frac{1}{\sqrt{2}^n} \sum_{\textsf{x} \in \{0,1\}^n} (-1)^{[u,\;x]} \ket{\textsf{x}}) \ket{-}  
+  & \text{distributivity of } \otimes  \text{over } +   
+\end{array}
+\] 
+
+Recall that $H^{\otimes n}$ is its own inverse. 
+Now if we feed the first $n$ qubits through a parallel Hadamard 
+then we undo the superposition and get $u$. We simply measure this and we have our output.
+
+
+\begin{tikzpicture}[thick]
+    %
+    \matrix[row sep=0.1cm, column sep=0.8cm] (circuit) {
+    % row
+    \node (q1) {\ket{0}}; &
+    \coordinate (hn1); & & \coordinate (uf1); & & \coordinate (hn3); & &;
+    \coordinate (end1); \\
+    % next row:
+    \node (q2) {\ket{0}}; & & & & & & &
+    \coordinate (end2);\\
+    % next row:
+    \node (qx) {...}; & & & & & & &
+    \coordinate (endx); \\
+    % next row:
+    \node (q3) {\ket{0}}; & &
+    \coordinate (hn2); & & & & \coordinate (hn4); &;
+    \coordinate (end3); \\
+    % next row:
+    \node (q4) {\ket{-}}; & & & & \coordinate (uf2); & & &
+    \coordinate (end4); \\
+    };
+    % Draw bracket on right with resultant state.
+    \draw[decorate,decoration={brace},thick]
+        ($(end1.east)+(0.1cm,0.3cm)$)
+        to node[midway,right] (bracket) {$\ket{\phi''}$}
+        ($(end4.east)+(0.1cm,-0.3cm)$);
+    \begin{pgfonlayer}{background}
+        % Draw circuit parallel lines.
+        \draw[thick] (q1) -- (end1)  (q2) -- (end2) (q3) -- (end3) (q4) -- (end4);
+    \end{pgfonlayer}
+
+    \begin{pgfonlayer}{foreground}
+        \node [draw=black, fill=black!5, drop shadow, inner sep=5pt, outer sep=5pt, fit={(hn1) (hn2)}] {$H^{\otimes n}$};
+        \node [draw=black, fill=black!5, drop shadow, inner sep=5pt, outer sep=5pt, fit={(uf1) (uf2)}] {$U_f$};
+        \node [draw=black, fill=black!5, drop shadow, inner sep=5pt, outer sep=5pt, fit={(hn3) (hn4)}] {$H^{\otimes n}$};
+    \end{pgfonlayer}
+    %
+\end{tikzpicture}
+
+
+\[ 
+\begin{array}{lll}
+ \ket{\phi''} 
+  &= (H^{\otimes n} \otimes I)([\frac{1}{\sqrt{2}^n} \sum_{\textsf{x} \in \{0,1\}^n} (-1)^{[u,\;x]} \ket{\textsf{x}}] \otimes \ket{-})
+  & \text{from circuit } \\
+  &= (H^{\otimes n} [\frac{1}{\sqrt{2}^n} \sum_{\textsf{x} \in \{0,1\}^n} (-1)^{[u,\;x]} \ket{\textsf{x}}])(I\ket{-})
+  & \text{multiplication property } \\
+  &= \ket{\textsf{u}}(I\ket{-})
+  & \text{undo superposition }    
+
+\end{array}
+\] 
+
+We can add some final touches by using $H\ket{1} = \ket{-}$ and adding the measurement to the circuit. 
+Hence our final circuit for the Bernstein-Vazirani Algorithm is the following. 
+
+% TODO: add measurement to diagram
+\begin{tikzpicture}
+    %
+    \matrix[row sep=0.1cm, column sep=0.8cm] (circuit) {
+    % row
+    \node (q1) {\ket{0}}; &
+    \coordinate (hn1); & & \coordinate (uf1); & & \coordinate (hn3); & &;
+    \coordinate (end1); \\
+    % next row:
+    \node (q2) {\ket{0}}; & & & & & & &
+    \coordinate (end2);\\
+    % next row:
+    \node (qx) {...}; & & & & & & &
+    \coordinate (endx); \\
+    % next row:
+    \node (q3) {\ket{0}}; & &
+    \coordinate (hn2); & & & & \coordinate (hn4); &;
+    \coordinate (end3); \\
+    % next row:
+    \node (q4) {\ket{1}}; & \node[draw=black, fill=black!5, drop shadow, inner sep=5pt, xshift=5pt] {$H$}; 
+    & &  & \coordinate (uf2); & & &
+    \coordinate (end4); \\
+    };
+
+    \begin{pgfonlayer}{background}
+        \draw[thick] (q1) -- (end1)  (q2) -- (end2) (q3) -- (end3) (q4) -- (end4);
+    \end{pgfonlayer}
+
+    \begin{pgfonlayer}{foreground}
+        \node [draw=black, fill=black!5, drop shadow, inner sep=5pt, outer sep=5pt, fit={(hn1) (hn2)}] {$H^{\otimes n}$};
+        \node [draw=black, fill=black!5, drop shadow, inner sep=5pt, outer sep=5pt, fit={(uf1) (uf2)}] {$U_f$};
+        \node [draw=black, fill=black!5, drop shadow, inner sep=5pt, outer sep=5pt, fit={(hn3) (hn4)}] {$H^{\otimes n}$};
+    \end{pgfonlayer}
+    %
+\end{tikzpicture}
+
+
+
+
+
+
+
+
+
+\section{Deutsch-Jorza Algorithm}
+
+
+
+\highlightdef{
+\textbf{Balanced Problem}: 
+Can we determine whether a function $f: \{0,1\}^n \rightarrow \{0,1\}$ 
+is \textit{balanced or not} using $U_f$ only once in a quantum circuit
+}
+
+\highlightdef{The \textbf{Deutsch-Jorza Algorithm} solves the \textit{Balanced Problem}}
+
+In turns out that the Deutsch-Jorza Algorithm uses the \textit{same circuit} as the 
+Bernstein-Vazirani Algorithm. But notice that now, we don't have $f(x) = [u, \; x]$ 
+We instead assuming that $f(x)$ is either \textit{balanced} or \textit{constant}.
+We no longer assume it's a parity function as was the case in the parity problem. 
+There is no longer a $u$ to output, so the \textit{last part} of the Bernstein-Vazirani Algorithm 
+will be slightly different. 
+We will deviate from the last part of Bernstein-Vazirani Algorithm derivation to, instead,
+create a circuit that solves the Balanced Problem.
+
+\begin{tikzpicture}[thick]
+    %
+    \matrix[row sep=0.1cm, column sep=0.8cm] (circuit) {
+    % row
+    \node (q1) {\ket{0}}; &
+    \coordinate (hn1); & & \coordinate (uf1); & &
+    \coordinate (end1); \\
+    % next row:
+    \node (q2) {\ket{0}}; & & & & &
+    \coordinate (end2);\\
+    % next row:
+    \node (qx) {...}; & & & & &
+    \coordinate (endx); \\
+    % next row:
+    \node (q3) {\ket{0}}; & &
+    \coordinate (hn2); & & &
+    \coordinate (end3); \\
+    % next row:
+    \node (q4) {\ket{-}}; & & & & \coordinate (uf2); &
+    \coordinate (end4); \\
+    };
+    % Draw bracket on right with resultant state.
+    \draw[decorate,decoration={brace},thick]
+        ($(end1.east)+(0.1cm,0.3cm)$)
+        to node[midway,right] (bracket) {$\ket{\phi'}$}
+        ($(end4.east)+(0.1cm,-0.3cm)$);
+    \begin{pgfonlayer}{background}
+        % Draw circuit parallel lines.
+        \draw[thick] (q1) -- (end1)  (q2) -- (end2) (q3) -- (end3) (q4) -- (end4);
+    \end{pgfonlayer}
+
+    \begin{pgfonlayer}{foreground}
+        \node [draw=black, fill=black!5,drop shadow, inner sep=5pt, outer sep=5pt, fit={(hn1) (hn2)}] {$H^{\otimes n}$};
+        \node [draw=black, fill=black!5,drop shadow, inner sep=5pt, outer sep=5pt, fit={(uf1) (uf2)}] {$U_f$};
+    \end{pgfonlayer}
+    %
+\end{tikzpicture}
+
+The output is now the following.
+
+\[ 
+\begin{array}{lll}
+ \ket{\phi'} &= U_f [(H^{\otimes n} \otimes I)(\ket{\textsf{0}^n}) \otimes \ket{-})]  & \text{from circuit} \\
+  &= U_f [(H^{\otimes n}\ket{\textsf{0}^n}) \otimes (I\ket{-})]  & \text{multiplication property} \\
+  &= U_f [H^{\otimes n}\ket{\textsf{0}^n}\ket{-}]  & \text{identity matrix} \\
+  &= U_f [(\frac{1}{\sqrt{2}^n} \sum_{\textsf{x} \in \{0,1\}^n} \ket{\textsf{x}}) \ket{-}] & \text{Hadamard superposition} \\
+  &= U_f [\frac{1}{\sqrt{2}^n} \sum_{\textsf{x} \in \{0,1\}^n} \ket{\textsf{x}} \ket{-}]  
+  & \text{distributivity of } \otimes  \text{over } + \\  
+  &= \frac{1}{\sqrt{2}^n} \sum_{\textsf{x} \in \{0,1\}^n} U_f \ket{\textsf{x}} \ket{-}  & \text{linearity of } U_f \\
+  &= \frac{1}{\sqrt{2}^n} \sum_{\textsf{x} \in \{0,1\}^n} (-1)^{f(x)} \ket{\textsf{x}} \ket{-}  
+  & U_f \text{ with } \ket{\textsf{x}}\ket{-} \text{ result} 
+\end{array}
+\] 
+
+We now feed the first $n$ bits through an parallel Hadamard.
+From our previous work on parallel Hadamards, recall the formula for 
+the Hadamard of a general superposition: $H^{\otimes n} (\sum_x \alpha_x \ket{x}) 
+= \sum_x \sum_{y \in \{0,1\}^n} \alpha_x (-1)^{[x,y]} \ket{y}$. We will use this 
+result here, substituting $\sum_x \alpha_x \ket{x}$ for the superposition we 
+current have in the circuit of  $\sum_{\textsf{x} \in \{0,1\}^n} (-1)^{f(x)} \ket{\textsf{x}}$. 
+
+\begin{tikzpicture}
+    %
+    \matrix[row sep=0.1cm, column sep=0.8cm] (circuit) {
+    % row
+    \node (q1) {\ket{0}}; &
+    \coordinate (hn1); & & \coordinate (uf1); & & \coordinate (hn3); & &;
+    \coordinate (end1); \\
+    % next row:
+    \node (q2) {\ket{0}}; & & & & & & &
+    \coordinate (end2);\\
+    % next row:
+    \node (qx) {...}; & & & & & & &
+    \coordinate (endx); \\
+    % next row:
+    \node (q3) {\ket{0}}; & &
+    \coordinate (hn2); & & & & \coordinate (hn4); &;
+    \coordinate (end3); \\
+    % next row:
+    \node (q4) {\ket{-}}; & & & & \coordinate (uf2); & & &
+    \coordinate (end4); \\
+    };
+    % Draw bracket on right with resultant state.
+    \draw[decorate,decoration={brace},thick]
+        ($(end1.east)+(0.1cm,0.3cm)$)
+        to node[midway,right] (bracket) {$\ket{\phi''}$}
+        ($(end4.east)+(0.1cm,-0.3cm)$);
+    \begin{pgfonlayer}{background}
+        % Draw circuit parallel lines.
+        \draw[thick] (q1) -- (end1)  (q2) -- (end2) (q3) -- (end3) (q4) -- (end4);
+    \end{pgfonlayer}
+
+    \begin{pgfonlayer}{foreground}
+        \node [draw=black, fill=black!5, drop shadow, inner sep=5pt, outer sep=5pt, fit={(hn1) (hn2)}] {$H^{\otimes n}$};
+        \node [draw=black, fill=black!5, drop shadow, inner sep=5pt, outer sep=5pt, fit={(uf1) (uf2)}] {$U_f$};
+        \node [draw=black, fill=black!5, drop shadow, inner sep=5pt, outer sep=5pt, fit={(hn3) (hn4)}] {$H^{\otimes n}$};
+    \end{pgfonlayer}
+    %
+\end{tikzpicture}
+
+\[ 
+\begin{array}{lll}
+  \ket{\phi''} 
+  &= (H^{\otimes n} \otimes I)([\frac{1}{\sqrt{2}^n} \sum_{\textsf{x} \in \{0,1\}^n} (-1)^{f(x)} 
+  \ket{\textsf{x}}] \otimes \ket{-}) & \text{from circuit} \\
+  &= (\frac{1}{\sqrt{2}^n} H^{\otimes n}[\sum_{\textsf{x} \in \{0,1\}^n} (-1)^{f(x)}\ket{\textsf{x}}])
+  \otimes (I \ket{-}) & \text{mult. property} \\
+  &= (\frac{1}{\sqrt{2}^n} H^{\otimes n}[\sum_{\textsf{x} \in \{0,1\}^n} (-1)^{f(x)}\ket{\textsf{x}}])
+  \otimes \ket{-} & \text{identity matrix} \\
+  &= \frac{1}{\sqrt{2}^n} \frac{1}{\sqrt{2}^n} 
+  [\sum_{\textsf{x} \in \{0,1\}^n} \sum_{\textsf{y} \in \{0,1\}^n}
+  (-1)^{f(x)} (-1)^{[x,y]} \ket{\textsf{y}}]
+  \otimes \ket{-} & H^{\otimes n} \text{ of superpos.} \\
+  &= \frac{1}{2^n}
+  [\sum_{\textsf{x} \in \{0,1\}^n} \sum_{\textsf{y} \in \{0,1\}^n}
+  (-1)^{f(x)+[x,y]} \ket{\textsf{y}}]
+  \otimes \ket{-} & \text{simplify}
+\end{array}
+\] 
+
+We have a sum of y-qubits $\sum_{\textsf{y}}$. 
+Notice that there are no more x-qubits being summed up.
+The next step is to \textit{measure}. 
+It we measure the first $n$ qubits, there are $2^n$ states that it can collapse to. 
+There are $2^n$ bit strings that can be output. 
+
+It turns out that whether or not we see $\ket{0^n}$ alone, is enough to
+tell us whether $f(x)$ is constant or balanced
+(recall our assumption is that the $f(x)$ inputted \textit{must be} either 
+constant or balanced)
+
+
+\frmrule
+
+\begin{example}
+What is the probability that $\ket{\phi''}$ collapses $\ket{0^n}$?
+
+We find the amplitude (coefficient) of $\ket{0^n}$ and square it. 
+The amplitude of $\ket{0^n}$ in $\ket{\phi''}$ is found by removing the summation and 
+fixing $y = 0^n$. This gives us the amplitude ...........
+
+\frameans{}{$\frac{1}{2^n} \sum_{\textsf{x} \in \{0,1\}^n} (-1)^{f(x)}$}
+
+Because the amplitude of a general 
+$y$ is $\frac{1}{2^n} \sum_{\textsf{x} \in \{0,1\}^n} (-1)^{f(x)+[x,\;y]}$.
+Setting $y = 0^n$ gives $\frac{1}{2^n} \sum_{\textsf{x} \in \{0,1\}^n} (-1)^{f(x)+[x,\;0^n]}$
+which simplifies using $[x,\;0^n] = 0$.
+
+\end{example}
+
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Balanced}
+If $f$ is balanced, $\sum_{\textsf{x} \in \{0,1\}^n} (-1)^{f(x)} = 0$. This is because 
+half the outputs are 0, half the outputs are 1 (by def. of \textit{balanced}). 
+So half the summation terms are -1, half the terms are +1. 
+They cancel out in the sum to give zero. Hence the amplitude of $\ket{0^n}$ is $\frac{1}{2^n}(0) = 0$.
+So the probability of seeing $\ket{0^n}$ after measurement is $0^2 = 0$.
+\item \textbf{Constant with Zero} 
+If $f$ outputs constantly zero, $f(x) = 0$ for all $x$, and so the summation simplifies to
+$\sum_{\textsf{x} \in \{0,1\}^n} (-1)^{f(x)} = \sum_{\textsf{x} \in \{0,1\}^n} 1 = 2^n$. 
+Hence the amplitude of $\ket{0^n}$ is $\frac{1}{2^n}(2^n) = 1$.
+So the probability of seeing $\ket{0^n}$ after measurement is $1^2 = 1$.
+\item \textbf{Constant with One}
+If $f$ is constantly one, $f(x) = 1$ for all $x$, and so the summation 
+$\sum_{\textsf{x} \in \{0,1\}^n} (-1)^{f(x)} = \sum_{\textsf{x} \in \{0,1\}^n} (-1) = -2^n$.
+Hence the amplitude of $\ket{0^n}$ is $\frac{1}{2^n}(-2^n) = -1$.
+So the probability of seeing $\ket{0^n}$ after measurement is $(-1)^2 = 1$.
+\end{itemize}
+
+\highlightdef{After measuring the first $n$ quibits, if we observe $\ket{0^n}$, $f$ is \textit{definitely} constant, 
+if we don't observe $\ket{0^n}$, $f$ is \textit{definitely} balanced}
+
+
+The natural question is what happens is what happens when we input a function that 
+isn't balanced or constant into this circuit. If we do this, then the 
+amplitude of $\ket{0^n}$ will be between zero and one. So the probability of 
+seeing $\ket{0^n}$ is $0 < p < 1$, and so sometimes the circuit outputs 
+\textit{constant} (with probability $p$), and sometimes the circuit will 
+output \textit{balanced} (with probability $1-p$).
+
+However constant and balanced functions are special because they
+conveniently cause the amplitude for $\ket{0^n}$ to be 1 and 0 respectively.
+By using a single measurement, we can see whether $f$ is
+constant or balanced. This gives an exponential reduction in
+the complexity of the classical algorithm.
+
+\section{Simon's Algorithm}
+
+
+\section{Grover's Algorithm}
+
+
+\highlightdef{\textbf{Averaging Operator}: finds the mean amplitude of $phi$}
+
+
+\begin{example}
+Show that the averaging operator is \textit{unitary}.
+\end{example}
+
+
+
+\highlightdef{\textbf{About-the-Mean Inversion}: $v_i'= \frac{2}{N}\sum_j v_j - v_i$}
+
+
+
+\begin{example}
+Prove that \textit{about-the-mean inversion} does not change the mean.
+\end{example}
+
+
+
+
+
+\highlightdef{\textbf{Increase Amplitude}: combine \textit{phase inversion} with 
+\textit{about-the-mean inversion}}

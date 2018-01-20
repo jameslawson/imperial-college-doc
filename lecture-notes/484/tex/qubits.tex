@@ -1,0 +1,102 @@
+
+\chapter{Qubits}
+
+
+
+\section{Bloch Sphere}
+
+
+\highlightdef{A circle has one degree of freedom, a sphere has \textit{two degrees of freedom}}
+
+The \textit{area} of a circle has two degrees of freedom. 
+We can therefore find a mapping between points on the \textit{surface} of the Bloch Sphere and points 
+within an \textit{area} of two dimensional unit circle. 
+
+Every point on 
+
+
+
+\highlightdef{\textbf{Sphere Equation}: 
+$\ket{\psi} = \text{cos}(\frac{\theta}{2})\ket{0} 
++ e^{i \phi} \text{sin}(\frac{\theta}{2})\ket{1}$ }
+
+
+The $\frac{\theta}{2}$ converts the \textit{angle associcated with perpendicularity}. 
+$\ket{0}$ and $\ket{1}$ are always orthogonal. Geometrically, we are used to using 90 degrees
+but, \textit{on the block sphere}, we use 180 degrees to express perpendicularity. 
+It turns out that in four dimensional space, 180 degrees is gives a more natural 
+angle for perpendicularity. The same idea comes up when dealing with \textit{Quaternions}. 
+Quaternions are a useful mathematical abstraction for expressing rotations 
+using a four dimensional space.
+
+
+\begin{example}
+Plot the following qubit on the Bloch Sphere $\frac{1}{\sqrt{2}}(\ket{0} + i\ket{1})$
+
+We have  $\text{cos}(\frac{\theta}{2}) = \text{sin}(\frac{\theta}{2})$
+which only occurs when $\frac{\theta}{2} = 45$. Hence $\theta = 90$.
+And solving  $e^{i\phi} = i$ gives $\phi = 90$.
+\end{example}
+
+\begin{example}
+Plot the following qubit on the Bloch Sphere $\frac{1}{\sqrt{2}}(\ket{0} - i\ket{1})$
+
+We have  $\text{cos}(\frac{\theta}{2}) = \text{sin}(\frac{\theta}{2})$
+which only occurs when $\frac{\theta}{2} = 45$. Hence $\theta = 90$.
+And solving  $e^{i\phi} = -i$ gives $\phi = 270$.
+\end{example}
+
+\section{Density Matrices}
+
+Previously, in order to find a point on the Bloch sphere, 
+we had to solve simulatenous equations to find angles $\theta$ and 
+$\phi$. We look at a new way to find points on a Bloch sphere 
+by introducing the \textit{Density Matrix} of a state, 
+and the concept of a \textit{Bloch vector}. 
+
+
+\frmrule 
+
+\highlightdef{$\rho = \frac{1}{2}(I + r_xX + r_yY + r_zZ)$}
+where $X,Y,Z$ are the Pauli matrices. 
+
+The vector $(r_x,r_y,r_z)$ is called the Bloch vector. 
+The elements are real numbers and locate a qubit on the Bloch sphere. 
+They can be determined from the density matrix of a state using:
+$r_x = 2Re[\rho_{10}]$
+$r_y = 2Im[\rho_{10}]$
+$r_z = \rho_{00} - \rho_{11}$
+
+\frmrule 
+
+\begin{example}
+Locate on the Bloch sphere, the location 
+of the qubit $\frac{1}{2}(1+i, 1-i)$ by determining its density matrix.
+\end{example}
+
+Rather than finding  $\rho$, we can just directly use 
+the following equations 
+
+$r_x = 2Re[\alpha^{*}\beta]$
+$r_y = 2Im[\alpha^{*}\beta]$
+$r_z = |\alpha|^2 - |\beta|^2$	
+
+\section{Measurement}
+
+Albert Einstein once said:
+\begin{quote}
+I think that matter must have a 
+separate reality indepenent of the measurements. 
+That is an electron has spin, location and so forth even when 
+it is not being measured, I like to think that the moon is there even if 
+I am not looking at it.
+\end{quote}
+
+A quantum state is in a \textit{superposition state} when 
+one is not looking at it. And when we look at the state 
+or \textit{measure} does a different system form with 
+physical quantities of interest. 
+
+
+Erwin Schr\"{o}dinger's cat: 
+$\ket{\text{cat}} = \frac{1}{\sqrt{2}} (\ket{\text{dead}} + \ket{\text{alive}})$

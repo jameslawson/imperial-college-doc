@@ -1,0 +1,159 @@
+
+\chapter{Random Variables}
+
+
+\section{Introducing Random Variables}
+
+
+
+\highlightdef{\textbf{Random Variable}: is a \textit{function}, $X : \Omega \rightarrow \mathbb{R}$ }
+
+
+We say that a random variable is \textit{discrete} when it's range is countable. 
+In other words, the number of lines in our diagram is countable. 
+
+\highlightdef{\textbf{Discrete}: $\text{range}(X)$ is a countable set }
+
+Later in the course, we will look at random variables where the number 
+of real values in the range set are uncountable. 
+But for now, we can assume that the range is countable.
+Although the set can be of infinite size, in a lot of 
+cases it will be of a finite cardinality. 
+
+\begin{tikzpicture}
+   \draw (0,0) -- (5,0);
+   \draw (0,0.5) -- (5,0.5);
+   \draw (0,1) -- (5,1);
+   \draw (0,1.5) -- (5,1.5);
+   \filldraw[fill=white] (1,0) circle (6pt);
+   \draw (0,2) -- (5,2);
+   \draw[->, very thick] (4.5,-1) -- (4.5,3);
+\end{tikzpicture}
+
+
+\frmrule 
+
+
+\highlightdef{$\Omega_x = \{ \omega \in \Omega | X(\omega) \leqslant x \}$ }
+
+
+$= \cup_{x' \leqslant x} \text{Im}^{-1} [\{x\}] $
+$= \text{Im}^{-1} [\{x' \in \mathbb{R} | x' \leqslant x\}] $
+
+
+\section{Mass Functions}
+
+
+\highlightdef{\textbf{Mass Function }: $p_X(x) = \sum_{\omega \in \Omega} X(\omega) = x$ }
+
+\highlightdef{\textbf{Using P}: $p_X(x) = P[X = x]$ }
+
+
+\highlightdef{Mass Functions are density functions}
+
+
+
+
+
+
+\section{Expected Value}
+
+
+
+
+\highlightdef{\textbf{Expected Value }: $E[X] = \sum_{\omega \in \Omega} X(\omega)P(\omega)$ }
+
+\highlightdef{\textbf{Using P}: $E[X] = \sum_{x \in R} x \times P[X = x]$ }
+
+
+If $Z : \Omega \rightarrow \mathbb{R}$ is a \textit{positive-integer} random value ($\text{range}(Z) = {1,2,...}$) then:
+
+\highlightdef{$E[Z] = \sum^{\infty}_{i=0} P[Z > i]$ }
+
+
+
+\section{Describing Random Variables}
+
+
+\highlightdef{\textbf{English Descriptions}: A random variable can be described using English 
+provided there is no ambiguity about what the underlying mapping $X : \Omega \rightarrow \mathbb{R}$ is. }
+
+
+
+\section{Random Variable Algebra}
+
+
+\highlightdef{\textbf{Summation}: $X = Y + Z$, $X : (\Omega \rightarrow \mathbb{R}) -> (\Omega \rightarrow \mathbb{R}) -> \mathbb{R}$  }
+
+
+\highlightdef{\textbf{Linearity of Expectation}:
+$E(c_1X_1 + c_2X_2 + \ldots + c_nX_n) = c_1E(X_1) + c_2E(x_2) + \ldots + c_nE(x_n)$
+}
+
+
+\begin{example}
+What do you think it means to say that a random variable is \textit{non-negative}.
+\end{example}
+
+\frmrule
+
+\begin{example}
+What do you think it means to say $X \leqslant Y$ for two random variables $X$ and $Y$. 
+\end{example}
+
+\frmrule
+
+\begin{example}
+Which is larger: $E[X]^2$ or $E[X^2]$?
+\frameans{You may assume $X$ strictly positive}{$\ex{X^2}$}
+\end{example}
+
+\frmrule
+
+\begin{example}
+We often write $E[E[X]]$. Why does make sense to say: $E[E[X]]$? \\
+In your answer, state precisely what random variables come into play here.
+\end{example}
+
+\frmrule
+
+\highlightdef{$E[E[X]] = E[X]$}
+Where the inner $E[X]$ is a \textit{constant random variable} but the 
+outer $E[X]$ and the rhs $E[X]$ are normal. 
+
+\frmrule
+
+
+\section{Random Variables vs Events}
+
+
+\section{Probability Distributions}
+
+It is common to call probably density functions \textit{distribution}. 
+But the term is somewhat overloaded. Often when we 
+say distribution, we are pertaining to what is defined below.
+
+\highlightdef{\textbf{Distribution}: A mass function for $X$ that has been taken from 
+a collection of mass functions characterized by some parameterized mass function
+that has a useful/meaningful application}
+
+A distributions is a mass function that has others of the \textit{same kind} that are known 
+to be useful for solving problems. 
+
+We write $X \sim \text{dist}(\alpha_1, \alpha_2, \ldots, \alpha_k)$ 
+when $X$ is a fixed version of the a mass function that define $\text{dist}(\alpha_1, \alpha_2, \ldots, \alpha_k)$ 
+which has a fixed value for $\alpha_1, \alpha_2, \ldots, \alpha_k$. 
+All the mass functions in $\text{dist}(\alpha_1, \alpha_2, \ldots, \alpha_k)$ 
+have all possible values for $\alpha_1, \alpha_2, \ldots, \alpha_k$, but 
+$X$ is one particular mass function that has one particular $\alpha_1$, one particular $\alpha_2$, 
+..., one particular $\alpha_n$.
+
+
+\section{Series Convergence}
+
+
+\highlightdef{Not every expectation exists/is well-defined}
+
+
+
+\section{Random Variable Conditional Probability}

@@ -1,0 +1,329 @@
+
+\chapter{Division}
+
+
+
+
+\section{Introducing Division in Rings}
+
+What do we know about division from group theory?
+When we add addition and subtraction into the mix, things become a bit more confusing. 
+Division in rings is centred around the equation $ra = rb$. In particular, we want to know 
+when we can cancel $r$ and when we cannot. 
+
+It turns out if we have $r$, then it falls into certain exactly \textit{three} disjoint cases. 
+In two cases, we can cancel $r$ but in one case we cannot. The rest of our work in this chapter 
+will be looking at these three cases and finding 
+
+\begin{itemize}	
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Invertible.} In the first case, $r$ is invertible. Right away, we can see that we can 
+cancel $r$ in $ra = rb$ to get $a = b$. This is obvious because we can left-multiply 
+both sides of $ra = rb$ by $r^{-1}$ to get $a =b$. This first case we have seen from group theory. We didn't 
+need any addition/subtraction to see that $a$ and $b$ must be equal.
+\item \textbf{Non-invertible Cancellable.} In the second case, $r$ does not have a multiplicative inverse 
+but can still be cancelled. This case is not as obvious as the first and we will look at it a bit more 
+later.
+\item \textbf{Non-cancellable.} In the third case, is the bad case where we cannot cancel $r$ from $ra = rb$. 
+We would like to find certain properties that tell us when we are in this case. 
+\end{itemize}
+
+
+
+
+\begin{figure}[h]
+\begin{tikzpicture} [
+	every node/.style={node_sty},
+	edge from parent/.style={edge_sty},
+	edge from parent path={(\tikzparentnode.south) -- ++(0, -0.2cm) -| (\tikzchildnode.north)},
+	level/.style = {level distance = 0.6cm},
+	level 1/.style={sibling distance=6cm},
+	level 2/.style={sibling distance=3cm}
+]
+	\node (root) {$ra = rb$}
+    child{
+    	node (can) {$r$ invertible}
+		child {node(inv) [text width=6em] {$r$ cancellable}}
+	}
+	child{
+		node (ncan) {$r$ non-invertible}
+		child {node (nz) [text width=6em] {$r$ cancellable}}
+		child {node (z) [text width=8em] {$r$ non-cancellable}}
+	};
+	
+\end{tikzpicture}
+\end{figure}
+
+\frmrule
+
+
+\begin{example}
+Here is an example of case 1. In $(\mathbb{R}, +, \times)$ we have the equation $5x = 5y$.
+We can simply multiply both sides by the multiplicative inverse of 5 which is $\frac{1}{5}$, this gives us $x=y$. 
+\end{example}
+
+\frmrule
+
+\begin{example}
+Here is an example of case 2. Suppose in $(\mathbb{Z}, +, \times)$ we have the equation $2x = 2y$. This equation tells us that 
+doubling the integer $x$ is the same as doubling the integer $y$. Intuitively we can tell that 
+$x = y$. In this ring, it wouldn't make sense to double two \textit{different} integers and get the \textit{same result}. 
+$2$ is not invertible in $(\mathbb{Z}, + \times)$ yet we know we should be able to cancel it from $2x = 2y$ to get $x = y$.
+\end{example}
+
+\frmrule
+
+So cancelling things is not as simple as multiplying by inverse elements. The previous example 
+demonstrated that we can cancel elements that are not invertible. This is part of the reason why 
+division in rings is more complex than division in groups. 
+
+\begin{example}
+Case 3 is the most interesting. Rearranging gives us $r(a-b) = 0_R$. The next step
+you would \textit{expect} would be to say that either $r = 0$, or $a-b = 0$. 
+This step is called \textit{the zero-factor property}.
+However, in general, doing this step here is wrong. It turns out 
+that \textit{sometimes} $r(a-b) = 0_R$ without either $a$ or $a-b$ being zero at all! 
+For example look at $(\mathbb{Z}_6, +_6, \times_{6})$.
+We have $3 \times (4-2) = 0$. Yet $r = 3$ is not zero and $4-2$ is not zero. 
+So going from $3 \times (4-2) = 0$ to saying $r = 0$ or $a - b = 0$ is wrong. 
+\end{example}
+
+
+\frmrule
+
+The zero factor property is $r(a-b) = 0_R$ implies $r = 0_R$ or $a-b = 0_R$
+This can be rewritten in logic as not($r(a-b) = 0_R$ and not ($r = 0_R$ or $a-b = 0_R$))
+
+\highlightdef{$r$ can be cancelled iff the \textit{zero factor property} holds}
+
+Now in the non-cancellable case, if we assume the zero-factor property, we will get a contradition.
+And so we will see that zero-factor property is not true. 
+Hence  $r(a-b) = 0_R$ and not ($r = 0_R$ or $a-b = 0_R$)
+in other words $r(a-b) = 0_R$ and $r \neq 0_R$ and $a-b \neq 0_R$.
+
+This is the condition that tells us that we cannot cancel $r$.
+
+\highlightdef{\textbf{Non-cancellable Property}:  $r(a-b) = 0_R$ and $r \neq 0_R$ and $a-b \neq 0_R$}
+The non-cancellable property tells us when we cannot cancel $r$ from $r(a-b) = 0_R$ when we 
+it is because $r$ and $a-b$ multiply to give zero (and neither of them are 0). 
+
+\frmrule
+
+\begin{example}
+If a ring has no multiplicative identity, then there is no notion
+of a unit. How does this affect our three cases?
+\end{example} 
+
+
+
+
+\section{Units and Zero Divisors}
+
+
+
+
+\highlightdef{$r \neq 0_R$ is a \textbf{Zero-divisor} iff $\exists a \exists b$ st $a-b \neq 0_R$ and $r(a-b) = 0_R$}
+In other words, $r$ is called a \textit{zero-divisor} is there is at least one case 
+where it cannot be cancelled in $r(a-b) = 0_R$. This is when $r$ times $a-b$ gives zero but neither $r$ nor 
+$a-b \neq 0_R$ is zero. Suppose we let $s = a - b$, then we can rewrite the definition as follows: 
+
+\highlightdef{$r \neq 0_R$ is a \textbf{Zero-divisor} iff $\exists s$ st $s \neq 0_R$ and $rs = 0_R$}
+
+This form is equivalent but a simpler to work with for later proofs. However it no longer captures the 
+idea that we are trying to cancel $r$ from the equation $ra = rb$.
+
+\frmrule
+
+\begin{example}
+Show that 4 is a zero-divisor in 
+\end{example}
+
+
+\frmrule
+
+Zero divisors and units are the key to understanding cancellation. It turns out that
+the three cases of cancellation vs non-cancellation of $r$ correspond \textit{exactly} with whether 
+$r$ is (i) just a zero-divisor, (ii) just a unit or (iii) neither. This is shown below.
+From now on, we only concern ourselves with $r$ that is neither zero nor one. We will treat 
+these two special cases at the end. 
+
+\begin{figure}[h]
+\begin{tikzpicture} [
+	edge from parent/.style={edge_sty},
+	edge from parent path={(\tikzparentnode.south) -- ++(0, -0.2cm) -| (\tikzchildnode.north)},
+	level/.style = {level distance = 0.6cm, every node/.style={draw, node_sty}},
+	level 1/.style={sibling distance=6cm},
+	level 2/.style={sibling distance=3cm}
+]
+	\node [draw, node_sty] (root) {$ra = rb$}
+    child{
+    	node (inv) {$r$ invertible}
+		child {node(can1) [text width=6em] {$r$ cancellable}}
+	}
+	child{
+		node (ninv) {$r$ non-invertible}
+		child {node (can2) [text width=6em] {$r$ cancellable}}
+		child {node (ncan) [text width=8em] {$r$ non-cancellable}}
+	};
+	\node[below=0.2cm of can1, align=center] {\textit{$r$ is a unit}\\\textit{$r$ is not a zero divisor}};
+	\node[below=0.2cm of can2, align=center] {\textit{$r$ is not a unit}\\\textit{$r$ is not a zero divisor}};
+	\node[below=0.2cm of ncan, align=center] {\textit{$r$ is not a unit}\\\textit{$r$ is a zero divisor}};
+\end{tikzpicture}
+\end{figure}
+
+Before we prove anything this claim, what is intersting is that \textit{there is no fourth case} 
+corresponding to when $r$ is \textit{both} a unit and a zero-divisor. In fact, we 
+can prove that such an element cannot possible exist in a ring. That is, 
+for any element $r$, we have that:
+
+\highlightdef{$r$ cannot be \textit{both} a unit \textit{and} a zero-divisor}
+
+In other words being a zero divisor of some kind and a unit at the same time isn't possible. 
+These events are mutually exclusive. You either one, or the other, or neither. 
+Before looking at the actual three cases, we shall prove that we don't
+need to consider this fourth case at all (because it doesn't make sense).
+
+\frmrule
+
+\textbf{Proof:}\\
+Assume that $r$ is both a \textit{unit} and a \textit{zero-divisor}. 
+By definition of zero-divisor we have $\exists a \exists b$ st $a-b \neq 0_R$ and $r(a-b) = 0_R$. 
+But we assumed that $r$ is a unit and so $r^{-1}$ exists. Using this, we can multiply $r(a-b) = 0_R$ on 
+both sides to get $a-b = 0_R$. This contradicts our assumption that $a-b \neq 0_R$. 
+Hence $r$ cannot be both a \textit{unit} and a \textit{zero-divisor}. $\square$
+
+\frmrule
+
+So being invertible and being a zero-divisor are two \textit{disjoint} cases.
+Having one less case does indeed makes things simpler, but we still have three cases 
+to prove. We need to show that the three cases of: (i) \textit{$r$ is just a unit}, 
+(ii) \textit{$r$ is neither a unit nor a zero-divisor}, (iii) \textit{$r$ is just a zero-divisor}, 
+correspond precisely to where they have been put on the diagram in regard to cancellation.  
+
+\begin{itemize}
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Case 1}, \textit{$r$ is a unit} $\wedge$ \textit{$r$ is not a zero-divisor} $\rightarrow$ \textit{$r$ cancellable}  
+\item \textbf{Case 2}, \textit{$r$ is not a unit} $\wedge$ \textit{$r$ is not a zero-divisor} $\rightarrow$ \textit{$r$ cancellable}   
+\item \textbf{Case 3}, \textit{$r$ is not a unit} $\wedge$ \textit{$r$ is a zero-divisor}$\rightarrow$ \textit{$r$ not cancellable}   
+\end{itemize}
+
+\frmrule
+
+
+Recall that $(x \boxtimes)$ is using Haskell's \textit{section notation} and denotes 
+the function $f(y) = x \boxtimes y$. Similarly, $(\boxtimes x)$ denotes $f(y) = y \boxtimes x$. To check 
+that an element is a left zero-divisor, 
+
+
+\frmrule
+
+
+\section{Non-commutative Ring Division}
+
+\begin{example}
+Support xyz = 0. Explain why x is a right zero divisor.
+\end{example}
+
+Notice how we didn't need to add brackets to xyz. Multiplication in rings is always associative.
+So x(yz) is the same as (xy)z. 
+
+\frmrule
+
+\begin{example}
+Give a formal definition of a \textit{left proper zero divisor}. 
+\end{example}
+
+\frmrule
+
+If our multication isn't commutative then we need to be careful as to whether we use $f_x$ or $g_x$. 
+However if multication is commutative, then every left zd is also going to be a right zd.
+And every right zd will also be a left zd. So saying left/right is redundant.
+So, for zds in \textit{commutative rings}, we say that 
+they are simply that $r$ is a \textit{a zero divisor}.  
+
+
+\frmrule
+
+
+\highlightdef{$r$ cannot be both a \textit{left-unit} and a \textit{left zero-divisor}}
+
+Assume $r$ is a \textit{left-unit} and a \textit{left zero-divisor}.
+By definition of a left zero-divisor we have $\exists a \exists b$ st $a-b \neq 0_R$ and $r(a-b) = 0_R$. 
+But $r$ is also a left-unit so has a \textit{left-inverse} $r_L$ exists. 
+Using this, we can multiply $r(a-b) = 0_R$ on the left to give $(a-b) = 0_R$
+This contradicts our assumption that $a-b \neq 0_R$. 
+Hence $r$ cannot be both a \textit{unit} and a \textit{zero-divisor}.
+
+\highlightdef{$r$ cannot be both a \textit{right-unit} and a \textit{right zero-divisor}}
+
+This intuitively follows by symmetry. This can be proved is the same way the left case was proved.
+
+
+
+
+
+%\highlightdef{\textbf{$\mathbb{Z}_d$ unit condition}: x is a unit iff $\text{hcf}(x,d) = 1$ \\
+%\textbf{$\mathbb{Z}_d$ zd condition}: x is a zd iff $\text{hcf}(x,d) \neq 1$  }
+
+
+
+
+\section{Fields and Domains}
+
+Take any nontrivial element $r$,
+\hightlightdef{A \textit{Domain} is a ring where every $r$ is not a zero-divisors.}
+\hightlightdef{A \textit{Field} is a ring where every $r$ is not a zero-divisors and every $r$ is a unit.}
+
+\textit{Fields} and \textit{Domains} both satisfy the \textit{zero-factor property}. 
+That is, when we have $r(a-b) = 0$, we can factor to give: $r = 0$ \textit{or} $a - b = 0$. 
+And this works for \textit{all} elements $r \in R$. In other words, 
+fields and domains are great because we can \textit{always cancel elements}. 
+The difference between fields and domains is that fields are slightly better because 
+every element is invertable as well.
+
+One way to think about domains and fields is to take any arbitrary nontrivial element, $r$ 
+of the ring and say what cancellation case $r$ can fall into.  
+From this thinking we have that $r$ can fall into:
+\highlightdef{
+\textbf{Domain}: case 1 or case 2\\
+\textbf{Field}: definitely case 1
+}
+Notice that Domains and Fields have no zero-divisors at all. 
+So it is \textit{impossible} for $r$ to fall into case 3. 
+
+Quite intuitively, 
+\highlightdef{
+Every field is a domain, but not every domain is a field.
+}
+
+An domain cuts out one area. A field cuts out two areas.
+In a domain, you won't get any zd's but you may get some non-units.
+
+
+For historical reasons, commutative Domains are better known as \textit{Integral Domains}. 
+Why Integral? This is likely because the ring of integers is an domain. 
+When we multiply numbers together,we don't get zero - unless we are multiplying by zero. 
+So saying integral is a reminder that domains are a bit like $\mathbb{Z}$
+
+
+
+
+
+
+
+
+% $F = F^{*} \cup {0}$
+% $F = F^{*} \cup F_{\text{pnu}} \cup  \left\{0\right\}$
+
+\frmrule
+
+\begin{example}
+Find what's wrong with the following diagram for a field.
+\end{example}
+
+\frmrule
+
+
+\frameans{You may assume $R \neq {0}$}{Zero is inside zero-divisors.}
+
+

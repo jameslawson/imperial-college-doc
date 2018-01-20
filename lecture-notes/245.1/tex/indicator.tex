@@ -1,0 +1,92 @@
+\chapter{Indicator Random Variables}
+
+
+
+\section{Introducing Indicator Random Variables}
+
+
+\section{Indicator Random Variables I}
+
+
+
+\begin{example}
+\textbf{Birthday Paradox Revisited:}\\
+We revist the birthday paradox but now perform analysis using \textit{indicator random variables}. 
+Suppose that there are $k$ people in a classroom. We can enumerate all $C(n,2)$ 2-sets $\{i,j\}$ 
+classmates by enumerating all pairs $(i,j)$ $1 \leqslant i < j \leqslant k$. 
+For each pair, define a random variable $X_{ij}$:
+\[ 
+\begin{array}{ll}
+ X_{ij} &= \text{I}\{\text{person } i \text{ and person } j \text{ have the same birthday}\}  \\
+        &= \left\{  \begin{array}{ll} 1 & \text{person } i \text{ and person } j \text{ have the same birthday}
+      \\ 0 & \text{otherwise} \end{array} \\
+\end{array}
+\]
+
+Now $E[X_{ij}] = \prob{\text{person } i \text{ and person } j \text{ have the same birthday}}$. 
+We assume that birthdays are independent. That is, for any two people $i$ and $j$, $i < j$, and some date $r$: 
+$$\prob{i \text{ has birthday } r | j \text{ has birthday } r} = \prob{i \text{ has birthday } r}$$ 
+
+So $\prob{\text{person } i \text{ and person } j \text{ have the same birthday}}$ is equal to:
+\[ 
+\begin{array}{ll}
+ E[X_{ij}=\sum^{n}_{r=1}\prob{i \text{ has birthday } r \cap j \text{ has birthday } r} & \\
+ = \sum^{n}_{r=1}\prob{i \text{ has birthday } r} \cdot \prob{i \text{ has birthday } r | j \text{ has birthday } r} & \\
+ = \sum^{n}_{r=1}\prob{i \text{ has birthday } r} \cdot \prob{i \text{ has birthday } r} &\\
+ = \sum^{n}_{r=1} 1/n \cdot 1/n &\\
+ = 1/n
+\end{array}
+\]
+
+Let $X$ be a random variable that counts the number of pairs of individuals having the same birthday. 
+We are intersted in the value of $E[X]$. Notice that using random variable algebra, 
+we can say that $X = \sum^{k}_{i=1}\sum^{k}_{j=i+1}X_{ij}$. 
+Hence: 
+\[ 
+\begin{array}{ll}
+ E[X] = E[\sum^{k}_{i=1}\sum^{k}_{j=i+1}X_{ij}] & \\
+ = \sum^{k}_{i=1}\sum^{k}_{j=i+1}E[X_{ij}] \\
+ = ...
+\end{array}
+\]
+
+\frameans{}{$k(k-1)/2n$}
+
+Because:
+\[ 
+\begin{array}{ll}
+ \sum^{k}_{i=1}\sum^{k}_{j=i+1}E[X_{ij}] \\
+ = (1/n) \cdot \sum^{k}_{i=1}\sum^{k}_{j=i+1} 1 \\
+ = (1/n) \cdot C(k,2) \\
+ = (1/n) \cdot (k(k-1)/2)
+\end{array}
+\]
+
+When $k(k-1) \geqslant 2n$ we have $E[X] \geqslant 1$. 
+In other words, when $k(k-1) \geqslant 2n$, the expected number of 
+people with the same birthday is at least 1. So we 
+can solve $k(k-1) \geqslant 2n$ for $k$ to get $k \geqslant \sqrt{2n} + 1$. 
+If we let $n = 365$ then $k \geqslant \sqrt{2\cdot 365} + 1$ which 
+tells us we need $k \geqslant 28$ people.
+
+\textit{Birthday Problem on Mars}: If let $n = 699$ (a year on Mars is 669 days long) then we need a classroom of $k \geqslant ...$ people.
+
+\frameans{}{$38$}
+
+
+\end{example}
+
+We will look at the birthday problem in more detail later in the course. 
+
+\frmrule 
+
+\begin{example}
+\textbf{Balls and Bins Revisited:}\\
+
+
+
+Balls and bins will help us when we look at Hash Tables later in the course. 
+
+
+\section{Indicator Random Variables II}
+

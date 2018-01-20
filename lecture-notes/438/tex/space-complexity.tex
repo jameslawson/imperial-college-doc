@@ -1,0 +1,340 @@
+
+\chapter{Space Complexity}
+
+
+
+\section{Introducing Space Complexity}
+
+Clearly space is costly as well as time.
+But have seen that
+
+\highlightdef{Bound on times implies bound on space}
+
+Putting a bound on the number of steps taken 
+by a Turing machine also puts a bound on the 
+number of tape squares we can write symbols to. 
+
+So why bother measuring space?
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{New Classiﬁcation} 
+Space complexity classes have nice closure properties
+\item \textbf{Parallel computation} 
+Space complexity classes have connection with parallel computation.
+sequential logspace $\sim$ parallel logtime
+\end{itemize} 
+
+\frmrule
+
+
+
+A multi-tape Turing machine has several heads that 
+can move independently. This should not be confused with 
+a multi-\textit{track} Turing machine that only has one 
+head. 
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Work Tapes} 
+There may be \textit{zero or more} work tapes.
+\item \textbf{Input Tape} 
+An IO-TM has exactly one \textit{input tape}. 
+The head for this tape can move freely, but we 
+cannot modify the symbols on the squares of this tape. 
+This tape is \textit{read-only}. 
+\item \textbf{Output Tape} 
+An IO-TM has exactly one \textit{output tape}. 
+The head for this tape can \textit{only move right}, and we 
+will not use the tape for reading.
+The squares of this tape are strictly write only.  
+The tape is \textit{write-only}. 
+\end{itemize} 
+
+
+\highlightdef{\textbf{IO k-Tape TM}: $k-2$ work tapes, 1 input tape, 1 output tape}
+
+
+
+An IO-TM decides a language $L$ in space $f(n)$ 
+iff every input, $w$, of length $|w| = n$, 
+the TM uses $f(n)$ squares on each work tape.
+The contents of the output tape IO-TM 
+
+Now using this definition, we define $\text{SPACE}(f(x))$.
+$L$ is in SPACE($f(n)$) if $L$ is decided by an IOTM operating
+within space $f(n)$. That is to say, for any langauge 
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Work Tapes} 
+There may be \textit{zero or more} work tapes.
+\item \textbf{Input Tape} 
+An IO-TM has exactly one \textit{input tape}. 
+The head for this tape can move freely, but we 
+cannot modify the symbols on the squares of this tape. 
+This tape is \textit{read-only}. 
+\item \textbf{Output Tape} 
+An IO-TM has exactly one \textit{output tape}. 
+The head for this tape can \textit{only move right}, and we 
+will not use the tape for reading.
+The squares of this tape are strictly write only.  
+The tape is \textit{write-only}. 
+\end{itemize} 
+
+The previous definition is the same as 
+the definitions of $\text{TIME}(f(x))$ except that now we are 
+using a IO-TM instead of the TM definition we gave in the 
+computational models chapter. 
+
+\frmrule
+
+A ND-IOTM $M$ computes $F(x)$ in time $f(x)$ iff on input $x$,
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item All computations either have $F(x)$ on the output tape
+and halts in the \textsc{yes} state \textit{or}
+halt the rejecting state in the \textsc{no} state.
+\item At least one computation must halt 
+in the \textsc{yes} state with $F(x)$ and 
+\item For all such computations that do halt 
+in the \textsc{yes} state, the $F(x)$ must be unique 
+($F(x)$ is a function and has one unique output).
+\item The work tapes use space $\leqslant f(|x|)$.  
+\end{itemize} 
+
+
+\frmrule
+
+One question is whether it is reasonble to include the 
+input space and the output space as part of the space needed 
+to do the work. After all, surely all the work is done on the 
+work tape? It doesn't matter whether or not we include 
+the input tape space and the output tape space. 
+The difference changes by a factor of $k-2$, 
+and as with time, we can ignore constant factors. 
+The speedup is linear which makes no difference to it 
+being a polynomial. 
+
+
+\highlightdef{\textbf{LOGSPACE}: $\text{LOGSPACE} = \text{SPACE}(\log(n))$ }
+
+We abbreviate \textsc{logspace} by L.
+
+\frmrule
+
+\begin{example}
+
+Languages are often decided by maintaining counters with values within
+poly bound in input length n.
+Suppose we have $m$ counters whose digits have a 
+p-bound $c_i \leqslant p(n)$.
+Then the overall space usage $\sum c_i \leqslant m\log(p(n))$. 
+Note that we do not always have to put the counters on different work tapes. 
+If each counter has a fixed number of bits allocated, we could string them along a single work 
+tape. But typically, it is easier to have a counter per tape.
+Hence the language is $O(\text{log}(n))$ and so it in \textsc{logspace}. 
+The problem associated to this language has a 
+logarithmic space complexity.
+
+\end{example}
+
+
+
+
+\section{Time-Space Relationships}
+
+
+We want to compare space and time usage:
+For instance, we want to argue that a bound on time usage implies a
+bound on space usage. 
+
+\highlightdef{\textbf{Proper Function}: can be computed 
+by an IO-TM within time and space\\ given by the value of the function}
+Also called a \textit{proper complexity function}. 
+
+$f:\mathbb{N} \rightarrow \mathbb{N}$ is a \textit{proper function} iff
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Nondecreasing} 
+$f$ is a nondecreasing function. That is, $f(n+1) \geqslant f(n)$ for all n
+\item \textbf{IO-TM} 
+There is a $k$-tape IO-TM which for every input, $w$, 
+outputs $1^{f(|w|)}$s on the output tape, decides operates within time $O(|w| + f(|w|))$ 
+and space $O(f(|w|))$. 
+\end{itemize} 
+
+
+\frmrule
+
+\begin{example}
+Show that the addition of two proper functions, $f + g$, is a proper function.
+
+\textbf{(a)} $f$ is nondecreasing so ................... for all n \\
+\textbf{(b)} $g$ is nondecreasing so ................... for all n \\
+\textbf{(c)} Hence $(f + g)(n+1) = f(n+1) + g(n+1) \geqslant$ .......... $+$ ......... $ = $ ....... for all n. \\
+So $f + g$ is nondecreasing. 
+
+Next we need to find a $k$ tape IO-TM which for 
+every input, $w$, of length $|w| = n$, outputs \textbf{(d)} ............ 
+on the output tape and operates within time \textbf{(e)} ............. 
+and space \textbf{(f)} ............. 
+
+
+\end{example}
+
+
+
+\frameans{Complete the proof}
+{
+\textbf{(d)} $1^{(f+g)(\abs{w})}$. \\
+\textbf{(e)} $O(\abs{w} + (f+g)(\abs{w}))$. \\
+\textbf{(f)} $O((f+g)(\abs{w}))$ 
+}
+
+We already have IO-TMs that compute 
+
+\begin{tikzpicture}
+[n/.style={draw, fill=white,inner sep=11pt}]
+    \node[n] (m) {$M_f$};
+    \node[n, right=1cm of m] (m2) {$M_g$};
+    \begin{pgfonlayer}{background} 
+        \node[draw, fill=black!10, fit={(m2) (m)}, drop shadow, inner sep=5pt] (m1) {};
+    \end{pgfonlayer} 
+    \coordinate (in) at ($(m)+(-1.5cm,0.0cm)$);
+    \coordinate (out) at ($(m2)+(2.5cm,0.0cm)$);
+    \draw[->] (in) -- node[above]{} (m);
+    \draw[->] (m) -- node[above]{} (m2);
+    \draw[->] (m2) -- node[above]{} (out);
+
+    \node[above of=m1] {$M_{f+g}$};
+\end{tikzpicture}
+
+Idea: \\
+$M_{f+g}$ is a IO-TM with $(k_f - 2) + (k_g - 2)$ work tapes.
+
+$M_{f+g}$ first runs $M_f$ on input $w$. 
+The result is $1^{f(\abs{w})}$ on $M_f$'s output tape.
+$M_{f+g}$ first runs $M_g$ on input $w$. 
+The result is $1^{g(\abs{w})}$ on $M_g$'s output tape.
+$M_{f+g}$ concatenates $M_f$ and $M_g$ uses copying
+to copy from $M_f$'s output tape then from $M_g$'s output tape
+to produce a concatenation of $1^{f(\abs{w} + g(\abs{w})}$ 
+on $M_{f+g}$'s output tape.
+
+This runs in total time $= [O(\abs{w}+f(\abs{w}))] + [O(\abs{w}+g(\abs{w}))]  
++ [f(\abs{w}) + g(\abs{w})]$ which is $O(\abs{w}+f(\abs{w})+g(\abs{w}))$. 
+This uses space $= \max{f(\abs{w}),g(\abs{w})} = O(f(\abs{w}) + g(\abs{w}))$. 
+Hence $f + g$, is a proper function.
+
+\frmrule
+
+
+
+\highlightdef{$\text{TIME}(f(n)) \subseteq \text{SPACE}(f(n))$ }
+
+
+
+
+
+
+\frmrule
+
+\highlightdef{$\text{NTIME}(f(n)) \subseteq \text{SPACE}(f(n))$ }
+
+\frmrule
+
+The proof involves simulating all the possible nondeterministic choices 
+within space $f(n)$ on a deterministic input-output turing machine
+without worrying about the time taken.\\
+To show: if $L \in \text{NTIME}(f(n))$ then $L \in \text{SPACE}(f(n))$
+
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item ($\Rightarrow$) Assume $L \in \text{NTIME}(f(n))$ \\
+Then there is some non-deterministic turing machine $N$ that 
+decides $L$ in polynomial time. 
+We will construct a deterministic input-output turing machine $M$ that simulates $N$, 
+which we can always do, but here, we will only use space $f(n)$. 
+
+Let $d$ be the degree of nondeterminism of $N$. Recall that this is 
+the maximal number of possible choices that can ever be outputted by $N$'s 
+transition relation for any state-symbol inputted. 
+
+Any computation of $N$ on input $x$ is a sequene of at most $f(|x|)$ 
+nondeterministic choices that we can represent by integers from 0 to $d-1$. 
+The input-output turing machine $M$ considers sequences of 
+choices $(c_1, c_2, \cdots, c_{f(|x|)})$ ranging from $(0,0, \cdots, 0)$ 
+to $(d-1,d-1, \cdots, d-1)$ and simulates $N$ on each. 
+
+Some choices $(c_1, c_2, \cdots, c_{f(|x|)})$ won't make sense but 
+we can simply stop trying that sequence and move onto the next one. 
+There are an exponential number of simulations to try out, certainly 
+at most $(d)^{f(|x|)}$, but the trick is that we only need to 
+\textit{store the current one}. The time may be bad, 
+but in terms of \textit{space} (what we care about for this proof), 
+we only need to store an amount proportional $f(|x|)$.
+
+The input output turing machine describe uses space $\ceil{\log(d)} \times f(|x|)$, 
+but since $d$ is independent of $|x|$, we can apply the space linearity theorem 
+with $\epsilon = \ceil{\log(d)}$ to get a space usage reduced to $f(|x|)$. 
+As $f(n)$ is proper, the first sequence of 
+$(0,0, \cdots, 0)$ can generated in space $f(|x|)$. 
+
+If a simulates leads the $N$ to the \textsc{yes} state, then $M$ 
+will also halt on the \textsc{yes} state. It is only when all sequences 
+are exhausted without finding a sequence where we reject $x$ 
+by halting on the \textsc{no} state. 
+\end{itemize}
+
+\frmrule 
+
+Now take the previous theorem and replace TIME by SPACE. 
+
+\highlightdef{$\text{NSPACE}(f(n)) \subseteq \text{TIME}(k^{\log(n)+f(n)})$ }
+
+This proof uses the \textit{reachability method}. For 
+any language $L \in \text{NSPACE}(f(n))$, we take the non-deterministic 
+turing machine that decides $L$ and take all possible configurations that
+$N$ can be in and form a directed graph that we call the \textit{configuration graph}.
+We will then check to see if we can reach a \textsc{yes} using \textsc{rch}.\\
+To show: if $L \in \text{NSPACE}(f(n))$ then $L \in \text{TIME}(k^{\log(n)+f(n)})$
+
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item ($\Rightarrow$) Assume $L \in \text{NSPACE}(f(n))$ \\
+We take all possible configurations that
+$N$ can be in and form a graph that we call the \textit{configuration graph}.
+The configurations will be the nodes and an edge will connect to 
+one configurations to another only if the machine in the first configuration 
+can go to the second via a non deterministic choice. 
+
+An important point is there are a finite number of configurations 
+of a input-output turing machine (as well as all turing machines). 
+How many are there \textit{exactly}? Well, each configuration can 
+be written in the form $(q, i, w_2\cdot u, )$
+There are $n+1$ possible positions for the input head, 
+
+But we are constructing a machine for \textit{deciding} $L$ with bound $f(n)$. 
+We are not concerned with the contents of the output tape so we can ignore its 
+contents and the head's position. We can also ignore the input tape contents. 
+There are no more than $|Q|(n+1)(|\Sigma|^{f(n)} \times f(n))^{k-1}$ configurations.
+
+We form a deterministic turing machine $M$ that performs \textsc{rch} using 
+an input of size $n = c^{\log(n) + f(n)}$ nodes. 
+This takes time $f'(n) = (c^{\log(n)+f(n)})^{2} = k^{\log(n)+f(n)}$ 
+where $k = c^2$ is a constant independent of the input size. 
+Hence $M$ decides $L$ in time $k^{\log(n)+f(n)}$, 
+so $L$ is in $\text{TIME}(k^{\log(n)+f(n)})$.
+\end{itemize}
+
+
+
+\section{Closure Under Complement}
+
+
+
+\highlightdef{\textbf{Szelepscenyi-Immerman Theorem}: The number of 
+nodes reachable \\from $x$ in $G$ can be computed by a NDIOTM within 
+space $\log(\text{no. nodes})$}

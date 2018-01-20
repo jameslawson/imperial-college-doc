@@ -1,0 +1,73 @@
+
+\chapter{Homomorphisms}
+
+
+
+
+\section{Normals and Ideals}
+
+
+
+\highlightdef{A \textbf{coset} is a set produced by  $gN$}
+
+
+
+\highlightdef{For every element we add to $Ng$, the \textit{same element} can be added to $gN$}
+Every time we add an element $r = n_1x$ to the \textit{right coset} $Nx$, 
+there exists a $n_i$ that adds the \textit{same element} $r = xn_i$ to 
+the \textit{left coset}. So in other words, the coset $Ng$ is the same as set the coset $gN$. 
+
+
+Suppose we have a commutative ring $R$ and also a subring $I \subset R$.
+\highlightdef{An \textbf{Ideal Subring}, I has for all $x \in  R$, $(\times a)I \subseteq I$ }
+
+
+
+\highlightdef{The \textbf{Coset Partition Set}, $G/H$, is the set of $g$-cosets of H.}
+
+The idea of cosets is similar to the \textit{map} function in Haskell. 
+
+
+\section{Factor Groups and Factor Rings}
+
+
+
+\highlightdef{The \textbf{Factor Group}, $G/H$ }
+Factor groups are also called \textit{quotient groups}. Similarly, for rings we have a factor ring. 
+
+\begin{itemize}	
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Operation on Cosets.}  This is defined as: $(+r)I$ dot $(+s)I = (+(r\times s))I$
+\end{itemize}
+
+
+\highlightdef{The \textbf{Factor Ring}, $R/I$ }
+Factor rings are also called \textit{quotient rings}. 
+
+\begin{itemize}	
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Addition of Cosets.} This is defined as: $(+r)I$ add $(+s)I = (+(r+s))I$
+\item \textbf{Multiplication of Cosets.}  This is defined as: $(+r)I$ times $(+s)I = (+(r\times s))I$
+\end{itemize}
+
+
+we also define \textit{multiplication of ideals}: $(+r)I + (+s)I = (+(r+s))I$
+
+\section{Homomorphism Groups}
+
+
+
+\highlightdef{Every $\phi$ has a \textbf{Kernel Group}, $(\text{Ker}\phi, \times_G)$ }
+... where we can multiply kernel elements $a$ and $b$ by the same operator as $G$. 
+What is special is that when we multiply two kernel elements, the result is \textit{another}
+kernel elements. Let's see why. We have $a \times_G b = c$ and also $\phi(a) = 1_H$ and $\phi(b) = 1_H$.
+If we take phi of both sides we get $\phi(a \times_G b) = \phi(c)$. 
+A homomorphism allow us to transform $\times_G$ to $\times_H$. 
+So $\phi(a) \times_H (b) = \phi(c)$. So $\phi(c) = 1_H \times_H 1_H$.
+Hence the result of the multiplication $c$ satisfies $\phi(c) = 1_H$ and so it also a kernel element.
+
+
+\highlightdef{Every $\phi$ has a \textbf{Image Group}, $(\text{Im}\phi, \times_H)$ }
+
+
+\section{First Isomorphism Theorem}

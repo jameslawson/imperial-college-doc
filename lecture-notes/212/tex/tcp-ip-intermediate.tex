@@ -1,0 +1,132 @@
+\chapter{TCP/IP: Intermediate}
+
+
+
+\section{NAT}
+
+\frmrule 
+
+\textit{Reserved Network Addresses}
+
+
+
+\begin{sidenote}{The Exact Numbers}
+
+$$\text{percentage} = \frac{s - b_0}{b_1-b_0} \times 100$$
+
+$$\text{percentage} = \frac{\text{no. blocks}}{\text{total blocks}} \times 100$$
+
+\end{sidenote}
+
+
+
+\frmrule 
+
+\textit{Statically vs Dynamically Assigned IP Addresses}
+
+
+\textit{Statically Assigned}:
+good for machines that are on all the time, \\
+provide services that don't move \\
+require another level of access control 
+
+\textit{Dynamically Assigned}:
+connect intermittently\\
+connect at different times to each other \\
+connect to different networks
+
+
+
+\frmrule 
+
+\textit{Summary}
+
+NAT violates the IP model, which states that every IP address uniquely 
+identifies a single machine worldwide. 
+
+NAT changes the internet from connectionless to connection-oritened 
+because end-to-end connections depend on the state of NAT gateways. 
+
+NAT violates protocol layering. The network layer makes 
+assumptions about the transport layer by knowing about port 
+numbers and remapping them for outgoing connections. 
+
+NAT retricts the transport layer to TCP and UDP. 
+Other transport layers like RTP are not necessarily supported. 
+
+NAT fails with protocols that include internal IP addresses in the payload
+
+NAT only supports $< 65536$ machines living behind a NAT router with a 
+single externally visible IP address. 
+
+
+
+
+
+\section{Network Fields}
+
+\begin{example}
+Which fields of an IP header would a router change as it forwards it? 
+Explain how they change and the reason for their change.
+
+TTL: decremented at each router to stop packets circulating forever in network\\
+Total length/Flags/Fragment Offset: changed to reflect the fragment of packet 
+if traveling over network with smaller MTU\\
+checksum: needs to be recomputed, fields change cause checksum to change
+\end{example}
+
+\frmrule
+
+\begin{example}
+Why does an IP packet perform a checksum on its \textit{header} but not its body?
+
+Error control of the encapsulated body is the responsibility of the higher level protocol, 
+not the responsibility of IP. \\
+Even if IP did perform a checksum on the body, it wouldn't be able to do anything 
+if it found an error. \\
+Lower level protocols provide error control, 
+so IP providing error control provides no services that doesn't already exist.
+\end{example}
+
+
+\frmrule
+
+\textit{Fragmenting Packets}
+
+
+\highlightdef{
+\textbf{More Fragments Flag}: $\textsf{MF}=0$ iff the fragment is the last fragment
+}
+
+\highlightdef{
+\textbf{Don't Fragment Flag}: $\textsf{DF}=1$ prevents fragmentation from occuring
+}
+
+
+
+
+\frmrule
+
+
+
+
+\section{TCP State Machine}
+
+
+\section{TCP Congestion}
+
+
+\frmrule 
+
+\textit{Flow control vs. congestion control}
+
+\highlightdef{
+\textbf{Congestion Control}: aims not to overflow the \textit{network}\\
+\textbf{Flow Control}: aims not to overflow the \textit{receiver}
+}
+
+
+
+\section{Discovering New Hosts}
+
+DHCP

@@ -1,0 +1,138 @@
+\chapter{TCP/IP: Advanced}
+
+
+\section{Network Adapters}
+
+
+CSMA/CD
+
+\highlightdef{\textbf{MAC}: Network Adapters perform \textit{Medium Access Control} (MAC) }
+
+
+
+\frmrule
+
+\textit{The difference between a hub and a switch}
+
+
+
+
+\section{Bijection: IP and MAC Addresses}
+
+ARP and Ping
+
+\frmrule 
+
+\textit{The format of a ARP protocol data unit}
+
+The address resolution protocol, when used for 
+MAC-to-IP address resolution has PDUs of the following high-level format: 
+\highlightdef{\textbf{ARP}: $[c | op | M | N]$}
+
+Where:
+\begin{itemize}[nosep]
+\item $c$ is a constant fixed for MAC-to-IP address resolution
+\item $op \in \{\textsf{Request}, \textsf{Reply} \}$ denotes 
+the operation.
+\item $sN$ is the source IP address 
+\item $dN$ is the destination IP address
+\end{itemize}
+
+\frmrule 
+
+\textit{Encapsulation of a ARP protocol data unit}
+
+
+$D = [c | op | sN | dN]$ in ethernal pdu: $[p|sM|dM|t|e|D]$
+
+
+Network Layer: ARP, IP
+Datalink layer: Ethernet 
+
+\frmrule 
+
+\textit{ARP Request and ARP Reply}
+
+
+
+$k(i,j)$ - machine $i$ knows machine $j$'s MAC address
+This relation is reflexive, we assume that machine every machine knows its own MAC address.
+
+if($v_B$ outside network) \\
+$\mu_{R.0}$ = localAsk($\mathcal{R}.0$) \\
+send ($\mu_{A}$, $\mu_{R.0}$, $\nu_{A}$, $\nu_{B}$, \textsf{request})\\
+($\mu_{A}$, $\mu_{R.0}$, $\nu_{A}$, $\nu_{B}$, \textsf{request}) = \\
+return $\mu_{B}$\\
+else \\
+$\mu_{B}$ = localAsk($\mathcal{B}$) \\
+return $\mu_{B}$\\
+
+\frmrule 
+
+\begin{example}
+Suppose we have two subnets $\mathcal{N}_1$: 146.0.4.x and $\mathcal{N}_2$: 146.0.1.x. 
+We have a host on $\mathcal{N}_1$ who wants to find the MAC address of a host 
+on $\mathcal{N}_2$. 
+
+Complete the table.
+\begin{table}[h]
+    \centering
+    \begin{tabular}{ll|llllll}
+    & &    & $\textsf{sM}$ & $\textsf{dM}$  & $\textsf{sN}$ & $\textsf{dN}$ & $\textsf{op}$ \\ \hline
+    A. Find $\mu_B$& A.1 Ask $\mu_{R.1}$ & $\mathcal{A} \rightarrow \mathcal{R}.1$  & $\mu_{A}$ & $ \mu_{*} $ & $\nu_{A}$ & $\nu_{R.1}$ & \textsf{request}  \\
+    & & $\mathcal{A} \leftarrow \mathcal{R}.1$   & $\mu_{R.1}$ & $\mu_{A}$ & $\nu_{R.1}$ & $\nu_{A}$ & \textsf{reply} \\ 
+    & A.2 Ask $\mu_B$ & $\mathcal{A} \rightarrow \mathcal{B}$   & $\mu_{A}$ & $\mu_{R.1}$ & $\nu_{A}$ & $\nu_{B}$ & \textsf{request}  \\ \hline
+    R. Find $\mu_B$ & R.1 Ask $\mu_B$ & $\mathcal{R}.2 \rightarrow \mathcal{B}$   & $\mu_{R.2}$ & $\mu_{*}$ & $\nu_{R.2}$ & $\nu_{B}$ & \textsf{request}  \\
+    & & $\mathcal{R}.2 \leftarrow \mathcal{B}$   & $\mu_{B}$ & $\mu_{R.2}$ & $\nu_{B}$ & $\nu_{R.2}$ & \textsf{reply}  \\ \hline
+    &  & $\mathcal{A} \rightarrow \mathcal{B}$   & $\mu_{R.2}$ & $\mu_{B}$ & $\nu_{A}$ & $\nu_{B}$ & \textsf{request}  \\ 
+    &  & $\mathcal{A} \leftarrow \mathcal{B}$   & $\mu_{B}$ & $\mu_{R.2}$ & $\nu_{B}$ & $\nu_{A}$ & \textsf{reply}  \\
+    &  & $\mathcal{A} \leftarrow \mathcal{B}$   & $\mu_{R.1}$ & $\mu_{A}$ & $\nu_{B}$ & $\nu_{A}$ & \textsf{reply}  \\
+    \end{tabular}
+\end{table}
+
+
+
+\end{example}
+
+
+
+
+\frmrule 
+
+\textit{ARP Caches}
+
+
+\begin{sidenote}{ARP Cache}
+/sbin/arp -n lists the contents of the ARP cache\\
+\end{sidenote}
+
+
+\frmrule 
+
+\textit{ARP Format}
+
+\begin{sidenote}{ARP Format}
+ARP has the following format.
+\end{sidenote}
+
+
+
+
+
+\section{Token Rings}
+
+
+\section{Binary Exponential Backoffs}
+
+
+\section{WiFi}
+
+
+
+\section{Errors I}
+
+
+\frmrule
+
+\section{Errors III }
+

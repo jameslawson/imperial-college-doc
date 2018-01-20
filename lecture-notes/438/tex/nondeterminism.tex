@@ -1,0 +1,156 @@
+
+\chapter{Nondeterminsm}
+
+
+
+\section{Introducing Nondeterminsm}
+
+
+
+
+
+$P\overset{?}{=}NP$
+
+
+
+
+\highlightdef{
+A \textbf{Nondeterministic Turing Machine} $N$ can: 
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item \textbf{Accept an Input}:
+$N$ accepts an input $x$, ($x$ is accepted by $N$) iff there is some sequence of
+nondeterministic choices that results in state \textsc{yes}.
+\item \textbf{Reject an Input}:
+$N$ rejects an input $x$, ($x$ is rejected by $N$) iff for all 
+sequence of nondeterministic choices, none lead to the state \textsc{yes}.
+\item \textbf{Accept a Language}:
+$N$ accepts a langauge $L$, ($L$ is accepted by $N$) iff for every $x \in L$, 
+and for only every $x \in L$, 
+there is some sequence of nondeterministic choices 
+that results in state \textsc{yes}. That is, 
+$x \in L$ iff $(s,\triangleright \cdot x) \rightarrow (\textsc{yes}, w\cdot u)$ 
+\item \textbf{Reject a Language}:
+$N$ rejects a langauge $L$, ($L$ is rejected by $N$) iff there is some $x \in L$, 
+such that for all sequence of nondeterministic choices,
+none lead to the state \textsc{yes}.
+\item \textbf{Operate in Time $f(n)$ for a Langauge}:
+$N$ operates in time $f(n)$ iff for all inputs $x \in L$, $N$ always results in 
+either state \textsc{yes} or state \textsc{no} within $f(|x|)$ nondeterministic choices.
+\item \textbf{Decide a Langauge in Time $f(n)$}:
+$N$ operates in time $f(n)$ iff for all $x \in L$, and for only every $x \in L$, 
+if $N$ reaches state \textsc{yes} or state \textsc{no} 
+then it is always within $f(|x|)$ nondeterministic choices.
+\end{itemize}
+}
+
+\highlightdef{$N$ decides $L$ implies all computation paths have length at most $f(|x|$)}
+
+
+\frmrule
+
+
+\highlightdef{\textbf{Random Generator Machine} $N_G$ generates an arbitrary binary sequence}
+
+
+\frmrule
+
+
+\highlightdef{$\text{NP} = \cup_{k>0} \text{NTIME}(n^k)$}
+
+
+
+
+
+
+
+\frmrule
+
+\begin{example}
+Show that \textsc{tsp(d)} is in NP. \\
+
+Consider instances of the language \textsc{tsp(d)} consisting of pairs $(M, k)$ such that M
+is an $n \times n$ distance matrix and $B$ is an integer and there is a tour of 
+$n$ cities whose length is at most $k$. 
+
+The following nondeterministic Turing machine $N$ decides \textsc{tsp(d)}:
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item $N$ generates after its input $(M, k)$ an arbitrary sequence of 0,1,/ 
+no longer than a polynomial in $n$ using the idea from $N_G$.
+\item After this, $N$ is completely deterministic. 
+\item First that the random generated sequence is well-formed path (of 
+the form $/c_1/c_2/\cdots/c_n$) and 
+that the original input of $(M, k)$ is still well-formed (wasn't modified).
+This amounts to examining the entire tape. If these checks fail, 
+$N$ halts in the rejecting state. 
+\item Otherwise $N$ continues to determine whether the generated sequence
+$/c_1/c_2/\cdots/c_n$ presents a tour of the cities of cost at most $k$.
+If this is the case, N halts in the accepting state otherwise in the rejecting state.
+\end{itemize}
+
+We will justify that $N$ does indeed decide \textsc{tsp(d)} in polynomial time and hence 
+justify that \textsc{tsp(d)} is indeed in NP. 
+
+\end{example}
+
+
+\frmrule
+
+\begin{example}
+Does it matter whether we define NP as $\text{NP} = \cup_{k>0}$ or $\text{NP} = \cup_{k \geqslant 0}$? Explain.
+Does it matter whether $k$ takes real values or natural number values? 
+\end{example}
+
+\frmrule
+
+
+
+\section{Succinct Certificates}
+
+
+
+Let $L$ be any language. 
+\highlightdef{ \textbf{Succinct Certificate Theorem}: $L$ is in NP iff there is some 
+\textit{succinct certificate relation} satisfying 
+$L = \{x \in \Sigma^{*} | (x,y) \in R \text{ for some y} \in \Sigma^{*}\}$  }
+
+Let's prove this.
+\begin{itemize}   
+\renewcommand{\labelitemi}{$\Box$}
+\item ($\Leftarrow$) Assume there is some succinct certificate relation satisfying
+$L = \{x \in \Sigma^{*} | (x,y) \in R \text{ for some y} \in \Sigma^{*}\}$.\\
+By definition of a succinct certification relation, 
+there is some deterministic turing machine $M$ that 
+can decide the language $\{x;y | (x,y) \in R\}$
+
+We form a non-deterministic turing machine $N$ that on input $x$, 
+guesses a $y$ of length at most $|x|^k$ and uses the machine
+$M$ to check whether $x;y$ is in $R$. If it is, then $N$ 
+goes to the \textsc{yes} state. 
+By definition of non-deterministic turing machine 
+deciding a language in polynomial time, $L$ 
+is decided by $N$ in a polynomial time. Hence $L$ is in NP.
+
+\item ($\Rightarrow$) Assume $L \in \text{NP}$. \\
+By definition of NP, there is a non-deterministic turing machine 
+$N$ that decides $L$ in time polynomially bounded by $x$. 
+
+Define a relation $R$ as follows: $(x, y) \in R$ iff $y$ is the 
+encoding of an accepting computation of $N$ on input $x$. 
+This is a \textit{succinct certificate relation} because:
+\begin{itemize} 
+\item it is balanced (each computation of $N$ is polynomially bounded so $|y| \leqslant |x|^k$ 
+for some $k$), 
+\item a deterministic turing machine can decide the language $\{x;y | (x,y) \in R\}$
+in polynomial time (this is simple check of whether $y$ 
+encodes an accepting computation of $N$ on $x$). We check that 
+the initial state is correct, each step on the computation makes is possible 
+according to $N$'s transition relation and that the final state is \textsc{yes}. 
+\end{itemize}
+Hence $L$ has some succinct certificate relation satisfying
+$L = \{x \in \Sigma^{*} | (x,y) \in R \text{ for some y} \in \Sigma^{*}\}$.
+\end{itemize}
+
+
+We can think of languages in NP as those languages  nondeterministic turing 
