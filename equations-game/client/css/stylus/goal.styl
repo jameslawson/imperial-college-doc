@@ -1,0 +1,118 @@
+// ******************************************************
+// Styles for the goal screen and the goal waiting screen
+// ******************************************************
+
+@import 'main'
+// -----------
+
+$dicewidth = 30px
+
+div#goalmake,
+div#goalwait
+  background: #005896
+  border-radius(5px)
+  padding: 20px
+  h2
+    color: #FFFFFF
+    text-shadow: rgba(0, 0, 0, .75) 0px 1px 0px 
+  p
+    color: #88AFFF
+
+div#goalmake
+  h2
+    margin-bottom: 10px
+  p
+    color: #7EB6DE
+    margin-bottom: 5px
+
+
+div#goalwait h2
+  margin-bottom: 5px
+
+
+
+ul#added-goal,
+ul#notadded-goal
+  display: inline-block
+  text-align: center
+  li.dice 
+    margin-right: -5px
+    //border: 4px solid red
+    //display: inline-block
+    //text-align: center
+    background: #CCC
+    //width: $dicewidth
+    //height: $dicewidth
+    diceLayout(30px)
+    cursor: pointer
+    span
+      font-family: $font-list
+      font-size: 20px
+      padding-top: 4px
+
+
+
+div#notadded-goal-ctnr
+  ul#notadded-goal 
+    float:left
+    li.dice
+      color: #FFFFFF
+      text-shadow: rgba(0, 0, 0, .75) 0px 1px 0px
+      border-color:#005E9B
+      background: #777777
+    
+div#added-goal-ctnr
+  ul#added-goal 
+    float:left
+    li.dice
+      color: #FFFFFF
+      text-shadow: rgba(0, 0, 0, .75) 0px 1px 0px
+      border-color:#005E9B
+      background: #777777
+    li.dice.error
+      background: #DB0000
+  
+div#added-goal-ctnr,
+div#notadded-goal-ctnr
+  margin-bottom: 15px
+  padding: $tbpadding=10px 20px
+  background: #0078CD
+  border-radius(5px) 
+  clearfix()
+  h3
+    float: left
+    margin: 10px 25px 10px 10px
+    color: #FFFFFF
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px
+
+
+div#goalmake p#goalerror
+  color: #FFDDD5
+  margin-bottom: 15px
+  padding: 10px 20px
+  background: #CD4200
+  border-radius(5px) 
+  display: none
+  font-weight: bold
+  margin-bottom: 14px
+  transition(background 1s ease-in)
+
+
+div#goalmake p#goaltimer
+  padding: 10px
+  font-size: 13px
+  span
+    color: #979797
+
+button#sendgoal
+  padding: 7px 30px
+  border-color:#007BD1
+  color: #FFFFFF
+  background: #007BD1
+  text-shadow: rgba(0, 0, 0, .75) 0px 1px 0px
+  font-weight: bold
+  border-radius(5px)
+  cursor: pointer
+
+button#sendgoal:hover
+  background: #CE8400

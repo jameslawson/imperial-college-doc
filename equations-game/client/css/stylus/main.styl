@@ -1,0 +1,286 @@
+@import 'nib'
+
+/** Let us choose the styles, not the browser! **/
+/** Reset padding and margins that the browser gives to elements as well as annoying list styles etc. **/
+*
+  reset-box-model()
+
+$font-list = "Helvetica Neue","Hevletica","Arial","DejaVu Sans","Kozuka Gothic Pro R","Meiryo","MS Gothic","Osaka",sans-serif
+
+*
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+
+html, body
+  //height: 100%;
+  font-family: $font-list
+  user-select(none)
+  cursor: default
+
+ul
+  list-style: none
+
+body
+  background: #2681CC
+  background: linear-gradient(top, #2681CC 0%, #206FB0 100%) fixed
+  min-height: 100%
+  background-size: 100% 100%
+
+div#container-displacer
+  padding-top:20px
+  padding-bottom:20px
+  
+
+div#container,
+div#container[data-glow='off']
+  margin: 0 auto
+  width: 80%
+  padding: 15px
+  background: rgba(255, 255, 255, 0.2)
+  border: 1px solid rgba(255, 255, 255, 0.3)
+  border-radius(5px)
+
+
+div#container[data-glow='on']
+  background: rgba(255, 255, 255, 0.3)
+  border: 1px solid rgba(255, 255, 255, 0.8)
+  box-shadow: white 0px 0px 9px;
+
+
+@keyframes highlightkeyframes {
+  0% {box-shadow(white 0px 0px 2px 1px)}
+  33% {box-shadow(white 0px 0px 2px 1px)}
+  66% {box-shadow(white 0px 0px 14px 1px)}
+  100% {box-shadow(white 0px 0px 14px 1px)}
+}
+
+
+*[data-glow='highlight'] {
+    animation(highlightkeyframes 5s ease-in-out 0s infinite alternate)
+}
+
+
+
+
+// For screen widths 0 <= w <= 999
+@media all and (max-width: 999px)
+  div#container
+    width: 95%
+  ul#main-columns
+    box-orient(vertical) // When the screen is too small, make the answer/rough area rows become columns
+    > li
+      box-flex(1)
+      
+
+// For screen widths 1200 <= w <= 1200
+@media all and (min-width: 1000px)
+  div#container
+    width: 80%
+  ul#main-columns
+    box-orient(horizontal) // When the screen is big enough, make the answer/rough area rows become columns
+    > li
+      box-flex(1)
+      width: 0 // give columns equal maximum shared width (hack to work on both FF and CHR)
+
+
+
+display-box()
+  display: -webkit-box
+  display: -moz-box
+  display: box
+
+diceLayout(width)
+  display: inline-block
+  text-align: center
+  margin-right: 5px
+  width: $dicewidth = width
+  height: $dicewidth
+  span
+    line-height: $dicewidth;
+
+diceBubble(width, bubblebg, bubblesize)
+  display: inline-block
+  text-align: center
+  border: bubblesize solid bubblebg
+  width: $dicewidth = width
+  height: $dicewidth
+  margin-right: -5px
+  span
+    line-height: $dicewidth;
+
+
+
+
+
+li.dot
+  font-size: 35px
+  color: #F8C627
+  font-weight: bold
+  display: inline-block
+  text-shadow: rgba(0, 0, 0, 0.3) 0px 2px 0px
+  width: 15px
+  height: 30px
+  line-height: 16px
+  margin-left: 5px
+  border: 8px solid transparent
+
+li.dot[data-bracket='none'] span:after
+  content: '.'
+
+li.dot[data-bracket='left'] span:after
+  content: '('
+
+li.dot[data-bracket='right'] span:after
+  content: ')'
+
+
+
+
+// The columns/rows for the answer area ad rough area 
+
+ul#main-columns
+  width: 100%
+  background: #0066AD
+  border-radius(5px)
+  display-box()
+  padding: 0
+  margin: 0
+
+ul#main-columns > li
+  display-box() //making the boxflex children display box messes up FF
+  background: #007DD5
+  list-style: none
+  margin: 5px
+  margin-bottom: 5px
+
+
+
+.glow
+  transition(box-shadow 0.5s)
+  box-shadow(0px 0px 8px 2px rgba(255, 0, 0, .75));
+
+#forbidden.glow
+  box-shadow(0px 0px 8px 2px rgba(0, 255, 0, .75));
+
+#required.glow
+  box-shadow(0px 0px 8px 2px rgba(0, 0, 255, .75));
+
+#optional.glow
+  box-shadow(0px 0px 8px 2px rgba(255, 0, 0, .75));
+
+.textglow
+  transition(text-shadow 0.5s)
+  text-shadow(0 0 1.2em black)
+
+.center
+  text-align: center
+
+.area-heading
+  color: #FFC818
+  margin-left: 15px
+  font-family: 'Freckle Face', cursive
+  text-shadow: rgba(0, 0, 0, 0.15) 0px 1px 0px
+  font-size: 27px
+
+
+.game-title
+  font-family: 'Freckle Face', cursive
+  font-size: 72px
+  margin-bottom: -20px
+  margin-top: -20px
+  text-align: center
+  color: #F3C141
+  text-shadow: rgba(0, 0, 0, 0.75) 0px 1px 0px
+
+
+#bottom-toolbar
+  position: fixed
+  bottom: 0px
+  right: 0px
+  z-index: 200
+  text-align: right
+  a
+    text-decoration: none
+    font-size: 12px
+    font-weight: bold
+    text-shadow: rgba(0, 0, 0, 0.5) 0px 1px 0px
+    padding: 10px 20px
+    color: #FFFFFF
+    background: rgba(0, 78, 129, 0.7)
+    display: inline-block
+  a:hover
+    background: #D88A00
+  ul#bottom-log
+    color: #C2C2C2
+    background: rgba(0, 78, 129, 0.7)
+    font-size: 12px
+    height: 100px
+    width: 400px
+    padding: 5px
+    text-align: left
+    margin-bottom: 5px
+    text-align: left
+    display:none
+    overflow-y:auto
+
+div#initial-loading
+  text-align: center
+  background: #005896
+  padding: 20px
+  font-weight: bold
+  color: white
+  font-size: 30px
+  span
+    padding: 10px 0px 0px 15px
+    font-size: 35px
+
+/* Add some nice box-shadow-ness to the dialogues */
+.qtip-dialogue
+  max-width: 420px
+  min-width: 210px
+  box-shadow(0 0 10px 1px rgba(0,0,0,.5))
+
+
+.qtip-dialogue .qtip-content
+  padding: 10px
+
+
+.qtip-dialogue button
+  float: left
+  width: 47%
+  margin-right: 10px
+  padding: 3px 0
+  text-align: center
+  font-size: 10.5px
+
+
+.qtip-dialogue button + button
+  float: right
+  margin-right: 0
+
+
+.qtip-dialogue input
+  width: 95%
+  padding: 3px 0 3px 5px
+  margin-bottom: 7px
+  font-size: 10.5px
+
+
+.qtip-dialogue button.full
+  float: none
+  width: 100%
+
+.tutorial-next-button
+  //float:right
+  //clear:both
+  margin-top:10px
+  padding: 4px
+
+$tutorialcolor = #FFE476
+.qtip-tutorial
+  background-color: $tutorialcolor !important;
+
+  .qtip-content
+    padding: 9px 14px;
+    background-color: $tutorialcolor;
+  

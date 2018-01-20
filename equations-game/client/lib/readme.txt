@@ -1,0 +1,1 @@
+Store all external libraries such as jQuery here.

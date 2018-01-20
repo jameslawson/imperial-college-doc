@@ -1,0 +1,97 @@
+
+<div id="top-ctnr">
+    <div id="goal-ctnr">
+        <ul id="goal-dice-ctnr">
+        </ul>
+        <span id="now-button">Now</span>
+        <span id="never-button">Never</span>
+        <span id="challenge-title"></span>
+    </div>
+
+    <div id="player-list">
+        <ul>
+        </ul>
+    </div>
+
+    <div id="timer-ctnr">
+        <div id="timer-knob-ctnr">
+            <input type="text" value="0" id="timer-knob"/>
+        </div>
+        <div id="timer-text-ctnr"></div>
+    </div>
+
+    <!--<div id="commentary_ctnr">
+        <ul>
+            <li class="now-commentary">
+                <span>Now</span> It's Player 1's turn to move a dice from unallocated
+            </li>
+            <li>Player 1 moved + from unallocated to forbidden</li>
+            <li>Player 1 moved * from unallocated to optional</li>
+            <li>Player 1 moved 2 from unallocated to forbidden</li>
+            <li>Player 1 moved 2 from unallocated to forbidden</li>
+        </ul>
+    </div>-->
+
+
+
+</div>
+
+
+<div id="allocation_container">
+    <div id="dice_container">
+        <ul id="required">
+        </ul>
+
+        <ul id="optional">
+        </ul>
+       
+        <ul id="unallocated">
+        </ul>
+
+        <ul id="forbidden">
+        </ul>
+    </div>
+</div>
+
+<div id="turn-notification">
+    <p><span id="now-commentary"></span></p>
+</div>
+
+
+<ul id="main-columns">
+
+    <li>
+        <div id="answer-area">
+            <h3 class="area-heading">Answer area</h3>
+            <div id="answer-dice">
+                <ul id="answers">
+                </ul>
+                <p id="answer-submit-notice" class="answer-dice-notice"></p>
+                <p id="answer-empty-notice" class="answer-dice-notice"></p>
+                <p id="answer-forbidden-notice" class="answer-dice-notice"></p>
+                <p id="answer-required-notice" class="answer-dice-notice"></p>
+                <p id="answer-error"></p>
+            </div>
+
+            <div id="answer-buttons">
+                <a class="mini-button" id="answer-add-dice-btn"><span>Add Dice</span></span></a>
+                <a class="mini-button" id ="answer-submit-btn"><span>Submit</span></span></a>
+            </div>
+        </div>
+    </li>
+
+    <li>
+        <div id="rough-area-container">
+            <h3 class="area-heading">Sketch area</h3>
+            <div id="rough-area-board">
+                <canvas id="simple_sketch" />
+            </div>
+
+            <div id="rough-area-buttons">
+                <a class="mini-button" title="Use the pencil" id="sketchPencil"><span>Pencil</span></span></a>
+                <a class="mini-button" title="Use the rubber" id="sketchRubber"><span>Rubber</span></span></a>
+                <a class="mini-button" title="Clear drawing" id="sketchClear"><span>Clear</span></span></a>
+            </div>
+        </div>
+    </li>
+</div>
