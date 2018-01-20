@@ -1,0 +1,347 @@
+\documentclass[a4paper, draft, 12pt]{article}
+
+% BEGIN PACKAGE IMPORT
+% =============================================================================
+\usepackage{examsty}
+\usepackage{complexitysty}
+% =============================================================================
+
+% BEGIN SOLUTIONS
+% =============================================================================
+
+
+
+\begin{document}
+\textbf{Complexity, 2005-2006}\\
+\textit{James Lawson}
+
+\begin{enumerate} 
+\item % Question 1
+\begin{enumerate}
+\item % (a)
+  \begin{enumerate}
+  \item % (i)
+  \textsf{NPC} the class of langauges that are in \textsf{NP} and are \textsf{NP}-hard
+  \item % (ii)
+  \textsc{sat}: given a set of clauses, is there a satisfying assignment\\
+  \textsc{hp}: given a graph, is there a hamiltonian path\\
+  \textsc{tsp(d)}: given a graph, is there a cycle that visits all nodes within budget $b$
+  \item % (iii)
+  Assume $\textsf{NPC} \cap \textsf{P} \neq \emptyset$ \\
+  Then there is some langauge $L_0$ that is  $\textsf{NP}$-complete and in \textsf{P}. 
+
+  We already know that $\textsf{P} \subseteq \textsf{NP}$, so we need to show $\textsf{NP} \subseteq \textsf{P}$.\\
+  Take some language $L \in \textsf{NP}$. \\
+  Since $L_0$ is \textsf{NPC}, we have $L \leqslant L_0$\\
+  But since $L_0 \in \textsf{P}$, we have $L \in \textsf{P}$ (\textsf{P} is downwards-closed).\\
+  Hence $\textsf{NP} \subseteq \textsf{P}$. So $\textsf{P} = \textsf{NP}$.
+  \end{enumerate}
+
+  \item % (b)
+  \begin{itemize}
+  \item 
+  We can find a reduction from \textsc{HP} to \textsc{AHP}. \\
+  Let $f(G)$ add twos new nodes, $x$ and $p$. Add edge $(x,p)$ and edges $(p, u)$ for all $u$ in original $G$.
+  Then $G$ has HC iff $f(G)$ has HP starting at $x$. 
+
+  $(\Rightarrow)$ If $G$ has HP $u .. v$, then $f(G)$ has HP starting at $x$: $x,p,u...v$. \\
+  $(\Leftarrow)$ If $f(G)$ has HP, it must start/end at $x$, because $x$ is the only node with degree 1, so 
+  and path must go through $p$ at the start/end to reach $x$. $u .. vpx$. So $G$ has HP $u...v$. \\
+  If $G$ has any degree 0 nodes, then it returns some no-instance. \\
+  $f$ can be computed in p-time and so \textsc{AHP} is NPC.
+  \item 
+  We can find a reduction from \textsc{HP} to \textsc{THP}. \\
+  Let $f(G)$ add four new nodes, $p,q,r,s$. \\
+  Add edge $(p,q)$ and edges $(q, u)$ for all $u$ in original $G$.\\
+  Add edge $(r,s)$ and edges $(u, r)$ for all $u$ in original $G$.
+  Label some node in the old graph as $x$. 
+  If $G$ has any degree 0 nodes, then it returns some no-instance. 
+
+  Then $G$ has HP iff $f(G)$ has HP starting that doesn't start or end at $x$. \\
+  $(\Rightarrow)$ If $G$ has HP $u .. v$, then $f(G)$ does indeed have a HP $p,q,u...v,r,s$.
+  And, any HP in $f(G)$ must start/end with $p,s$, and so cannot start/end with the node labelled $x$ from the original graph. \\
+  $(\Leftarrow)$ If $f(G)$ has HP, it must start/end at $p/s$, because these are is the only nodes in $f(G)$ with degree 1.
+  So HP has the form $p,q,u...v,r,s$, and so $G$ has HP $u...v$.
+  $f$ can be computed in p-time and so \textsc{THP} is NPC.
+  \end{itemize}
+  \item % (c)
+  \begin{enumerate}
+  \item 
+  \textsc{2SAT}: Given a set of clauses, each with 2 literals, is there a satisfying assignment?
+  \item 
+  We can show that $\textsc{2SAT}$ is in \textsf{P}. Suppose that $\textsc{2SAT} \in \textsf{NPC}$.
+  We have some language in both \textsf{NPC} and \textsf{P}, so $\textsf{NPC} \cap \textsf{P} \neq \emptyset$, so by (a)(iii), we have $\textsf{P} = \textsf{NP}$. 
+  Contradicting our assumption that $\textsf{P} \neq \textsf{NP}$. So $\textsc{2SAT}$ cannot be \textsf{NP}-complete under this assumption.
+  
+  \item % (d)
+  \begin{itemize}
+  \item
+  Add nodes: $p,q,r$ and $\neg p, \neg q, \neg r$. \\
+  Add edges: \\ 
+  $\neg p \rightarrow q$, $\neg q \rightarrow  p$ \\
+  $q \rightarrow r$, $\neg r \rightarrow  \neg q$ \\
+  $q \rightarrow \neg r$, $r \rightarrow  \neg q$ \\
+  $r \rightarrow \neg r$ \\
+  Take $p$. Check if there is a path from $p$ to $\neg p$. There is not. So $v(p) = \textsf{tt}$.
+  Take $q$. Check if there is a path from $q$ to $\neg p$. There is. 
+  check if path from $\neg p$ to $p$. There is not. So $v(q) = \textsf{ff}$.
+  Take $r$. check if there is a path from $r$ to $\neg r$. There is. 
+  Check if path from $\neg r$ to $r$. There is not. So $v(r) = \textsf{ff}$.\\
+  Hence a satisfying assignment is $v(p) = \textsf{tt}, v(q) = \textsf{ff}, v(r) = \textsf{ff}$.  
+  \item
+  Add nodes: $p,q,r$ and $\neg p, \neg q, \neg r$. \\
+  Add edges: \\ 
+  $p \rightarrow q$, $\neg q \rightarrow  \neg p$ \\
+  $p \rightarrow \neg q$, $q \rightarrow  \neg p$ \\
+  $\neg p \rightarrow r$, $\neg r \rightarrow  p$ \\
+  $r \rightarrow \neg r$  \\
+  $\neg r \rightarrow \neg q$, $q \rightarrow r$ \\
+  $\neg q \rightarrow p$, $\neg p \rightarrow q$ \\
+  Take $p$. Check if there is a path from $p$ to $\neg p$. There is. 
+  Check if there is a path from $\neg p$ to $ p$. There is. 
+  We have a cycle from $p$ to $\neg p$, so there is no satisfying assignment.
+  \end{itemize}
+  \end{enumerate}
+\end{enumerate}
+\item % Question 2
+\begin{enumerate}
+  \item % (a)
+  \begin{enumerate}
+  \item % (i)
+  \begin{itemize}
+  \item \textsf{LOGSPACE}: The set of languages that can decided by a $k$-tape 
+  input-output turing machine in logspace. 
+  \item log-space reduction: $A \leqslant_{\text{log}} B$ iff 
+  there is a map $f$ such that $x \in A$ iff $f(x) \in B$ and 
+  $f$ is computable in logspace. 
+  \item \textsf{NL}-complete: A language, $L$ is \textsf{nl}-complete iff 
+  it is can be decided by a nondeterministic IOTM in logspace and 
+  has the property that for all $L'$, if
+  $L' \in \textsf{NL}$ then $L' \leqslant_{\text{log}} L$. 
+  \end{itemize}
+  \item % (ii)
+  Savitch's theorem: RCH can be decided in $O(\log(n)^2)$ space.\\
+  Consequence: $\textsf{NL} \subseteq \textsf{SPACE}(\log^2(n))$. 
+  \end{enumerate}
+  \item % (b)
+  Consider the reduction \textsc{Rch} $\leqslant_{\text{log}}$ \textsc{DConn}. Let
+  $$f((G,x,y)) = (V, E \cup \{(u,v) \;|\; v = x \lor u = y\}) \text{ where } G = (V,E)$$
+
+  To show $(G,x,y) \in \textsc{Rch} \text{ iff } f((G,x,y)) \in \textsc{DConn}$
+  \begin{itemize}
+  \item ($\Rightarrow$) Assume $(G,x,y)$ in \textsc{Rch}. \\
+  Then there is path $x \leadsto y$ in $G'$, and in $G'$ ($f$ doesn't remove edges). \\
+  Take $u, v \in G'$. There is edge $(u, x) \in E'$. and edge $(y,v)$. 
+  Hence there is a path $u,x \leadsto y,v$ in $G'$. Any two nodes $u, v$ have a path connecting,
+  so $G'$ is connected.
+  \item ($\Leftarrow$) Assume $f((G,x,y))$ in \textsc{DConn}. \\
+  Since $f(G)$ is connected, every pair of nodes, $u,v$ has path $u \leadsto v$. 
+  So there is path $x \leadsto y$ in $G'$. But, all edges in this path 
+  are also in $G$, ($f$ only added incoming edges to $x$ and outgoing edges from $y$ - 
+  none of these are in the path $x \leadsto y$). Hence $G$ has path $x \leadsto y$.
+  \end{itemize}
+  We can compute $f$ in logspace. We use a counter to loop through all nodes, $u$, 
+  and add edges $(u,x)$ and $(y,x)$. Changing the adj matrix can be done in logspace and 
+  we used a fixed counter bounded by input size, so $f$ in logspace.
+  \item % (c)
+  \begin{enumerate}
+  \item % (i)
+  The \textit{complement} of a language $\overline{L} = \Sigma^{*} - L$. \\
+  The class $\textsf{NL}$ is the class $\{ \overline{L} \;|\; L \in \textsf{NL} \}$. \\
+  The S-I theorem tells us that $\textsf{NL} = \text{co-}\textsf{NL}$. 
+  \item % (ii)
+  $\overline{\textsc{D-Conn}}$: Given $G$ are there nodes $x,v$ where 
+  there is no path from $x$ to $v$. 
+
+  To show that $\overline{\textsc{D-Conn}}$ is 
+  in $\textsf{NL}$, first guess $x$ and $v$, then use the algorithm
+  for the S-I theorem to calculate, 
+  $N(x)$, the set of nodes reachable from $x$.
+  On the final stage, any successful computation examines all nodes $y$,
+  and indicates whether $y \in N(x)$. 
+  We use this to a see if any of the $y$'s reachable in $n-1$ edges are are $v$. 
+  If none are, then we return yes. If one of them is then we would've returned no
+  on discovering $y = v$. \\
+  \textit{Algorithm:} \\
+  \begin{verbatim}
+  k = 0 
+  s = 1 
+  while k < n - 1
+  ycount = 0;
+  for y in Nodes(G)
+    zcount++; foundy = false
+    if (Rch(x,z,k))
+      ycount++
+      for z in Nodes (G):
+        zcount++
+        if !foundy and ((z,y) in G or y = z)
+           ycount++; foundy = true;
+           if (y = v) return = NO; 
+      if zcount < s
+         return FAIL
+    s = ycount
+    k++
+  return = YES;
+  \end{verbatim}
+  \item % (iii)
+  Since  $\overline{\textsc{D-Conn}}$ is in $\text{co-}\textsf{NL}$, 
+  by the S-I theorem, $\textsc{D-Conn}$ is in $\textsf{NL}$. 
+  But we have from (b), \textsc{Rch} $\leqslant_{\text{log}}$ \textsc{DConn}
+  and that \textsc{Rch} is $\textsf{NL}$-complete. 
+  Hence \textsc{DConn} is $\textsf{NL}$-complete. 
+  \end{enumerate}
+
+
+\end{enumerate}
+\item % Question 3
+  \begin{enumerate}
+  \item % (a)
+  \begin{enumerate}
+  \item % (i)
+  A family of circuits is \textit{uniform} iff there is a logspace bounded 
+  IOTM which, given input of $1^n$, outputs circuit $C_n$ - where 
+  $C_n(n) = \textsf{tt}$ if $n \in S$, $C_n(n) = \textsf{ff}$ if $n \notin S$,
+  for any undecidable set $S$ of natural numbers. 
+  \item % (ii)
+  $\textsf{NC}_j$ is the class of languages that have some uniform family of circuits that 
+  decide the language in $O(\log^j(n))$ parallel time and $O(n^k)$ work for some $k$.
+  $\textsf{NC}$ is union over all $j$, $\textsf{NC} = \cup_{j > 0} \textsf{NC}_j$. 
+  \item % (iii)
+  Suppose, $n$ is a positive even with $|x| = 2k$ for some $k > 0$. 
+  Connect $x_1$ and $x_{k+1}$ to an and-gate, $x_2$ to $x_{k+2}$ to an and-gate, ..., $x_{k}$ to $x_{2k}$
+  to an and-gate. Then form a knockout-tournament with these $k$ players, and connect them 
+  using and-gates to depth $\ceil{\log(k)}$. Output is \textsf{tt} iff  $x_1 = x_{k+1}$, ...,
+  $x_{k} = x_{2k}$ iff $x = x'x'$ for some $x' \in \{0,1\}^{*}$. 
+
+  This circuit has depth $1 + \ceil{\log(k)} = O(\log(n))$ and size $k + k - 1 = O(n) = O(n^k)$ for $k=1$.
+  So $C_n$ has $O(\log(n))$ depth and polynomial work.
+  If $n$ is odd let $C_n$ be a circuit that simply outputs $\textsf{ff}$ for all inputs. 
+  If $n = 0$, let $C_n$ be a circuit that simply outputs $\textsf{tt}$ for all inputs.
+  Both of these circuits trivially have $O(\log(n))$ depth and polynomial work.
+  So $L$ has some uniform family of circuits that 
+  decide the language in $O(\log^1(n))$ parallel time and $O(n^k)$ work for some $k$.
+  Hence $L \in \textsf{NC}_1$. 
+  \item % (iv)
+  It would imply that all languages in \textsf{P} can be parallelized to have polylog time 
+  with a polynomial number of processors, which seems unlikely. 
+  Some problems such as \textsc{maxflow} seem inherently sequential. It 
+  would mean that $\textsf{NC} = \textsf{P}$, and that $\textsf{NC}$ hierarchy
+  of $\textsf{NC}_1 \subseteq \textsf{NC}_2 \subseteq .. $ would collapse, giving 
+  $\textsf{NC} = \textsf{NC}_j$ for all $j \geqslant 2$. 
+  \end{enumerate}
+  \item % (b)
+  \begin{enumerate}
+  \item % (i)
+  Let $M_f$ and $M_g$ be the machines that compute $f$ and $g$. 
+  Then the following machine $M$, computes $g(f(x))$ in logspace.\\
+  Assume the output tape for $M_f$ is numbered from 0,1,2,...\\
+  \textit{Algorithm:}\\
+  $i = 0$ \\
+  Run $M_f$ from the very beginning   \\
+  until $i$th symbol written to its output tape \\
+  while(true): \\
+  $~\quad$ execute next instruction of $M_g$ (using current \\
+  $~\quad$ symbol for $M_g$'s input tape as $i$th symbol on $M_f$'s output tape). \\
+  $~\quad$ if final state of $M_g$: return. \\
+  $~\quad$ if $M_g$ moved input tape head to the right: \\
+  $~\quad\quad$ $i = i + 1$; \\
+  $~\quad\quad$ Run $M_f$ from the very beginning   \\
+  $~\quad\quad$ until $i$th symbol written to its output tape \\
+  $~\quad$ if $M_g$ moved input tape head to the left: \\
+  $~\quad\quad$ $i = i - 1$; \\
+  $~\quad\quad$ if $i < 0$: halt and succeed \\
+  $~\quad\quad$ Run $M_f$ from the very beginning   \\
+  $~\quad\quad$ until $i$th symbol written to its output tape
+  The output tape of $M_f$ is never larger than $i$ 
+  and $i$ is bounded by size of $M_g$'s input tape.
+  Given that $M_g$ is a IOTM that computes $g$ in logspace,
+  $M_g$'s input tape is bounded logarithmically by 
+  it's input size. So $i$ can only be incremented logarithmically
+  number of times. We have that $i \leqslant k\log(|f(x)|)$.
+  Hence output tape of $M_f$ is never larger $k\log(|f(x)|)$.
+  Similarly, all the work tapes are bounded by $k\log(|f(x)|)$. 
+  $M$ runs in $\log(|f(x)|)$ and computes $g(f(x))$. 
+  Hence $g(f(x))$ is logspace computable.
+  \item % (ii)
+  Since $f$ is uniform, there must be some circuit to 
+  calculate $f(x)$ that takes inputs of size $x$ and 
+  gives outputs of size $|f(x)|$. 
+  Similarly, since $g$ is uniform, there must be some 
+  circuit that that takes inputs of size $|f(x)|$ and
+  gives outputs of size $|g(|f(x)|)|$. 
+  We can form a new logspace bounded machine 
+  which given input of $1^n$, 
+  outputs this circuit, where $n = |x|$. 
+  \end{enumerate}
+  \end{enumerate}
+  \item % Question 4
+  \begin{enumerate}
+  \item % (a)
+  \begin{enumerate}
+  \item % (i)
+  A \textit{Monte Carlo Turing Machine} for $L$ is 
+  a precise polynomial time NDTM with 2 choices at each step that
+  if $x \in L$, returns yes for $> \frac{1}{2}$ of its computation, 
+  and if $x \notin L$, returns no all of its computations. 
+  The class \textsf{RP} is the class of languages that have Monte Carlo Turing Machines.
+  \item % (ii)
+  $\textsf{P} \subseteq \textsf{RP} \subseteq \textsf{NP}$ 
+
+  $\textsf{RP} \subseteq \textsf{NP}$. Every language $L \in \textsf{RP}$ has some 
+  Monte Carlo Turing Machine $M$. Clealy if $x \in L$, then $M$ has 
+  some computation that leads returns to yes. So $M'$
+  nondeterminstically decides $L$ in p-time so $L \in \textsf{NP}$.
+
+  $\textsf{P} \subseteq \textsf{RP}$. Every language $L \in \textsf{P}$ has some 
+  determinstic Turing machine $M$ that decides $L$. $M$ 
+  can be transformed into a p-time precise nondeterminstic TM, $M'$, with 2 choices 
+  (adding states for padding) that doesn't modify the outputs of $M$. 
+  Since $M$ decides $L$, trivially, this will give yes for $> \frac{1}{2}$ of 
+  the computations when $x \in L$ and returns no for all computations when $x \notin L$.
+  Hence $M'$ is a Monte Carlo Turing Machine for $L$. 
+  \item % (iii)
+  Let $L_1, L_2 \in \textsf{RP}$ be recognised by Monte Carlo TMs, $M_1$, $M_2$. 
+  We describe machine $M$ for $L$. 
+  There are $n+1$ splits to check.\\
+  Run $S_1$, $S_1$, ... $S_{n+1}$, where $S_i \equiv$ running $M_1(x[0..i))$ then $M_2(x[i..n))$. 
+  Return yes if any of the $S_i$ has two successes. Return no if none of the $S_i$ had double success. 
+  Each $S_i$ is a binary tree of computations with $2^{p_1(i) + p_2(n-i)}$ comps. 
+  Overall $M$ has $2^{\sum^{n}_{i=0} [p_1(i) + p_2(n-i)]}$ comps $= 2^{p_3(n)}$ 
+  for some polynomial $p_3$. 
+
+  Suppose if $x \in L_1$ then $M_1$ returns yes for exactly $\frac{1}{2} + \epsilon_1$ fraction of total comps.
+  Suppose if $x \in L_2$ then $M_2$ returns yes for exactly $\frac{1}{2} + \epsilon_2$ fraction of total comps.
+  Then each $S_i$ returns yes for exactly $(\frac{1}{2} + \epsilon_1)(\frac{1}{2} + \epsilon_2)$ 
+  fraction of the total $S_i$ comps. So $M$ returns yes for exactly 
+  $[(\frac{1}{2} + \epsilon_1)(\frac{1}{2} + \epsilon_2)]^{n+1} = \epsilon$ of the $2^{p_3(n)}$ comps,
+  for some $\epsilon$. Suppose, given $x$ we need to ran $M$ for a total $m$ times accept if it gave least one yes.
+  Overall we accept a fraction $> 1-(1-\epsilon)^m$ of comps. We can build an $M'$ that runs $m$ times such that 
+  $1-(1-\epsilon)^m > \frac{1}{2}$. $M'$ is a Monte Carlo TM for $L_2$, so $L_2 \in \textsf{RP}$. 
+  \end{enumerate}
+  \item % (c)
+  1. $A$ shuffles the adjacency matrix. \\
+  2. $B$ asks whether non-adjacent nodes $x,y$ are in independent set.\\
+  3. Process repeats. \\
+  Suppose the independent set was invalid. 
+  Probability $B$ catches $A$ in the worst case is $\frac{1}{C(k,2)}$.
+  If this process is repeated $d$ times, the probability $A$ escapes is 
+  $$\left(1- \frac{1}{\frac{1}{2}k(k-1)}\right)^d$$
+  We would like the probability of A escaping after polynomial 
+  repetitions to be to be exponentially small.
+  Notice that 
+  $$ \left(1- \frac{1}{\frac{1}{2}k(k-1)}\right)^{\frac{1}{2}k(k-1)} < \frac{1}{e} <  \frac{1}{2} $$
+  since $k \leqslant n$, we have $\frac{1}{2}k(k-1)n \leqslant n^3$. So for $k > 1$:
+  $$ \left(1- \frac{1}{\frac{1}{2}k(k-1)}\right)^{n^3} < 
+  \left(1- \frac{1}{\frac{1}{2}k(k-1)}\right)^{\frac{1}{2}k(k-1)n} <  
+  \frac{1}{2^n} $$
+  So if we repeat the process $p(n) = n^3$ times (polynomial), then the 
+  changes of $A$ getting away with a lie would be $< \frac{1}{2^n}$ (exponentially small).  
+
+
+
+  \end{enumerate}
+
+
+\end{enumerate}
+
+\end{document}

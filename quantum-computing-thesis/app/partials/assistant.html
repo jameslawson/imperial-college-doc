@@ -1,0 +1,148 @@
+
+
+<builder purpose-header="input the pattern for rewrite assistance" hide="hideBuilder"></builder>
+
+<div class="proof clearfix" ng-hide="hideProof">
+    <div style="background: #FFF; padding: 1em 2em;">
+
+        <div class="clearfix">
+            <h3 class="flt-l">Rewrite Proof</h3>
+            <a class="ll g flt-r" ng-click="resetAll()">Choose New Pattern...</a>
+        </div>
+
+
+        <div class="mini-cntr proof-mini-cntr clearfix">
+            <div style="background: #FFF; padding: 1em 2em;">
+                    <div>
+                        <h5>Pattern</h5>
+                        <a class="ll r" ng-click="toggleStatistics()">
+                            {{statisticsisHidden ? "Show" : "Hide"}} Statistics
+                        </a>
+                        <a class="ll r" ng-click="toggleComputationTree()">
+                            {{computationTreeisHidden ? "Show" : "Hide"}} Computation Tree
+                        </a>
+                        <a class="ll r" ng-click="toggleEntanglementTree()">
+                            {{entanglementTreeisHidden ? "Show" : "Hide"}} Entanglement Graph
+                        </a>
+                    </div>
+
+                    <div class="statistics clearfix" ng-hide="statisticsisHidden">
+                        <div class="leftcol">
+                            <ul>
+                                <li>Qubits prepared implicitly: {{patternStatistics.qubitsPreparedImplicitly}}</li>
+                                <li>Qubits prepared explicitly: {{patternStatistics.qubitsPreparedExplicitly}}</li>
+                                <li>Measured Qubits: {{patternStatistics.measuredQubits}}</li>
+                                <li>Non-measured Qubits: {{patternStatistics.nonMeasuredQubits}}</li>
+                                <li>No. Instructions: {{patternStatistics.numInstructions}}</li>
+                                <li>No. Prepare: {{patternStatistics.numPrepare}}</li>
+                                <li>No. Entanglements: {{patternStatistics.numEntanglements}}</li>
+                                <li>No. Measurements: {{patternStatistics.numMeasurements}}</li>
+                                <li>No. XCorrections: {{patternStatistics.numXCorrections}}</li>
+                                <li>No. ZCorrections: {{patternStatistics.numZCorrections}}</li>
+                            </ul>
+                        </div>
+                        <div class="rightcol">
+                            <ul>
+                                <li>No. rewrite steps: {{numRewrites}}</li>
+                                <li>No. EX usages: {{rewriteCounts['EX']}}</li>
+                                <li>No. EZ usages: {{rewriteCounts['EZ']}}</li>
+                                <li>No. MX usages: {{rewriteCounts['MX']}}</li>
+                                <li>No. MZ usages: {{rewriteCounts['MZ']}}</li>
+                                <li>No. CN usages: {{rewriteCounts['CN']}}</li>
+                                <li>No. CE usages: {{rewriteCounts['CE']}}</li>
+                                <li>No. CX usages: {{rewriteCounts['CX']}}</li>
+                                <li>No. CZ usages: {{rewriteCounts['CZ']}}</li>
+                                <li>Found NEMC form: {{standardFormDisabled}}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div ng-hide="computationTreeisHidden">
+                        <p>This is the computation tree</p>
+                        <div id="computationTree"></div>
+                    </div>
+
+                    <div ng-hide="entanglementTreeisHidden">
+                        <div id="entanglementGraph"></div>
+                        <button ng-click="drawTest()">Render</button>
+                    </div>
+
+
+
+                <h5>Rewrite Steps</h5>
+                <a class="ll r" ng-class="{ 'd': undoDisabled }" ng-click="undo()">Undo</a>
+                <a class="ll r" ng-class="{ 'd': standardFormDisabled }" ng-click="standardForm()">Standard Form</a>
+
+                <div class="dd-group">
+                    <a class="ll r" ng-click="exportToLatex()">
+                        Export To LaTeX
+                    </a>
+                    <div class="dd-content export-dd" ng-class="{ 'hide': latexDropDownIsHidden }">
+                        <p>LaTeX code:</p>
+                        <textarea id="latexExportArea" readonly ng-model="latexExportedCode">Hello world</textarea>
+                    </div>
+                </div>
+
+                <div class="rewrite-cntr clearfix">
+                    <div class="rewrite-pagnav-cntr">
+                        {{currentPage}}/{{totalPages}}
+                        |
+                        <a class="ll" ng-click="selectPage(1)" ng-class="{disabled: isFirstPage()}">First</a>
+                        <a class="ll" ng-click="selectPrevPage()" ng-class="{disabled: isFirstPage()}">Prev</a>
+                        <a class="ll" ng-repeat="x in pages" ng-class="{s: isCurrentPage(x)}" ng-click="selectPage(x)">{{x}}</a>
+                        <a class="ll" ng-click="selectNextPage()" ng-class="{disabled: isLastPage()}">Next</a>
+                        <a class="ll" ng-click="selectPage(totalPages)" ng-class="{disabled: isLastPage()}">Last</a>
+                        | Per Page:
+                        <a class="ll" ng-click="setPerPage(1)" ng-class="{s: isCurrentPerPage(1)}">1</a>
+                        <a class="ll" ng-click="setPerPage(2)" ng-class="{s: isCurrentPerPage(2)}">2</a>
+                        <a class="ll" ng-click="setPerPage(3)" ng-class="{s: isCurrentPerPage(3)}">3</a>
+                        <a class="ll" ng-click="setPerPage(5)" ng-class="{s: isCurrentPerPage(5)}">5</a>
+                        <a class="ll" ng-click="setPerPage(10)" ng-class="{s: isCurrentPerPage(10)}">10</a>
+                        <a class="ll" ng-click="setPerPage(20)" ng-class="{s: isCurrentPerPage(20)}">20</a>
+                    </div>
+
+                    <div ng-hide="isFirstPage()" class="rewrite-prevpage-cntr" ng-click="selectPrevPage()">
+                        <span>Prev Page</span>
+                    </div>
+
+                    <div proof patterns="patterns" rewrites="rewrites"
+                         highlights="highlights" possible-rules="possibleRules" paginate-begin="proofPaginateBegin"
+                         paginate-count="proofPaginatePerPage"></div>
+
+                    <div ng-hide="isLastPage()" class="rewrite-nextpage-cntr" ng-click="selectNextPage()">
+                        <span>Next Page</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--
+<ul>
+    <li sf-treepeat="node of treeData">
+        {{node.left}}
+        {{node.right}}
+        <ul>
+            <li sf-treecurse></li>
+        </ul>
+    </li>
+</ul>
+-->
+
+
+
+
+
+
+        <!--Patterns: {{patterns}}-->
+        <!--<hr>-->
+        <!--Possible Rules: {{possibleRules}}-->
+        <!--<hr>-->
+<!--Possible Rules (inverse map): {{possibleRulesInv}}-->
+<!--<hr>-->
+<!--Build Instructions: {{buildInstructions}}-->
+<!--<hr>-->
+<!--Build Substep:        {{buildSubStep}}-->
+

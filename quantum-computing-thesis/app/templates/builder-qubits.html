@@ -1,0 +1,12 @@
+<div class="builder-qubit-ctnr">
+    <span data-ng-repeat="(key, value) in buildQubits"
+          ng-class="{'aux-qubit' : value == qubitio.Neither,
+                     'input-qubit' : value == qubitio.In,
+                     'output-qubit' : value == qubitio.Out,
+                     'inout-qubit' : value == qubitio.InOut,
+                     'unused-qubit' : value == qubitio.Unused}"
+          ng-click="toggleQubit(key)" class="qubit">
+            <span class="builder-qubit-circle">{{key}}</span>
+    </span>
+    <span class="show-more-qubits">...</span>
+</div>

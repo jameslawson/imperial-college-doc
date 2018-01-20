@@ -1,0 +1,23 @@
+{
+  "name": "angular-seed",
+  "description": "A starter project for AngularJS",
+  "version": "0.0.0",
+  "homepage": "https://github.com/angular/angular-seed",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "angular": "1.2.x",
+    "angular-route": "1.2.x",
+    "angular-loader": "1.2.x",
+    "angular-mocks": "~1.2.15"
+  },
+  "devDependencies": {
+    "jquery": "~2.1.1",
+    "raphael": "~2.1.2",
+    "angular-route": "~1.2.16",
+    "angular-animate": "~1.2.16",
+    "graphdracula": "https://github.com/strathausen/dracula.git",
+    "benchmark": "~1.0.0",
+    "d3": "~3.4.8"
+  }
+}

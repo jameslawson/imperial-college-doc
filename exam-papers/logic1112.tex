@@ -1,0 +1,269 @@
+\documentclass[a4paper, draft, 12pt]{article}
+
+% BEGIN PACKAGE IMPORT
+% =============================================================================
+\usepackage{examsty}
+\usepackage{logicsty}
+% =============================================================================
+
+% BEGIN SOLUTIONS
+% =============================================================================
+
+
+
+\begin{document}
+\textbf{Modal and Temporal Logic, 2011-2012}\\
+\textit{James Lawson}
+
+\begin{enumerate} 
+\item % Question 1
+\begin{enumerate}
+\item % (a)
+  \begin{enumerate}
+  \item % (i)
+  $\{1, 2, 3\}$.
+  1 because 1 sees 2, and $\neg p$ is true at 2.
+  2 because 2 sees 4, and $\neg p$ is true at 4.
+  3 because 3 sees 4, and $\neg p$ is true at 4.
+  Not 4 (it has no accessible worlds).
+  \item % (ii)
+  $\{ 2, 3 \}$.
+  $\bx p$ is true at world 4 only (all other worlds can see some world where $p$ is false.) 
+  So only the worlds that can access 4 satisfy $\dm \bx p$. These are worlds 2, 3. 
+  \item % (iii)
+  $\{2, 4\}$.
+  Look for worlds where either $\neg \bx \bx p$ is true, or $\bx p$ is true, or both.\\
+  $\neg \bx \bx p$ is true at $t$ iff there is some $u$ s.t. $R(t,u)$ where 
+  $\bx p$ is false at $u$. 
+
+  Not 1 - no $u$ as above and $\bx p$ is false at 1.
+  2, because $\neg \bx \bx p$ is true - (2 can access 4, and $\bx p$ is false at 4).
+  Not 3 - no $u$ as above and $\bx p$ is false at 3.
+  4, because $\bx p$ is true.
+  \end{enumerate}
+\item 
+  \begin{enumerate}
+  \item May be true.
+  \item May be true.
+  \item Definitely true.
+  \item Definitely false.
+  \end{enumerate}
+\item 
+  \begin{enumerate}
+  \item
+  $$ 
+  \begin{array}{lll}
+    p \vee \bx (\bx p \imp \neg p) &\equiv \bx (\bx p \imp \neg p) \vee p  & A \vee B \equiv B \vee A  \\
+          &\equiv \neg \dm \neg (\bx p \imp \neg p) \vee p & \neg \dm \neg A \equiv A \\
+          &\equiv \neg \dm \neg (\neg [\bx p \wedge \neg\neg p]) \vee p & A \imp B \equiv \neg(A \wedge \neg B) \\
+          & \equiv \neg \dm [\bx p \wedge p] \vee p & \neg\neg A \equiv A \\
+          &\equiv \dm [\bx p \wedge p] \imp p & A \imp B \equiv \neg A \vee B \\
+  \end{array}
+  $$
+
+  \item
+  $\neg (\dm [\bx p \wedge p] \wedge \neg p)$
+  \item
+  Let $A = \dm [\bx p \wedge p] \wedge \neg p$ \\
+  We will apply Sahlqvist's algorithm to find the \textit{Sahlqvist's correspondant} of $A$, $\alpha[t]$ and 
+  thus have $\F, u \sat \neg A$ iff $\F \sat \forall t \neg \alpha(t)$. 
+  \textit{Boxed atoms}: $\bx p$.  \textit{Negative formulas}: $\neg p$. We want to find a lazy assignment that 
+  makes boxed atoms true without concern for negative formulas. 
+  Suppose arbt world $t$ sees some world $u$. We need to make 
+  $p$ true at all worlds, $v$ that $u$ can see (should it see any). 
+  So \textit{lazy assignment} is $h^{o}(p) = \{x \;|\; R(u,x)\}$.
+
+  Now we take the \textit{standard translation} of $A$:
+  $$ 
+  \begin{array}{ll}
+    A^{t} &= (\dm [\bx p \wedge p])^t \wedge (\neg p)^t  \\
+          &= \exists u (R(t,u) \wedge [\bx p \wedge p]^u) \wedge \neg p^t  \\
+          &= \exists u (R(t,u) \wedge [(\bx p)^u \wedge p^u]) \wedge \neg p^t  \\
+          &= \exists u (R(t,u) \wedge [(\bx p)^u \wedge P(u)]) \wedge \neg P(t)  \\
+  \end{array}
+  $$
+  Our lazy assignment allows us to replace $(\bx p)^u$ with $\top^u = \top$, 
+  replace $P(t)$ with $R(u, t)$, and $P(u)$ with $R(u, u)$. This gives:\\
+  $\exists u (R(t,u) \wedge [\top \wedge R(u, u)]) \wedge \neg R(u, t)$. \\
+  We move $\exists u$ to preserve equivalence:\\
+  $\exists u (R(t,u) \wedge [\top \wedge R(u, u)] \wedge \neg R(u, t)) = \alpha[t]$\\
+  So $\forall t \neg \alpha(t) = \forall t \neg \exists u (R(t,u) \wedge [\top \wedge R(u, u)] \wedge \neg R(u, t))$
+  which is equivalent to $\forall t \forall u ([R(t,u) \wedge R(u,u)] \imp R(u,t))$. 
+
+  Since $(\F, h), t \sat A$ iff $\F \sat (\F, h^{o}), t \sat A$ iff $\F \sat \alpha[t]$. \\
+  we have: $(\F, h), t \sat \neg A$ iff $\F \sat \forall t \neg \alpha[t]$ for any $\F, h, t$. 
+  That is, $B$ is valid in $\F$ iff $\F$ satisfies (using first-order semantics) the sentence $\forall t \neg \alpha[t]$.
+
+  \end{enumerate}
+
+\end{enumerate}
+\item % Question 2
+\begin{enumerate}
+\item % (a)
+  \begin{enumerate}
+  \item % (i)
+  $\F \times \N = (W^{\times}, R^{\times})$ where $W^{\times} = \{ (x,y) \;|\; x \in W, y \in \mathbb{N} \}$, 
+  and $R^{\times}$ is a relation on $W^{\times}$ where $(x,u)R^{\times}(y,v)$ iff $xRy$ and $u < v$.  
+  \item % (ii)
+  Take any world $(x,u) \in W^{\times}$. Assume $(x,u)R^{\times}(x,u)$. Then by def of $R^{\times}$, $u < u$. Contradiction ($(\mathbb{N}, <)$ is irreflexive). Hence for all worlds $w \in W^{\times}$, $wR^{\times}w$ is false.
+  \item % (iii)
+  Take any worlds $(x,u), (y,v), (z,w) \in W^{\times}$. \\
+  Assume $(x,u)R^{\times}(y,v)$ and $(y,v)R^{\times}(z,w)$. 
+  Then by def of $R^{\times}$, we have $R(x,y)$, $R(y,z)$, but $\F$ is transitive so we have $R(x,z)$. 
+  Also, by def of $R^{\times}$, we have $u < v$ and $v < w$. So $u < w$ ($(\mathbb{N}, <)$ is transitive). 
+  Since $R(x,z)$, and $u < w$, we have $(x,u)R^{\times}(z,w)$. 
+  \end{enumerate}
+\item % (b)
+  Let $A$ be any modal formula valid in flow of times. 
+  From (a)(ii) and (a)(iii), $\F \times \N$ is a flow of time so $A$ is valid in it. 
+  From lectures, there is a p-morphism from $\F \times \N$ to $\F$. So 
+  $\F$ is a p-morphic image of $\F \times \N$.
+  From lectures, p-morphisms preserve validity forwards, that is, if $\F'$ is a 
+  p-morphic image of $\F$, then any modal formula valid in $\F$ is valid in $\F'$. 
+  So $A$ is valid in $\F$. 
+\item % (c)
+  \begin{enumerate}
+  \item $\bot \Un q \imp \top \Un q$
+  \item $q \Si \top \imp q \Un \top $
+  \end{enumerate}
+\item % (d)
+  Assume $(A \Un [A \wedge (A \Un B)])$ holds at $t$ for some arbitrary model $\M = (\N,h)$. \\
+  By semantics of Until, there is some time, $f$, in the future of $t$
+  where $\M, f \sat A \wedge (A \Un B)$
+  and for all $f'$ such that $t< f' < f$, we have $\M, f' \sat A$.
+
+  Because $\M, f \sat A \wedge (A \Un B)$, there is some future time of $f$, $l$,
+  $\M, l \sat B$ and for all $l'$ such that $f< l' < l$, we have $\M, l' \sat A$.
+
+  So we must have $\M, t \sat A \Un B$. There is some time in the future of $t$, 
+  namely $l$, where $B$ is true. And for all times $t'$ with $t < t' < l$, 
+  we have $\M, t' \sat A$ - given: $t < t' < f$ satisfies $A$, $t' = f$ satisfies A and $f < t' < l$ satisfies A.
+\end{enumerate}
+\item % Question 3
+\begin{enumerate}
+\item % (a)
+  \begin{enumerate}
+  \item % (i)
+  The \textit{logic} of a class $\C$ is the set of all modal formulas that are valid in all the frames in $\C$
+  \item % (ii)
+  $L$ is \textit{sound} if every modal formula proven by $L$ is valid in all frames of $\C$. \\
+  $L$ is \textit{complete} if it can prove every modal formula in the logic of $\C$. \\
+  \end{enumerate}
+  \item % (b)
+  If $C_1 \subseteq C_2$ then $\text{Log}(C_2) \subseteq \text{Log}(C_1)$. \\
+  Proof. Take some formula $A$, in $\text{Log}(C_2)$. To show $A$ in $\text{Log}(C_1)$. \\
+  If $A \in \text{Log}(C_2)$ then $A$ is valid in all the frames of $C_2$. 
+  All of the frames in $C_1$ are in $C_2$, so $A$ is valid in all the frames of $C_1$. 
+  Hence $A \in \text{Log}(C_1)$. 
+  \item % (c)
+  $\bx p \imp p$ is valid in reflexive frames. In lectures we proved this several times 
+  e.g. using direct proof, using Sahqvist algorithm to get correspondant $\forall t R(t,t)$. 
+  However $\bx p \imp p$ is not valid in serial frames. To see this,
+  find some model $\M$ constructed from some serial frame $\F$ and verify that $\bx p \imp p$ is not valid in $\M$. 
+  Take serial frame $\F = (\mathbb{N}, <)$ and form model $\M$ with $h(p) = \{w \in \mathbb{N} | n > 1 \}$. 
+  Then at world 1, we have $\bx p$, but not $p$, 
+  hence $\M, 1 \notsat \bx p \imp p$. So $\bx p \imp p$ not valid over serial frames.
+  \item % (d)
+  \begin{enumerate}
+  \item % (i)
+  Assume without proof: $\M, w \sat A \imp B$ iff [if $\M, w \sat A$ then $\M, w \sat B$].\\
+  Assume $\M, w \sat \bx p \wedge \dm q$. To show $\M, w \sat \dm (p \wedge q)$. \\
+  We have $\M, w \sat \dm q$, so $w$ has some accessible world, $u$, with $\M, u \sat q$. 
+  But since $\M, w \sat \bx p$, we must have $\M, u \sat p$. So $w$ has 
+  some accessible world that satisfies $p$ and $q$. Hence $\M, w \sat \dm (p \wedge q)$.
+  \item % (ii)
+  1. $\vdash_K (p \wedge \neg [p \wedge q]) \imp \neg q \qquad$ taut. \\
+  2. $\vdash_K \bx [(p \wedge \neg [p \wedge q]) \imp \neg q] \qquad$ UG(1). \\
+  3. $\vdash_K \bx (A \imp B) \imp (\bx A \imp \bx B) \qquad$ (instance of normality). \\
+  4. $\vdash_K \bx ((p \wedge \neg [p \wedge q]) \imp \neg q) 
+  \imp (\bx (p \wedge \neg [p \wedge q]) \imp \bx \neg q) \qquad$ SUB(3). \\
+  5. $\vdash_K \bx (p \wedge \neg [p \wedge q]) \imp \bx \neg q \qquad$ MP(2,4). \\
+  6. $\vdash_K  (\bx p \wedge \bx \neg [p \wedge q]) \imp \bx \neg q \qquad$ RofE(5). 
+  $\bx (A \wedge B) \equiv \bx A \wedge \bx B$ \\
+  7. $\vdash_K  (\bx p \wedge \neg \bx \neg q) \imp (\neg \bx \neg (p \wedge q))  \qquad$ RofE(6). $6 \equiv 7$\\
+  8. $\vdash_K  (\bx p \wedge \dm q) \imp \dm (p \wedge q))  \qquad$ RofE(7). $\dm A \equiv \neg \bx \neg A$
+  \end{enumerate}
+\end{enumerate}
+\item % Question 4
+\begin{enumerate}
+\item % (a)
+  \begin{enumerate}
+  \item % (i)
+  $\Phi$ is \textit{maximally consistent} with respect to $L$ iff 
+  \begin{itemize}
+  \item it is $L$-\textit{consistent}, there are no formulas $A_1, ..., A_n \in \Phi$, 
+  $n \geqslant 0$, such that $\vdash_{L} (A_1 \wedge ... \wedge A_n) \imp \bot$.
+  \item it is \textit{maximal}, there is no larger set that is $L$-consistent.
+  \end{itemize}
+  \item % (ii)
+  First we will show $\Phi$ is consistent. \\
+  Suppose it was not.
+  Then there are formulas $A_1, ..., A_n \in \Phi$ 
+  such that $\vdash_{L} (A_1 \wedge ... \wedge A_n) \imp \bot$. 
+  Since $K4$ is sound, $(A_1 \wedge ... \wedge A_n) \imp \bot$ is valid 
+  in the class of transitive frames. Since $\M$ 
+  was based on a transitive frame,we must have $\M, w \sat (A_1 \wedge ... \wedge A_n) \imp \bot$.
+
+  But since $A_1, ..., A_n \in \Phi$, we must have:
+  $\M, w \sat A_1, ..., \M, w \sat A_n$, by def. of $\Phi$. 
+  So $\M, w \sat A_1 \wedge ... \wedge A_n$. So $\M, w \sat \bot$ which gives a contradiction.
+  Hence $\Phi$ is consistent. 
+
+  Now to show it is maximally consistent. Suppose some formula $A$ is not in $\Phi$ 
+  and $\Phi' = \Phi \cup\{A\}$ gives a consistent set. Since $A$ is not in $\Phi$, 
+  we must have $\M, w \sat \neg A$, by def of $\Phi$. So $\neg A$ is in $\Phi$ 
+  and so is also in $\Phi'$.
+
+  But, having $A, \neg A \in \Phi'$ along with the proof: \\
+  (1). $(p \wedge \neg p) \imp \bot \qquad$ (taut) \\
+  (2). $(A \wedge \neg A) \imp \bot \qquad$ (sub) \\
+  shows that $\Phi'$ is inconsistent. Contradiction. \\
+  Hence $\Phi$ is maximally consistent.
+  \end{enumerate}
+\item % (b)
+  \begin{enumerate}
+  \item % (i)
+  Assume $R'(X,Y)$. To show $R'(Y,X)$. \\
+  By def. of $R'(X,Y)$, there is some $x \in X, y \in Y$ 
+  such that $R(x,y)$. But since $R$ is symmetric, 
+  we also have $R(y,x)$. 
+  Since we have some $y \in Y, x \in X$ such that $R(y,x)$, by def. of $R'$, 
+  $R'(Y,X)$. Hence $R'$ is symmetric.
+  \item % (ii)
+  Let $\M = (\{1,2,3,4\}, \{(2,1), (4,3)\}, h)$ where $h(p) = \{1\}$. Let $A = \bx p$. 
+  Here $R$ is transitive, but $R'$ resulting from the filtration of $\M$ wrt $A$ is \textit{not}. 
+  The filtration is $(W',R', h') = (\{X,Y,Z\}, (Z,Y), (Y,X), h')$ where $h'(p) = \{X\}$. Here 
+  $R'$ is not transitive because there are relations $R'(Z,Y)$ and $R'(Y,X)$ but not $R'(Z,X)$. 
+  \end{enumerate}
+  \item % (c)
+  \begin{enumerate}
+  \item % (i)
+  $L$ has the \textit{finite model property} iff 
+  for any formula $A$ where $A \notin L$
+  there is a finite model, $\M$ 
+  such that for all $B \in L$, $B$ is valid in $\M$, 
+  and for some world $t$ of $\M$, we have $M,t \sat \neg A$.
+
+  $L$ is \textit{decidable} iff 
+  there is some algorithm/program that given any modal formula $A$ as an input, 
+  outputs \textit{yes} when $A \in L$ and outputs \textit{no} when $A \notin L$. 
+  \item % (ii)
+  Assume we have an algorithm to check a model validates a logic. \\
+  Then if modal logic has the finite model property, then it is decidable. 
+  We run two algorithms in parallel. The first enumerates all possible 
+  theorems, the second enumerates all possible finite models. 
+  
+  For each finite model enumerated, check it validates $L$.
+  and see whether $\M$ satisfies $\neg A$. If so, then it is a non-theorem. 
+  We halt and print no. If $L$ has the finite model property, 
+  then every non-theorem will eventually be printed. Otherwise $A$ 
+  is a theorem, it will never be found by the first algorithm,
+  and will eventually be printed by the first algorithm - at this point 
+  we halt and print yes.
+  \end{enumerate} 
+
+
+\end{enumerate}
+\end{enumerate}
+
+\end{document}

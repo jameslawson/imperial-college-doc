@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en" ng-app="mbqc">
+<head>
+  <meta charset="utf-8">
+  <title>Measurement Calculus</title>
+  <link rel="stylesheet" href="css/app.css"/>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Lato:300' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Petit+Formal+Script' rel='stylesheet' type='text/css'>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+</head>
+<body ng-controller="mainCtrl">
+
+  <div class="menu clearfix">
+      <h2 ng-class="{ s: isRouteActive('/assistant')}"><i class="fa fa-magic"></i> <a href="#assistant">Proof Assistant</a></h2>
+      <h2 ng-class="{ s: isRouteActive('/simulator')}"><i class="fa fa-terminal"></i> <a href="#simulator">Simulator</a> </h2>
+      <h2 ng-class="{ s: isRouteActive('/flow')}"><i class="fa fa-code-fork"></i> <a href="#flow">Flow Analyser</a></h2>
+      <div class="sidemenu"><i class="fa fa-bars"></i></div>
+  </div>
+
+  <div ng-view></div>
+
+
+
+  <!--<div>Measurement calculus app <span app-version></span></div>-->
+  <!--<br clear="all"/>-->
+
+  <!-- In production use:
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+  -->
+  <script src="../bower_components/jquery/dist/jquery.js"></script>
+  <script src="../bower_components/jquery/dist/jquery.js"></script>
+
+  <script src="../bower_components/raphael/raphael.js"></script>
+  <script src="../bower_components/raphael/raphael-min.js"></script>
+  <script type="text/javascript" src="raphael-min.js"></script>
+  <!--  Dracula  -->
+  <!--  An extension of Raphael for connecting shapes -->
+  <script type="text/javascript" src="dracula_graffle.js"></script>
+  <!--  Graphs  -->
+  <script type="text/javascript" src="dracula_graph.js"></script>
+  <script type="text/javascript" src="dracula_algorithms.js"></script>
+
+
+  <!--<script src="../bower_components/graphdracula/lib/dracula_graffle.js"></script>-->
+  <!--<script src="../bower_components/graphdracula/lib/dracula_graph.js"></script>-->
+  <!--<script src="../bower_components/graphdracula/lib/dracula_algorithms.js"></script>-->
+
+
+  <script src="../bower_components/angular/angular.js"></script>
+  <script src="../bower_components/angular-route/angular-route.js"></script>
+  <script src="../bower_components/angular-animate/angular-animate.js"></script>
+  <script src="../bower_components/d3/d3.js"></script>
+  <script src="../bower_components/benchmark/benchmark.js"></script>
+
+  <script src="js/app.js"></script>
+
+  <!-- services -->
+  <script src="js/services/expression-tree.js"></script>
+  <script src="js/services/qubitio.js"></script>
+  <script src="js/services/pattern.js"></script>
+  <script src="js/services/pattern-helper.js"></script>
+  <script src="js/services/angle-parser.js"></script>
+  <script src="js/services/composition-tree.js"></script>
+  <script src="js/services/predefined-patterns.js"></script>
+  <script src="js/services/rewrite.js"></script>
+  <script src="js/services/latex-export.js"></script>
+  <script src="js/services/quantum-math.js"></script>
+  <script src="js/services/simulation.js"></script>
+  <script src="js/services/simulation-logger.js"></script>
+  <script src="js/services/open-graph.js"></script>
+  <script src="js/services/predefined-open-graphs.js"></script>
+  <script src="js/services/flow-analyser.js"></script>
+  <script src="js/services/evaluation.js"></script>
+  <script src="js/services.js"></script>
+
+  <!-- controllers -->
+  <script src="js/controllers/main-ctrl.js"></script>
+  <script src="js/controllers/builder-ctrl.js"></script>
+  <script src="js/controllers/assistant-ctrl.js"></script>
+  <script src="js/controllers/simulator-ctrl.js"></script>
+  <script src="js/controllers/flow-ctrl.js"></script>
+
+  <script src="js/controllers.js"></script>
+
+
+
+  <script src="js/filters.js"></script>
+  <script src="js/directives.js"></script>
+</body>
+</html>

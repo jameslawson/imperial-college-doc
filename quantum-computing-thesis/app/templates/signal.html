@@ -1,0 +1,14 @@
+<span data-ng-repeat="o in outcomes track by $index">
+    <span ng-switch="o">
+        <span ng-switch-when="zero">
+            0
+        </span>
+        <span ng-switch-when="one">
+            1
+        </span>
+        <span ng-switch-default>
+            s<span style="font-size:xx-small; vertical-align:bottom;">{{o}}</span>
+        </span>
+    </span>
+    <span ng-show=" ! $last ">+</span>
+</span>

@@ -1,0 +1,152 @@
+<div class="builder clearfix" ng-hide="hide" ng-controller="builderCtrl">
+
+    <div style="background: #FFF; padding: 1em 2em;">
+        <h3>Input Pattern</h3>
+        <h4>{{purposeHeader}}</h4>
+
+        <div class="tabs clearfix">
+            <a ng-click="setCommandMode(true)" ng-class="{ 's': inCommandMode }">Command Mode</a>
+            <a ng-click="setCommandMode(false)" ng-class="{ 's': !inCommandMode }">Compose Mode</a>
+        </div>
+
+        <div class="tab-body clearfix">
+
+            <div ng-show="inCommandMode">
+
+                <a class="ll predef" ng-class="{ 's': showCommandPredef }" ng-click="toggleCommandPredef()">
+                    <div class="predef-arrow" style="float:left;"></div>
+                    Predefined Patterns
+                </a>
+
+                <p class="predef-body" ng-show="showCommandPredef">
+                    <a class="ll r" ng-click="predef('teleportation')">Teleportation</a>
+                    <a class="ll r" ng-click="predef('xrotation')">X-rotation</a>
+                    <a class="ll r" ng-click="predef('zrotation')">Z-rotation</a>
+                    <a class="ll r" ng-click="predef('zrotationWith5q')">Z-rotation (5 qubits)</a>
+                    <a class="ll r" ng-click="predef('cnot')">CNOT</a>
+                    <a class="ll r" ng-click="predef('hadamardNemc')">Hadamard (NEMC)</a>
+                    <a class="ll r" ng-click="predef('uf2')">U-f2</a>
+                    <a class="ll" ng-click="predef('ctrlu')">Controlled-U</a><br>
+                </p>
+
+                <h5>Qubits</h5>
+                <div style="padding-left:1em" builder-qubits></div>
+
+                <h5>Commands</h5>
+
+                <div ng-class="{ 'builder-instr-ctnr': true, 'clearfix' : true, 'builder-focus' : isBuilderFocus }"
+                     tabindex="-1" ng-blur="blur()" ng-focus="focus()" ng-keydown="keydown($event)">
+                    <div style="padding-left: 1.5em" class="clearfix">
+
+                        <div instructions instrs="buildInstructions" build-sub-step="buildSubStep" build-cursor-index="cursorInstrIndex" highlights="[]"
+                             possibleRules="{}"></div>
+                        <div class="blinker" ng-show="buildCursorIndexAtRightEnd()"></div>
+                    </div>
+                    <div class="builder-toolbar" ng-show="isBuilderFocus">
+                        <!--{{cursorInstrIndex}}-->
+                        <div ng-show="isInstrType('AddInstr')">
+                            <span ng-click="insert('N')">N</span>
+                            <span ng-click="insert('E')">E</span>
+                            <span ng-click="insert('M')">M</span>
+                            <span ng-click="insert('X')">X</span>
+                            <span ng-click="insert('Z')">Z</span>
+                        </div>
+                        <div ng-show="isInstrType('AddQubit')">
+                            <span ng-click="insert('1')">1</span>
+                            <span ng-click="insert('2')">2</span>
+                            <span ng-click="insert('3')">3</span>
+                            <span ng-click="insert('4')">4</span>
+                            <span ng-click="insert('5')">5</span>
+                        </div>
+                        <div ng-show="isInstrType('AddSignal')">
+                            <span ng-click="insert('1')">1</span>
+                            <span ng-click="insert('2')">2</span>
+                            <span ng-click="insert('3')">3</span>
+                            <span ng-click="insert('4')">4</span>
+                            <span ng-click="insert('5')">5</span>
+                            <span ng-click="insert('space')">SPACE</span>
+                        </div>
+                    </div>
+                </div>
+
+                <br clear="all"/>
+
+            </div>
+
+
+            <div ng-hide="inCommandMode">
+
+                <a class="ll predef" ng-class="{ 's': showComposePredef }" ng-click="toggleComposePredef()">
+                    <div class="predef-arrow" style="float:left;"></div>
+                    Predefined Patterns
+                </a>
+
+                <p class="predef-body" ng-show="showComposePredef">
+                    <a class="ll r" ng-click="predef('zrotationWith5q')">Z-rotation (5 qubits)</a>
+                    <a class="ll r" ng-click="predef('cnot')">CNOT</a>
+                </p>
+
+                <h5>Composition</h5>
+
+
+                <div ng-class="{ 'builder-instr-ctnr': true, 'clearfix' : true, 'builder-focus' : isBuilderFocus }"
+                     tabindex="-1" ng-blur="blur()" ng-focus="focus()" ng-keydown="keydown($event)">
+                    <div style="margin-left:1.5em; margin-bottom: 1em;" class="ctree clearfix" ng-include="'templates/composition-tree.html'" ></div>
+                    <div class="builder-toolbar"> <!-- ng-show="isBuilderFocus"-->
+                        <div>
+                        <span ng-click="addSingleParamFamilyPattern()">J</span>
+                        <span ng-click="addIdentityPattern()">I</span>
+                        <span ng-click="addHadamardPattern()">H</span>
+                        <span ng-click="addControlledZPattern()">CZ</span>
+                        <span class="separator"></span>
+                        <span ng-click="addCompose()"><span class="compose"></span> </span>
+                        <span ng-click="addTensor()"><span class="tensor"><span class="tensor-cross"></span></span></span>
+                        <span class="separator"></span>
+                        <span ng-click="backspace()">Del</span>
+                        </div>
+                    </div>
+                    <div class="builder-toolbar" ng-show="isCursorOnQubitParam()"> <!-- ng-show="isBuilderFocus"-->
+                        <div>
+                            Qubit:
+                            <span ng-click="insert('1')">1</span>
+                            <span ng-click="insert('2')">2</span>
+                            <span ng-click="insert('3')">3</span>
+                            <span ng-click="insert('4')">4</span>
+                            <span ng-click="insert('5')">5</span>
+                        </div>
+                    </div>
+                    <div class="builder-toolbar" ng-show="isCursorOnAngleParam()"> <!-- ng-show="isBuilderFocus"-->
+                        <div>
+                            Angle:
+                            <span ng-click="insert('+')">+</span>
+                            <span ng-click="insert('-')">-</span>
+                            <span ng-click="insert('*')">*</span>
+                            <span ng-click="insert('/')">/</span>
+                            <span class="separator"></span>
+                            <span ng-click="insert('5')">alpha</span>
+                            <span ng-click="insert('5')">beta</span>
+                            <span ng-click="insert('5')">gamma</span>
+                            <span ng-click="insert('5')">pi</span>
+                        </div>
+                    </div>
+                </div>
+                <br clear="all"/>
+
+            </div>
+
+
+            <div style="background: rgb(255, 190, 190)" ng-hide="!derrors">
+                <ul style="margin-top: 0;">
+                    <li data-ng-repeat="(key, value) in derrors">
+                        <strong>D{{key}}</strong>: {{value}}
+                    </li>
+                </ul>
+            </div>
+
+
+            <div ng-click="acceptBuild()" class="button">Accept</div>
+
+        </div>
+
+    </div>
+</div>

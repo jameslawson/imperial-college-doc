@@ -1,0 +1,44 @@
+\ProvidesPackage{examsty}
+
+% BEGIN PACKAGE IMPORT
+% =============================================================================
+% Import American Society maths
+\usepackage[fleqn]{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{mathtools}
+
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+
+
+% PFG/TikZ and tikz libraries
+\usepackage{tikz} 
+\usetikzlibrary{trees, positioning, arrows, calc, fit} 
+\usepackage{xifthen}
+
+% Import times lookalike font
+\usepackage{mathptmx} 
+% Mathcal in Computer Modern typeface looks better
+\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+
+\usepackage{calc}
+\usepackage{array}
+
+
+
+
+\usepackage{enumitem} % customising list
+\setlist[enumerate,1]{leftmargin=0.01cm}
+\setlist[enumerate,2]{leftmargin=0.5cm}
+
+%\setlist[itemize]{itemsep=5pt, parsep=0pt, topsep=0pt}
+%\setlist[enumerate]{itemsep=5pt, parsep=0pt, topsep=0pt}
+
+
+% =============================================================================
+
+% REMOVE PARAGRAPH INDENTS
+\setlength{\parindent}{0in}
+\setlength{\parskip}{6pt}

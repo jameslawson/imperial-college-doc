@@ -1,0 +1,18 @@
+<div ng-repeat="p in patterns|sublist:paginateBegin:paginateCount:test" class="my-repeat-animation">
+
+    <div ng-show="paginateBegin+$index != patterns.length-1">
+
+            <div style="margin-left: 2em; padding: 0.5em 1em 0 1em;" class="clearfix">
+                <div instructions instrs="p.instructions" highlights="highlights[paginateBegin+$index]"></div>
+            </div>
+
+            <div ng-hide="$last" rewrite-step style="position:relative;" step-num="paginateBegin+$index" rule-name="rewrites[paginateBegin+$index].rule.name"></div>
+
+    </div>
+    <div ng-show="paginateBegin+$index == patterns.length-1">
+        <div class="clearfix" style="background: #E5F9FF; margin-left: 2em; padding: 0.5em 1em;">
+            <div instructions instrs="p.instructions" highlights="highlights[paginateBegin+$index]" possible-rules="possibleRules"></div>
+        </div>
+    </div>
+
+</div>

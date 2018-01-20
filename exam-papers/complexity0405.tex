@@ -1,0 +1,237 @@
+\documentclass[a4paper, draft, 12pt]{article}
+
+% BEGIN PACKAGE IMPORT
+% =============================================================================
+\usepackage{examsty}
+\usepackage{complexitysty}
+% =============================================================================
+
+% BEGIN SOLUTIONS
+% =============================================================================
+
+
+
+\begin{document}
+\textbf{Complexity, 2004-2005}\\
+\textit{James Lawson}
+
+\begin{enumerate} 
+\item % Question 1
+\begin{enumerate}
+\item % (a)
+  \begin{enumerate}
+  \item % (i)
+  For any input $x \in L$, there is some computation that halts and succeeds and the 
+  computation tree has a polynomial depth.
+
+  \item
+  \np~is the set of langauges that can be decided by a NDTM in p-time.\\ 
+  \textsf{PSPACE} is the set of langauges that can be decided by a $k$-tape Turing Machine with 
+  input-output in p-space. 
+  \item
+  Take some $L$ in \np. Then there is a NDTM $M$ that decides $L$. 
+  Let $N$ have degree of nondeterminism, $D$. $N$ operates in p-time 
+  and so every computation can be seen as a sequence of $p(n)$ nondeterministic choices 
+  $(d_1,d_2,d_3,...,d_n)$, $1 \leqslant d_i \leqslant D$, where $p(n)$ is some polynomial.
+  An IOTM can enumerate $D^{p(n)}$ nondeterministic choices, only storing the current 
+  and check whether it leads to a successful halting state - if so, halt and succeed.
+  If we exhaust all enumerations without success, halt with failure. 
+  Each check requires simulation of $p(n)$ steps of M takes time $O(f(n))$ and so space $O(f(n))$.
+  To get started, the first sequence $p(n)$ 1s can be computed in
+  space $O(f(n))$ since any polynomial $p(n)$ is proper. \\
+  This IOTM decides $L$ in p-space. Hence $L$ is in $\textsf{PSPACE}$.
+  \end{enumerate}
+\item % (b)
+  To show HCE is \textsf{NP}-complete, consider a reduction HC $\le$ HCE.\\ 
+  Let 
+  %
+  \newcommand{\yesinstance}{\tikz{\draw[fill=black] (0,0) circle (.5ex) -- (60:3ex) circle (.5ex) -- node[right] {$e$}  (0:3ex) circle (.5ex) -- (0,0);}}
+  \newcommand{\noinstance}{\tikz{\draw[fill=black] (0,0) circle (.5ex) -- (3ex,0) circle (.5ex);}}  
+  $$
+  f((V,E)) = \left\{ 
+  \begin{array}{ll}
+    % First case:
+    (\yesinstance, e) & \text{if } |V| = 1 \\
+    % Second case:
+    (\noinstance, e) & \text{if } |V| = 2 \\
+    % Otherwise case:
+    ((V \cup \{\textsf{p}, \textsf{q}\}, E \cup \{ (x,\textsf{p}), (\textsf{p}, \textsf{q}) \} & \\
+    \quad \cup  \{(\textsf{q}, y) \;|\; (x,y) \in E\} ), (\textsf{p}, \textsf{q})) & \text{otherwise } \\
+    \quad \text{for some } x \in V & \\
+  \end{array} \right.
+  $$
+  %
+  We show $(V,E) \in \text{HC iff } ((V',E'),e)  \in \text{HCE}$
+  \begin{itemize}
+  \item ($\Rightarrow$) Assume $G$ in HC. Consider all possible forms of a HC in $G$.
+  \begin{enumerate}
+  \item $z..xy..z$: 
+  We can construct a HC in $G'$ that takes the same cycle but now, also goes through \textsf{p} and \textsf{q}, 
+  $z..x\textsf{p}\textsf{q}y..z$.
+  This cycle is well-formed because edge $(\textsf{q},y)$ in $G'$ iff $(x,y)$ in $G$
+  and the cycle does indeed go through edge $e = (\textsf{p},\textsf{q})$, so $G'$ is in HCE. 
+  \item $x$. Here, $G = \onegraph$, is a yes-instance of HC, and $f(G)$ outputs a yes-instance of HCE.
+  \end{enumerate}
+  \item ($\Leftarrow$) Assume $(G',e)$ in HCE. Consider all possible forms of a HC in $G'$ using edge $e$. 
+  \\ Note cycles visiting 1 or 4 nodes aren't valid cases. $f$ cannot output $G'$ with degree 1 or degree 4, 
+  so such cycles wouldn't be HCs in $G'$.
+  \begin{enumerate}
+  \item ($z..x$\textsf{pq}$y..z$, $(\textsf{p},\textsf{q})$):
+  We can construct a HC in $G$ that takes the same cycle but visits neither \textsf{p} nor \textsf{q}.
+  So, $G$ has HC: $z..xy..z$, which is well-formed since edge $(x,y)$ in $G$ iff $(\textsf{q},y)$ in $G'$.
+  % \item $u\text{-}v\text{-}v'\text{-}v''\text{-}u$. Note that $f$ only outputs graphs, $G'$, of degree 2,3,5,6.... So 
+  % this cycle visiting four nodes cannot be a HC in $G'$, we have a contradiction.
+  \item ($uvwu$, $(u,v)$): $f$ only outputs graphs, $G'$, of degree 3 when $G = \onegraph$, a 
+  yes-instance.
+  \end{enumerate}
+  \end{itemize}
+  We can compute $f$ in p-time. Checking whether $|V| = 1$ or $|V| = 2$ and 
+  adding new nodes/edges can all be done by reading/writing $G$'s adjacency matrix in
+  polynomial time. Hence $f$ is a p-time computable function for the reduction HC $\le$ HCE. 
+
+  HCE is in \textsf{NP} because given an instance of HCE, $(G,e)$ we can guess 
+  a HC, and check in p-time that it is a cycle, and, check
+  that the cycle uses $e$. Given that HC is \textsf{NP}-complete, since HCE is in \textsf{NP}, and HC $\le$ HCE, 
+  we have that \textsc{HCE} is \textsf{NP}-complete.
+\item % (c)
+  \textit{Algorithm}:
+  Start from $x$ and have a counter $c$ with value 1. \\
+  Check adj matrix and see if there is only one possible next step. 
+  If there exactly one step, make that node the current node, increment $c$ and repeat. 
+  Repeat until we reach $y$ - halt and succeed. If $c > n$, then stop loop, halt and fail. \\
+  \textit{Reasoning}:
+  Checking only one possible next step can be done with 
+  a fixed number of counters bounded in value by $n$. Since we are only 
+  \textit{reading} the input adj matrix, there is no cost in space.
+  We only store the current node (rather than the whole path), 
+  and the $c$ counter will always use space $\log(n)$. Hence this algorithm 
+  describes a IOTM that decides \textsc{D-Rch} in logspace so $\textsc{D-Rch} \in \textsf{LOGSPACE}$. 
+
+\end{enumerate}
+
+\item % Question 2
+\begin{enumerate}
+\item % (a)
+  \begin{enumerate}
+  \item % (i)
+  \textsf{NL}: The class of languages that have a nondeterministic $k$-tape turing machine with input-output 
+  decide the language in logarithmic space. \\
+  \text{co-}\textsf{NL}: The class of complemented \textsf{NL} languages. 
+  ($L \in \textsf{NL}$ iff $\overline{L} \in \text{co-}\textsf{NL}$)
+  \item % (ii)
+  Given a directed graph $G$ and a node $x$, let $N(x)$ be the set of nodes reachable 
+  from $x$. Then $f((G,x)) = |N(x)|$ is computable in logspace. 
+  \item % (iii)
+  $\textsf{NL}$ is closed under complementation. That is, $\textsf{NL} = \text{co-}\textsf{NL}$.
+  The machine in the proof of the S-I theorem can be modified to calculate $N(x)$. 
+  This allows us to use the \textit{reachability method} to exam a config graph in logspace 
+  and see what successfuly halting configurations are reachable. In particular, 
+  suppose $M$ decides a language in \textsf{L}, we can build machine $M'$ that constructs $G(M,x)$.
+  
+  We use the S-I theorem corollary to calculate $N(\text{init config of } M(x))$ in logspace and say 
+  that $M'$ succeeds iff all nodes in $N(\text{init config of } M(x))$ 
+  are not successful halting config. $M'$ decides $\overline{L}$. We can apply the same argument, 
+  for any $\overline{L} \in \text{co-}\textsf{NL}$ to so show that 
+  $\overline{\overline{L}} \in \textsf{NL}$, i.e. that $L \in \textsf{NL}$. Hence $\textsf{NL} = \text{co-}\textsf{NL}$.
+  \end{enumerate}
+\item % (b)
+  \begin{enumerate}
+  \item % (i)
+  A language, $L$ is \textsf{NL}-hard iff $L' \in \nl$ implies $L' \leqslant L$.
+  \item % (ii)
+  Assume is $L$ is \textsf{NL}-hard. \\
+  Assume $L' \in \nl$. \\
+  Since, $\textsf{NL} = \text{co-}\textsf{NL}$, we have $\overline{L}' \in \textsf{NL}$
+  and, since $L$ is NL-hard, we must have $\overline{L}' \leqslant L$. 
+  This is true iff  $\overline{\overline{L}}' \leqslant \overline{L}$
+  iff $L' \leqslant \overline{L}$. \\
+  Hence $\overline{L}$ is \textsf{NL}-hard.
+  \end{enumerate}
+\item % (c)
+  \begin{enumerate}
+  \item % (i)
+  \textsc{2Sat}: Given a set of clauses with two literals, is there a satisfying assignment?
+  \item % (ii)
+  $\overline{\textsc{Rch}}$: Given $G$, is there no path from $x$ to $y$.\\
+  Consider a logspace reduction $\overline{\textsc{Rch}} \leqslant_{\text{log}} \textsc{2Sat}$. \\
+  To show: $(G,s,t) \in L$ iff $\varphi \in L'$.
+
+  For each node $i$ define variable $x_i$.
+  For each edge $(i, j)$ of the $G$, have clause $\neg  x_i \vee x_j$ in $\varphi$ (which 
+  is logically equivalent to $x_j \rightarrow x_i$).\\
+  Add the clauses $(x_s \vee x_s)$ and $(\neg x_t \vee \neg x_t)$.
+  $\varphi$ can be computed in logspace (only store info about current node, 
+  use fixed counters when accessing adj matrix, write to output tape 
+  before moving to next node).
+
+  From the previous part, since \textsc{Rch} is \textsf{NL}-hard, 
+  the complement, $\overline{\textsc{Rch}}$, is also \textsf{NL}-hard. 
+  Since we have $\overline{\textsc{Rch}} \leqslant_{\text{log}} \textsc{2Sat}$,
+  have that $\overline{\textsc{2Sat}}$ is \textsf{NL}-hard.
+  \end{enumerate}
+\end{enumerate}
+\item %Question 3
+\begin{enumerate}
+\item % (a)
+  \begin{enumerate}
+  \item % (i)
+  A family of circuits is \textit{uniform} iff there is a logspace bounded 
+  IOTM which, given input of $1^n$, outputs circuit $C_n$ - where 
+  $C_n(n) = \textsf{tt}$ if $n \in S$, $C_n(n) = \textsf{ff}$ if $n \notin S$,
+  for any undecidable set $S$ of natural numbers. 
+  \item % (ii)
+  $\textsf{NC}_j$ is the class of languages that have some uniform family of circuits that 
+  decide the language in $O(\log^j(n))$ parallel time and $O(n^k)$ work for some $k$.
+  \end{enumerate}
+\item % (b)
+We can take the boolean adjacency matrix for $A$ and square $\ceil{\log(n)}$ times to 
+give the transitive closure, then read entry $(x,y)$ so see whether, from $x$, 
+we can reach $y$. By using the parallel matrix multiplication alg (whic has 
+time $\log(n)$), our squaring algorithm have a total time of $\log^2(n)$ and 
+$O(n^3) \times \log(n) = O(n^k)$ work. Hence $L \in \textsc{NC}_2$.
+\item % (c)
+Connect every input to a \textsf{not} gate. 
+connect consecutive \textsf{not} gates to an \textsf{and} gate. 
+Then connecting the outputs of the \textsf{and} gates to form a knockout-tournament 
+of \textsf{or}-gates. 
+This has depth $\log(n) + k$ and size $n + (n-1) + (n-2) = O(n^k)$ for some $k$. 
+Hence there is some uniform family of circuits that decides 
+in $O(\log^j(n))$ parallel time and $O(n^k)$ work for some $k$. 
+So $L \in \textsc{NC}_j$.
+\item % (d)
+Assume $L_1, L_2 \in \textsf{NC}_j$.\\
+Since $L_1$ is in $\textsf{NC}_j$ and so there is a logspace bounded 
+IOTM which, given input of $1^n$, outputs circuit $C_n$ - where $C_n$
+decides $L_1$. Similarly, there is a machine that on input $1^n$ outputs $C'_n$
+that decides $L_2$.  
+
+In parallel compute: $C'_n(x)$, $(C_1(x_1),C'_{n-1}(x_2..x_n))$, 
+$(C_2(x_1x_2),C'_{n-2}(x_3..x_n))$, ... $(C_n(x_1...x_n))$. For the $n-1$ 
+of these that are pairs, $(C(...),C'(...))$ connect each pair of outputs to an and-gate.
+Now form a knockout tournament with players being the outputs of these $n-1$ and gates as 
+well as the outputs from $C'_n(x)$ and $C_n(x)$. This circuit has depth bounded by
+$O(\log^j(n))$ (doing the $C$'s in parallel) $+$ 1 (and-gates) + $\ceil{(\log(n+1))}$ (tournament)
+which is $O(\log^j(n))$ depth overall. The circuit has size $(n+1)O(n^k)$ (doing the $C$'s in parallel) 
+$+$ $n-1$ (and-gates) $+$ $n$ (or-gates), which, overall is $O(n^{k'})$ for some $k'$. 
+
+Hence there is some uniform family of circuits that decides $L_1L_2$
+in $O(\log^j(n))$ parallel time and $O(n^{k'})$. So $L_1L_2 \in \textsc{NC}_j$.
+\end{enumerate}
+\item %Question 4
+\begin{enumerate}
+\item % (a)
+  \begin{enumerate}
+  \item % (i)
+  An approximation algorithm for a minimisation problem is \textit{k-optimal} iff
+  if it guarantees a solution which is no worse than $k$ times the optimal.
+  \item % (ii)
+  x
+  \item % (iii)
+  x
+  \end{enumerate}
+\end{enumerate}
+
+
+\end{enumerate}
+
+\end{document}

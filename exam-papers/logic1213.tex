@@ -1,0 +1,380 @@
+\documentclass[a4paper, draft, 12pt]{article}
+
+% BEGIN PACKAGE IMPORT
+% =============================================================================
+\usepackage{examsty}
+\usepackage{logicsty}
+% =============================================================================
+
+% BEGIN SOLUTIONS
+% =============================================================================
+
+
+
+\begin{document}
+\textbf{Modal and Temporal Logic, 2012-2013}\\
+\textit{James Lawson}
+
+\begin{enumerate} 
+\item % Question 1
+\begin{enumerate}
+\item
+  \begin{enumerate}
+  \item
+  $A$ is \textit{valid in a model}, $\M$, if $A$ is satisfied at every world of $\M$.
+  \item
+  $A$ is \textit{valid in a frame}, $\F$, if for any model, $\M$, constructed from $\F$, $A$ is valid in $\M$.
+  \item
+  $A$ is \textit{valid} if $A$ is valid in all frames.
+  \end{enumerate}
+\item 
+  \begin{enumerate}
+  \item
+  Reflexive frames.
+  \item
+  Let $A = \bx p \imp p$.
+  In the $\M$ given, $A$ is valid because it is satisfied at all worlds. We can see that $1, \M \models A$ 
+  (1 sees only 2 and $p$ is true at 2), and that $2, \M \models A$ (2 sees no worlds). 
+
+  However, $A$ is not valid for the frame, $\F$. 
+  We can find a witness model $\M_0$ created from $\F$ and see that $A$ is not valid in $\M_0$. 
+  Take $\M_0$ as below (where $h(p) = \emptyset$). $1, \M \nvDash A$ so 
+  $A$ is not valid in $\M_0$. Hence $A$ cannot be valid in $\F$.
+  \end{enumerate}
+\item 
+  \begin{enumerate}
+  \item
+  Assume without proof $\M, t \sat A \imp B$ iff $\M, t \sat A \imp \M, t \sat B$. \\
+  Take arbt. world $t$ from arbt. model $\M$ constructed from arbt. frame $\F$. \\
+  To show: $\M, t \sat \bx(p \imp q) \imp (\dm p \imp \dm q)$.\\
+  Assume $\M, t \sat \bx(p \imp q)$.
+  By Kripke semantics, if $R(t,u)$ then $\M, u \sat p \imp q$ for 
+  all $u$ in $\F$. Now assume $\M, t \sat \dm p$. Then $R(t,u_0)$ and $\M, u_0 \sat p$ for some world $u_0$.
+  But we also have $\M, u_0 \sat p \imp q$ by first assumption. So $\M, u_0 \sat q$. 
+  Hence $\M, t \sat \dm q$ So $\M, t \sat \dm p \imp \dm q$, and, $\M, t \sat \bx(p \imp q) \imp (\dm p \imp \dm q)$
+  \item
+  \textit{Not} valid. \\
+  We can have $\M, t \sat \dm(p \imp q)$ but not $\M, t \sat \dm p \imp \dm q$. 
+  Assume $\M, t \sat \dm(p \imp q)$, then assume $\M, t \sat \dm p$. 
+  There is some world that $t$ can see that satisfies $p \imp q$ and some world 
+  that $t$ can see that satisfies $p$. 
+  However we cannot guarantee that these worlds as the \textit{same}. We cannot 
+  apply modus ponens like before and say there is a a world that $t$ can see that satisfies $q$. 
+  Counter-example:
+  \end{enumerate}
+\item 
+  \begin{enumerate}
+  \item
+  $\neg \dm(\dm \bx p \wedge \neg p)$
+  \item
+  Let $A = \dm(\dm \bx p \wedge \neg p)$ \\
+  We will apply Sahlqvist's algorithm to find the \textit{Sahlqvist's correspondant} of $A$, $\alpha[t]$ and 
+  thus have $\F, u \sat \neg A$ iff $\F \sat \forall t \neg \alpha(t)$. 
+  \textit{Boxed atoms}: $\bx p$.  \textit{Negative formulas}: $\neg p$. We want to find a lazy assignment that 
+  makes boxed atoms true without concern for negative formulas. 
+  Suppose arbt world $t$ sees some world $u$ and $u$ sees some world $v$, 
+  then our assignment must make $p$ true at worlds $v$ can see in order to 
+  make boxed atom $\bx p$ true. So \textit{lazy assignment} is $h^{o}(p) = \{x \;|\; R(v,x)\}$.
+
+  Now we take the \textit{standard translation} of $A$:
+  $$ 
+  \begin{array}{ll}
+    A^{t} &= \exists u(R(t, u) \wedge (\dm\bx p \wedge \neg p)^u  \\
+          &= \exists u(R(t, u) \wedge ((\dm\bx p)^u \wedge (\neg p)^u) \\
+          &= \exists u(R(t, u) \wedge ( (\exists v(R(u,v) \wedge (\bx p)^v) \wedge (\neg p^u)) \\
+          &= \exists u(R(t, u) \wedge \exists v(R(u,v) \wedge (\bx p)^v \wedge \neg P(u)) \\
+  \end{array}
+  $$
+  To preserve equivalence, we move $\exists v$ outside: \\
+  $\exists u \exists v(R(t, u) \wedge R(u,v) \wedge (\bx p)^v \wedge \neg P(u))$. \\
+  Our lazy assignment lets us replace $P(u)$ with $R(u,v)$ and $(\bx p)^v$ with $(\top)^v=\top$. 
+  $\exists u \exists v(R(t, u) \wedge R(u,v) \wedge \top \wedge \neg R(u,v)) = \alpha[t]$. \\
+  So $\forall t \neg \alpha(t) = \forall t \exists u \exists v(R(t, u) \wedge R(u,v) \wedge (\top)^v \wedge \neg R(u,v))$
+  which is logically equivalent to $\forall t \forall u \forall v (R(t,u) \wedge R(u,v) \imp \neg R(u,v))$. 
+
+  Since $(\F, h), t \sat A$ iff $\F \sat (\F, h^{o}), t \sat A$ iff $\F \sat \alpha[t]$. \\
+  we have: $(\F, h), t \sat \neg A$ iff $\F \sat \forall t \neg \alpha[t]$ for any $\F, h, t$. 
+  That is, $B$ is valid in $\F$ iff $\F$ satisfies (using first-order semantics) $\forall t \neg \alpha[t]$  \\
+  \item 
+  $B$ is valid in $\F$ iff $\forall t \forall u \forall v (R(t,u) \wedge R(u,v) \imp \neg R(u,v))$. 
+  So we need to find a frame $\F_0$ that doesn't satisfy this first-order condition. The frame below 
+  doesn't satisfy the condition because there are some worlds $x,y,z$ 
+  where $x$ sees $y$, $y$ sees $z$ but we have $z$ sees $y$. 
+  \end{enumerate}
+\end{enumerate}
+
+%
+\item % Question 2
+\begin{enumerate}
+\item % (a)
+  \begin{enumerate}
+  \item % (i)
+  Since $\F'$ is a p-morphic image of $\F$, there is a p-morphism from $\F$ to $\F'$. 
+  Every p-morphism satisfies the forth property and back-property. \\
+  \textit{Forth property}: $R(x,y) \imp R'(f(x),f(y))$ for all $x,y \in W$\\
+  \textit{Back property}: $R'(f(x),v) \imp (R(x,y)$ and $f(y) = v$ for some $y \in W$)\\
+  for all $x \in W, v \in W'$.
+
+  Take arbt $x, y, z \in W'$. Assume $R'(x,y)$ and $R'(y,z)$ To show $R'(x,z)$.\\
+  $x$ must the image of some world $t \in W$, $x = f(t)$. By the back-property, 
+  given $R'(f(t),y)$, we must have $R(t, t')$ where $f(t') = y$ for some world $t' \in W$. 
+  By the back-property, since $R'(f(t'),z)$ , we have $R(t', t'')$ 
+  where $f(t'') = z$ for some world $t'' \in W$. 
+
+  Since $\F$ is transitive, given that $R(t,t')$ and $R(t', t'')$, we must have $R(t,t'')$. 
+  And by the forth property, given that $R(t,t'')$ we must have $R'(f(t),f(t''))$, in
+  other words, $R(x,z)$.
+  \item % (ii)
+  No. Counter-example:
+  \end{enumerate}
+\item % (b)
+  \begin{enumerate}
+  \item % (i)
+  Example:
+  \item % (ii)
+  Let $\F \times (\mathbb{N}, <) = (W^{\times}, R^{\times})$ 
+  $(x,u)R^{\times}(y,v)$ iff $R(x,y)$ and $u < v$. \\
+  Assume $\F$ is triangle-free. To show: $R^{\times}(x,y)$ is triangle free.\\ 
+  Assume for contradiction, $R^{\times}(x,y)$, $R^{\times}(y,z)$, $R^{\times}(z,x)$ for some $x,y,z \in W^{\times}$.\\
+  Then by def. of $R^{\times}$, we have $x < y$, we have $y < z$ and $z < x$. By transitivity of $<$, 
+  we have $x < z$ but this contradicts $z < x$. \\
+  (\textit{alternatively}: derive contradiction by seeing that there is a triangle in $\F$).
+  So there are no $x,y,z \in W^{\times}$ such that $R^{\times}(x,y)$, $R^{\times}(y,z)$, $R^{\times}(z,x)$.
+  \item % (iii)
+  From lectures, there is a p-morphism from $\F \times (\mathbb{N}, <)$ to $\F$. \\
+  So $\F$ is a p-morphic image of $(\mathbb{N}, <)$. From lectures, p-morphic images 
+  preserve validity of modal formulas. That is, if $A$ valid in $\F \times (\mathbb{N}, <)$ then $A$ valid in $\F$. 
+  \end{enumerate}
+\item % (c)
+  \begin{enumerate}
+  \item % (i)
+  Take some arbitrary time $t$, in $\M = ((\mathbb{N}, <), h)$ for some arbitrary $h$. \\
+  Assume $\M, t \sat FGq$. Then there is some future time $f$, where $q$ is true for the all future times of $f$.
+
+  Now take any time $t'$ in the future of $t$. If $t' < f$ then there is indeed a future time 
+  where $q$ is true ($f$). So $t'$ must satisfy $Fq$. If $t' \geqslant f'$, $q$ is always true 
+  in the future of $f'$, and so must always be true in the future of $t'$.
+  So there must be a time when $q$ is true in the future $t'$. Hence $t'$ must satisfy $Fq$. \\
+  Any future time of $t$, $t'$, satisfies $Fq$, so we have $GFq$.\\
+  Hence $FGq \imp GFq$ is satisfied at all worlds $t$ of $\M$.
+
+  \item % (ii)
+  Not valid. We can find some model $\M_0$ constructed from $(\mathbb{N}, <)$ where 
+  at some world, $t$, $GFq$ holds but $FGq$ doesn't. Let $\M_0$ have assignment
+  $h(q) = \{\;t\in \mathbb{N} \;|\; t \text{ is even }\}$.\\
+  $GFq$ is satisfied at $t$, as for all future times of $t$, $t'$, 
+  there will be some future time of $t'$ where $q$ is true 
+  (say, at the next even time larger than $t'$). 
+  However $FGq$ isn't satisfied at $t$. We cannot find a 
+  future time of $t$, $f$, where for all times in future of $f$, $q$ is true. 
+  There will be some odd time in the future of $f$ where $q$ is false. 
+  \end{enumerate}
+\end{enumerate}
+\item % Question 3
+  \begin{enumerate}
+  \item % (a)
+  Lemmon filtration for $A$: 
+  \begin{itemize}
+  \item $W^{f} = $ set of $\sim$-equivalence classes, where $\sim$ is a relation on $W$
+  where $t \sim u \Longleftrightarrow [\M, t \sat B \Leftrightarrow \M, u \sat B$, for all subformulas, $B$, of $A]$
+  \item $R^{\ell}(X,Y) \Longleftrightarrow [\M,x \sat \bx B \Rightarrow \M, y \sat \bx B \wedge B$ for all $x \in X, y \in Y$,  subformulas, $\bx B$, of $A]$
+  \item $h^f(p) = \{\; X \in W^{f} \;|\; \M, x \sat p \text{ for some } x \in X \;\}$
+  \end{itemize}
+  \item % (b)
+  Lemmon filtration $\mathcal{N}^{\ell}_{\bx p}$: \\
+  \begin{tikzpicture}
+  \node(A)[draw, circle, label={$p, \bx p$}]{$A$};
+  \node(B)[below left=1cm and 0.8cm of A][draw, circle]{$B$};
+  \node(C)[below right=1cm and 0.8cm of A, label={$\bx p$}][draw, circle]{$C$};
+  \draw[->] (B) -- (A); \draw[->] (B) -- (C); \draw[->] (C) -- (A); 
+  \draw[->] (B) edge  [in=120,out=60,loop, looseness=7] (B);
+  \draw[->] (A) edge  [in=280,out=250,loop, looseness=6] (A);
+  \end{tikzpicture}
+  \item % (c)
+  Take any arbitrary $X \in \mathcal{F}^{\ell}_{A}$. \\
+  Take any arbitrary world $x \in X$. Let $B$ be any subformula of $A$.\\
+  Assume $\M, x \sat \bx B$.
+
+  $\F$ is serial, so there 
+  is some world $y \in W$ with $R(x,y)$. So by our assumption, $\M, y \sat B$.
+  Take some arbt $z \in W$. Assume $R(y,z)$. By transitivity of $\F$, we have $R(x,z)$. 
+  And so by our first assumption, $\M, z \sat B$.
+  Hence $\forall z(R(y,z) \imp \M, z \sat B)$, so $\M, y \sat \bx B$. 
+  Hence $\M, y \sat \bx B \wedge B$
+
+  Let $Y\in \mathcal{F}^{\ell}_{A}$ be the $\sim$-equivalence class that $y$ is in.
+  Take any $y'$ in $Y$. Since $y$ and $y'$ agree on the satisfiability of all subformulas of $A$, 
+  they agree on the satisfisfiability of $B \wedge \bx B$.
+  So must have for all $y' \in Y$, $\M, y' \sat B \wedge \bx B$. 
+  So $\M, x \sat \bx B$ implies [$\M, y' \sat B \wedge \bx B$ for all $x \in X$, $y' \in Y$, all subformulas $B$.]
+  Hence $R^{\ell}(X,Y)$. 
+
+  So for any $X\in \mathcal{F}^{\ell}_{A}$, there is some $Y\in \mathcal{F}^{\ell}_{A}$ 
+  such that $R^{\ell}(X,Y)$.
+  \item % (d)
+  $KTS = K + (\dm \top, \bx p \imp \bx \bx p)$ is sound and complete for $\mathcal{TS}$.
+  We claim $\text{Thm}(KTS)$ has the strong finite model property. 
+
+  Take some $A \notin \text{Thm}(KTS)$,
+  Since $KTS$ is sound and complete over $\mathcal{TS}$, 
+  $A \notin \text{Log}(\mathcal{TS})$, in other words, there is some 
+  model $\M$ constructed from a frame in $\mathcal{TS}$ with $\M,t \sat \neg A$.
+  We can take this $\M$ and find the Lemmon filtration, $\M^{\ell}_{A}$.
+  By the Filtration lemma, $\neg A$ is satisfied in $\M^{\ell}_{A}$
+
+  From part (c), $\mathcal{F}^{\ell}_{A}$ is serial. From lectures,
+  The Lemmon filtration relation $R^\ell$ is transitive (Lemma 9.19), so
+  $\mathcal{F}^{\ell}_{A}$ is transitive. Hence $\M^{\ell}_{A}$ is 
+  serial and transitive and so validates $\text{Thm}(KTS)$.
+
+  Since $\mathcal{F}^{\ell}_{A}$ is finite with at most $2^n$ worlds (where $n$ is the 
+  number of subformulas of $\neg A$), $KTS$ has the strong finite model property.
+  There is an algorithm to decide whether $\mathcal{F}^{\ell}_{A}$ validates 
+  $KTS$ ($KTS$ has finite many axioms - by Theorem 8.3, it is enough to just check each axiom true for all finite worlds
+  taken from finitely possible models build from $\mathcal{F}^{\ell}_{A}$) - so by Theorem 9.8, $KTS$ is decidable. 
+
+  \textit{Algorithm:}\\
+  Compute $s(A) = 2^{n}$, where $n$ is the number of subformulas of $A$. \\
+  Enumerate all models whose frame is $\mathcal{F}^{\ell}_{A}$. \\
+  If we find a model satisfies $\neg A$, halt and print $A \notin L$.\\
+  If no models are found that satisfy $\neg A$, halt and print $A \in L$
+  \end{enumerate}
+\item % Question 4
+  \begin{enumerate}
+  \item
+  \begin{enumerate}
+  \item  
+  For any $\Gamma, \Delta \in W_C$, \\
+  $R_C(\Gamma, \Delta)$ iff [if $\bx A \in \Gamma$ then $A \in \Delta$, for all formulas, $A$].  
+  \item 
+  ($\Rightarrow$) Assume $R_C(\Gamma, \Delta)$. \\
+  Take any $A$. Assume $A \in \Delta$.
+  By the truth lemma, $\M_C, \Delta \sat A$.
+  By Kripke semantics, $\M_C, \Gamma \sat \dm A$.
+  By the truth lemma, $\dm A \in \Gamma$. \\
+  ($\Leftarrow$) Assume $A \in \Delta$ implies $\dm A \in \Gamma$ for any $A$. \\
+  Assume $\bx A \in \Gamma$. \\
+  Suppose for contradiction, $A \notin \Delta$. \\
+  $\Delta$ is a MCS, so by MCS properties (lemma 7.20), $\neg A \in \Delta$. 
+  So by our first assumption, $\dm \neg A \in \Gamma$.
+  But $\dm B$ is an abbreviation for $\neg \bx \neg B$, 
+  so we have $\neg \bx \neg \neg A \in \Gamma$. 
+  By the truth lemma, $\M_C, \Gamma \sat \neg \bx \neg \neg A$. 
+  By equivalence in Kriple semantics $\M_C, \Gamma \sat \neg \bx A$. 
+  And by the truth lemma we have $\neg \bx A \in \Gamma$ .
+  $\Gamma$ is a MCS, so by properties of MCSs, $\bx A \notin \Gamma$. Contradiction. \\
+  So $A \in \Delta$. Hence $R(\Gamma,\Delta)$.
+  \item
+  Take any worlds $\Gamma, \Delta_1, \Delta_2 \in W_C$. \\
+  Assume $R_C(\Gamma, \Delta_1)$ and $R_C(\Gamma, \Delta_2)$.\\
+  To show $R_C(\Delta_1, \Delta_2)$. \\
+  Assume $\bx A \in \Delta_1$ \\
+  From part ii, since $R_C(\Gamma, \Delta_1)$, we have $\dm \bx A \in \Gamma$. 
+  Since $\Gamma$ is an MCS, by Lemma 7.19, $\Gamma \vdash_C \dm \bx A$.
+  Now, $\dm \bx p \imp \bx p$ is an axiom of $C$, so by sub, 
+  $\vdash_C \dm \bx A \imp \bx A$. 
+  Since $\Gamma \vdash_C \dm \bx A$ and  $\vdash_C \dm \bx A \imp \bx A$, 
+  we have $\Gamma \vdash_C \bx A$, which by MCS properties, gives $\bx A \in \Gamma$. 
+  But since $R(\Gamma, \Delta_2)$, $A \in \Delta_2$. \\
+  Hence $R_C(\Delta_1, \Delta_2)$.
+  \item
+  The \textit{Completeness Theorem} states that the 
+  if a class of frames $\C$ contains the canonical frame $\F_H$,
+  then $H$ is complete over $\C$. 
+
+  In part iii, we showed 
+  that the class of balloon-like frames contains $\F_C$, 
+  and so our Hilbert system is complete over the class.
+  \end{enumerate}
+  \item 
+  \begin{enumerate}
+  \item  
+  $f$ is monotonic iff for all sets $U,V \subseteq W$:\\
+  if $U \subseteq V$ then $f(U) \subseteq f(V)$. 
+  \item
+  $U \subseteq W$ is a fixed point of $f$ iff $f(U) = U$.
+  \item 
+  $f^0(\emptyset) = \emptyset$ by def of $f$.
+  But $\emptyset \subseteq f^1(\emptyset)$, as the emptyset is a subset of all sets.
+  Since $f$ is monotonic, we have $f^1(\emptyset) \subseteq f^2(\emptyset)$. 
+  By monotonicity of $f$ we have $f^2(\emptyset) \subseteq f^3(\emptyset)$
+  and $f^3(\emptyset) \subseteq f^4(\emptyset)$, ...
+
+  As $W$ is finite, there must be some $m$ such that $f^m(\emptyset) = f^{m+1}(\emptyset)$. 
+  Hence $Z = f^m(\emptyset)$ is a fixed point of $f$. 
+  Since $f^0(\emptyset) \cup f^1(\emptyset) \cup ... \cup f^m(\emptyset) = Z$ and 
+  $f^m(\emptyset) \cup f^{m+1}(\emptyset) \cup ... = Z$, 
+  we have $Z = Z \cup Z = \cup_{n \in \mathbb{N}} f^{n}(\emptyset)$.
+  \end{enumerate}
+  \item
+  \begin{enumerate}
+  \item  Let $A = p \wedge \bx q$. 
+  Then $\bb{\mu q A}_h = \text{LFP}(A^h_q)$ where $A^h_q(U) = \bb{A}_{h[p \mapsto U]}$.
+  \begin{itemize}
+  \item 
+  Let $h_0 = h[q \mapsto \emptyset]$. Then $A^h_q(\emptyset)$ \\
+  $ =\bb{p \wedge \bx q}_{h_0}$ 
+  $ = \bb{p}_{h_0} \cap \bb{\bx q}_{h_0}$
+  $ = \{2,3,4,5\} \cap \bx \bb{q}_{h_0}$ \\
+  $ = \{2,3,4,5\} \cap \bx \emptyset = \{2,3,4,5\} \cap \{5\} = \{5\}$
+  \item 
+  Let $h_1 = h[q \mapsto \{5\}]$. Then $A^h_q(A^h_q(\emptyset))$ \\
+  $ = \bb{p \wedge \bx q}_{h_1}$ 
+  $ = \bb{p}_{h_1} \cap \bb{\bx q}_{h_1}$
+  $ = \{2,3,4,5\} \cap \bx \bb{q}_{h_1}$ \\
+  $ = \{2,3,4,5\} \cap \bx \{5\}$
+  $ = \{2,3,4,5\} \cap \{4,5\} = \{4,5\}$.
+  \item 
+  Let $h_2 = h[q \mapsto \{4,5\}]$. Then $A^h_q(A^h_q(A^h_q(\emptyset)))$ \\
+  $ = \bb{p \wedge \bx q}_{h_2}$ 
+  $ = \bb{p}_{h_2} \cap \bb{\bx q}_{h_2}$
+  $ = \{2,3,4,5\} \cap \bx \bb{q}_{h_2}$ \\
+  $ = \{2,3,4,5\} \cap \bx \{4,5\}$
+  $ = \{2,3,4,5\} \cap \{4,5\} = \{4,5\}$.
+  \end{itemize}
+  So $\text{LFP}(A^h_q) = \cup_{n \in \mathbb{N}} (A^h_q)^n(\emptyset) = \{4,5\}$.
+  So $\bb{\mu q A}_h = \{4,5\}$.
+
+  \item 
+  $\bb{\nu q A}_h = \text{GFP}(A^h_q)$. Let $W = \{1,2,3,4,5\}$.
+  \begin{itemize}
+  \item 
+  Let $h_0 = h[q \mapsto W]$. \\
+  Then:
+  $A^h_q(W) = \bb{p \wedge \bx q}_{h_0}$ 
+  $ = \bb{p}_{h_0} \cap \bb{\bx q}_{h_0}$
+  $ = \{2,3,4,5\} \cap \bx \bb{q}_{h_0}$
+  $ = \{2,3,4,5\} \cap \bx W$
+  $ = \{2,3,4,5\} \cap W = \{2,3,4,5\}$.
+  \item 
+  Let $h_1 = h[q \mapsto \{2,3,4,5\}]$. \\
+  Then:
+  $A^h_q(W) = \bb{p \wedge \bx q}_{h_1}$ 
+  $ = \bb{p}_{h_0} \cap \bb{\bx q}_{h_1}$
+  $ = \{2,3,4,5\} \cap \bx \bb{q}_{h_1}$
+  $ = \{2,3,4,5\} \cap \bx \{2,3,4,5\}$
+  $ = \{2,3,4,5\} \cap \{3,4,5\} = \{3,4,5\}$.
+  \item 
+  Let $h_2 = h[q \mapsto \{3,4,5\}]$. \\
+  Then:
+  $A^h_q(W) = \bb{p \wedge \bx q}_{h_2}$ 
+  $ = \bb{p}_{h_0} \cap \bb{\bx q}_{h_2}$
+  $ = \{2,3,4,5\} \cap \bx \bb{q}_{h_2}$
+  $ = \{2,3,4,5\} \cap \bx \{3,4,5\}$
+  $ = \{2,3,4,5\} \cap \{3,4,5\} = \{3,4,5\}$.
+
+  \end{itemize}
+  So $\text{LFP}(A^h_q) = \cap_{n \in \mathbb{N}} (A^h_q)^n(W) = \{3,4,5\}$.
+  So $\bb{\nu q A}_h = \{3,4,5\}$.
+
+  \end{enumerate}
+ 
+  
+
+  \end{enumerate}
+
+
+
+\end{enumerate}
+
+\end{document}

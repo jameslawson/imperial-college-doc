@@ -1,0 +1,25 @@
+
+<div data-ng-repeat="i in instrs">
+    <div ng-switch="i.letter">
+        <div class="blinker" ng-show="buildCursorIndex == $index && buildSubStep==0"></div>
+        <div ng-switch-when="N">
+            <div class="instrCntr" preparation instr="instrs[$index]" ng-class="{highlight : highlights[$index]}" build-cursor-index="buildCursorIndex" build-sub-step="buildSubStep" index="$index" possible-rule="possibleRules[$index]"></div>
+        </div>
+        <div ng-switch-when="E">
+            <div class="instrCntr" entanglement instr="instrs[$index]" ng-class="{highlight : highlights[$index]}" build-cursor-index="buildCursorIndex" build-sub-step="buildSubStep" index="$index" possible-rule="possibleRules[$index]"></div>
+        </div>
+        <div ng-switch-when="M">
+            <div class="instrCntr" measurement instr="instrs[$index]" ng-class="{highlight : highlights[$index]}" build-cursor-index="buildCursorIndex" build-sub-step="buildSubStep" index="$index" possible-rule="possibleRules[$index]"></div>
+        </div>
+        <div ng-switch-when="C">
+            <div class="instrCntr" correction instr="instrs[$index]" ng-class="{highlight : highlights[$index]}" build-cursor-index="buildCursorIndex" build-sub-step="buildSubStep" index="$index" possible-rule="possibleRules[$index]"></div>
+        </div>
+        <div ng-switch-when="X">
+            <div class="instrCntr" correction instr="instrs[$index]" ng-class="{highlight : highlights[$index]}" build-cursor-index="buildCursorIndex" build-sub-step="buildSubStep" index="$index" possible-rule="possibleRules[$index]"></div>
+        </div>
+        <div ng-switch-when="Z">
+            <div class="instrCntr" correction instr="instrs[$index]" ng-class="{highlight : highlights[$index]}" build-cursor-index="buildCursorIndex" build-sub-step="buildSubStep" index="$index" possible-rule="possibleRules[$index]"></div>
+        </div>
+        <div ng-switch-default>...</div>
+    </div>
+</div>

@@ -1,0 +1,206 @@
+<div ng-show="showBuilder">
+    <builder purpose-header="(1/2) input that pattern for simulation"></builder>
+</div>
+
+
+<div ng-show="showDataInput">
+    <div class="builder clearfix" ng-hide="hideBuilder" ng-controller="builderCtrl">
+        <div style="background: #FFF; padding: 1em 2em;">
+            <h3>Simulation Input</h3>
+            <h4>(2/2) input initial quantum state</h4>
+
+            <h5>Chosen Pattern</h5>
+
+            <div class="clearfix simulator-instr-cntr">
+                <div instructions instrs="pattern.instructions" highlights="highlights"></div>
+            </div>
+
+            <div ng-show="nonTrivialAnglesExist">
+                <h5>Angles</h5>
+                <p class="field-desc">Please give the following symbolic angles a value.</p>
+                <div data-ng-repeat="(name,val) in angleContext">
+                    {{name}} <input ng-model="val"> <br>
+                </div>
+            </div>
+
+            <div ng-show="inputQubitsExist">
+                <h5>Input State</h5>
+                <p class="field-desc">Please give the following input qubits an initial state.</p>
+
+                <div class="clearfix">
+                    <div data-ng-repeat="(name,val) in inputQubitState">
+                        <div class="qubit-state-row clearfix">
+                            <div style="float:left;">
+                                <span class="qubit"
+                                      ng-class="{'input-qubit' : pattern.qubits[name] == qubitio.In,
+                                                 'inout-qubit' : pattern.qubits[name] == qubitio.InOut}">
+                                <span class="builder-qubit-circle">{{name}}</span></span>
+                            </div>
+                            <div qubit-state-input qubit="val"></div>
+                            <div style="float:left;">
+                                <a ng-click="setInputToZero(name)" class="ll">|0></a>
+                                <a ng-click="setInputToOne(name)" class="ll">|1></a>
+                                <a ng-click="setInputToPlus(name)" class="ll">|+></a>
+                                <a ng-click="setInputToMinus(name)" class="ll">|-></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="button" ng-click="dataInputGoBack()">Back</div>
+            <div class="button" ng-click="dataInputAccept()">Accept</div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="proof clearfix" ng-show="showSimulator">
+    <div style="background: #FFF; padding: 1em 2em;">
+
+        <div class="clearfix">
+            <h3 class="flt-l">Simulation</h3>
+            <a class="ll g flt-r" ng-click="resetAll()">Choose New Pattern...</a>
+        </div>
+
+
+        <div class="mini-cntr proof-mini-cntr clearfix">
+            <div style="background: #FFF; padding: 1em 2em;">
+                <div>
+                    <h5>Pattern</h5>
+                    <a class="ll r" ng-click="togglePatternTab('statistics')">
+                        {{patternTabsHidden.statistics  ? "Show" : "Hide"}} Statistics
+                    </a>
+                    <a class="ll r" ng-click="togglePatternTab('simulationLog')">
+                        {{patternTabsHidden.simulationLog ? "Show" : "Hide"}} Simulation Log
+                    </a>
+                    <a class="ll r" ng-click="togglePatternTab('computationTree')">
+                        {{patternTabsHidden.computationTree ? "Show" : "Hide"}} Computation Tree
+                    </a>
+                    <a class="ll r" ng-click="togglePatternTab('entanglementGraph')">
+                        {{patternTabsHidden.entanglementGraph ? "Show" : "Hide"}} Entanglement Graph
+                    </a>
+                </div>
+
+                <div ng-hide="patternTabsHidden.computationTree">
+                    <p>This is the computation tree</p>
+                    <div id="computationTree"></div>
+                </div>
+
+                <div ng-hide="patternTabsHidden.entanglementGraph">
+                    <p>This is the entanglement graph</p>
+                    <div id="entanglementGraph"></div>
+                </div>
+
+                <div class="statistics clearfix" ng-hide="patternTabsHidden.statistics">
+                    <div class="leftcol">
+                        <ul>
+                            <li>Qubits prepared implicitly: {{patternStatistics.qubitsPreparedImplicitly}}</li>
+                            <li>Qubits prepared explicitly: {{patternStatistics.qubitsPreparedExplicitly}}</li>
+                            <li>Measured Qubits: {{patternStatistics.measuredQubits}}</li>
+                            <li>Non-measured Qubits: {{patternStatistics.nonMeasuredQubits}}</li>
+                            <li>No. Instructions: {{patternStatistics.numInstructions}}</li>
+                            <li>No. Prepare: {{patternStatistics.numPrepare}}</li>
+                            <li>No. Entanglements: {{patternStatistics.numEntanglements}}</li>
+                            <li>No. Measurements: {{patternStatistics.numMeasurements}}</li>
+                            <li>No. XCorrections: {{patternStatistics.numXCorrections}}</li>
+                            <li>No. ZCorrections: {{patternStatistics.numZCorrections}}</li>
+                        </ul>
+                    </div>
+                    <div class="rightcol">
+                        <ul>
+                            <li>No. active qubits:{{numActiveQubits}}</li>
+                            <li>No. destroyed qubits: {{numDestroyedQubits}}</li>
+                            <li>No. active qubits due for destruction: {{rewriteCounts['EZ']}}</li>
+                            <li>No. active qubits due for output : {{rewriteCounts['MX']}}</li>
+                            <li>No. commands executed:</li>
+                            <li>No. remaining commands:</li>
+                            <li>No. preparations executed:</li>
+                            <li>No. entanglements executed:</li>
+                            <li>No. measurements executed:</li>
+                            <li>No. x-corrections executed:</li>
+                            <li>No. z-corrections executed:</li>
+                            <li>Execution has finished:</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="simulator-log" ng-hide="patternTabsHidden.simulationLog">
+                    <ul>
+                        <li data-ng-repeat="x in commentary track by $index">{{x}}</li>
+                    </ul>
+                </div>
+
+                <h5>Run</h5>
+                <a class="ll r" ng-class="{ 'd': undoDisabled }" ng-click="runNext()">Run Next Command</a>
+                <a class="ll r" ng-class="{ 'd': standardFormDisabled }" ng-click="runAll()">Run All Commands</a>
+
+
+                <div class="clearfix simulator-instr-cntr">
+                    <div instructions instrs="pattern.instructions" highlights="highlights"></div>
+                </div>
+
+                <h5>Quantum State</h5>
+
+                <div class="clearfix" style="padding: 1em;">
+
+                    <span data-ng-repeat="q in tensorOrder">
+                        <span class="braketline"></span>{{q}}<span class="ket"></span>
+                        <span ng-hide="$last" class="tensor"><span class="tensor-cross"></span> </span>
+                    </span>
+
+                    = (<span ng-repeat="c in quantumState">
+                        <span style="font-family: monospace;">{{c.real}}</span>
+                        +
+                        <span style="font-family: monospace;">{{c.imag}}</span>i
+                        <span ng-hide="$last">,</span>
+                    </span>)
+                </div>
+
+
+                <h5>Measurement Outcomes</h5>
+
+                <div class="clearfix" style="padding: 1em;">
+                    {{measurementOutcomes}}
+                </div>
+
+
+                <h5>Branches</h5>
+
+                <div>
+                    <a class="ll" ng-click="onDomLoad()">Show Branch Diagram</a>
+                    <strong>s</strong> = {{signal}}<br>
+                    <strong>A_s</strong> =
+                    <div id="branch-diagram">
+                </div>
+
+
+            </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--<span class="proof-lbl-tab">
+<span class="proof-lbl">1WQC Diagram</span>
+</span>
+<span class="proof-lbl-tab">
+<span class="proof-lbl">Pattern</span>
+</span>
+
+<span ng-click="nextStep()" class="standard-form-btn">Next</span>
+
+<div instructions instrs="pattern.instructions"></div>
+
+<hr>
+{{diagramEdges}}-->
+
+<div id="canvas"></div>
+
+<!--
+<span ng-click="redraw()" class="standard-form-btn">Redraw</span>-->

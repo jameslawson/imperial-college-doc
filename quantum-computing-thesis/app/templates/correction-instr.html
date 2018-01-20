@@ -1,0 +1,15 @@
+<div class="instrLetter">{{instr.letter}}</div>
+<div class="instrScriptsCntr">
+    <div class="instrSuperscript">
+        <span signal outcomes="instr.signals[0]"></span>
+        <span class="blinker-script-size" ng-show="buildSubStep == 2 && index == buildCursorIndex"></span>
+    </div>
+    <div class="instrSubscript">
+        <span class="display:inline-block;">{{instr.qubits[0]}}</span>
+        <span class="blinker-script-size" ng-show="buildSubStep == 1 && index == buildCursorIndex"></span>
+    </div>
+</div>
+<div style="float:left; background: #b4b4b4; clear:left; font-size:25%; width:100%; border-radius: 5px; text-align: center; font-weight:bold; color: white;">
+    {{possibleRule.rule.name}}
+</div>
+<rwchoice index="index" rule-name="possibleRule.name"></rwchoice>

@@ -1,0 +1,10 @@
+<div class="instrLetter">{{instr.letter}}</div>
+<div class="instrScriptsCntr">
+    <div class="instrSuperscript"></div>
+    <div class="instrSubscript">
+        <span class="display:inline-block;">{{instr.qubits[0]}}{{instr.qubits[1]}}</span>
+        <span class="blinker-script-size" ng-show="(buildSubStep == 1 || buildSubStep == 2) && index == buildCursorIndex"></span>
+    </div>
+</div>
+
+<rwchoice index="index" rule-name="possibleRule.name"></rwchoice>

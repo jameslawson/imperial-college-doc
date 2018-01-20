@@ -1,0 +1,74 @@
+<div class="builder clearfix" ng-hide="hideBuilder" ng-controller="builderCtrl">
+    <div style="background: #FFF; padding: 1em 2em;">
+
+        <h3>Input Open Graph</h3>
+
+        <!--<p class="clearfix">
+            <a class="ll predef" ng-class="{ 's': showComposePredef }" ng-click="toggleComposePredef()">
+                <div class="predef-arrow" style="float:left;"></div>
+                Predefined Open Graphs
+            </a>
+        </p>
+-->
+        <div class="flow-toolbar clearfix" ng-show="flowLoaded">
+
+            <div class="button-group">
+                <div class="button" ng-click="setMode('normal')" ng-class="{'down' : isCurrentMode('normal')}">Normal Mode</div>
+                <div class="button" ng-click="setMode('addEdge')" ng-class="{'down' : isCurrentMode('addEdge')}">Add Edges</div>
+                <div class="button" ng-click="setMode('deleteNode')" ng-class="{'down' : isCurrentMode('deleteNode')}">Delete Nodes</div>
+            </div>
+
+            <div class="button-group">
+                <div class="button add" ng-click="addNeitherNode()">
+                    <span class="qubit aux-qubit"><span class="builder-qubit-circle">+</span></span>
+                </div>
+                <div class="button add" ng-click="addInNode()">
+                    <span class="qubit input-qubit"><span class="builder-qubit-circle">+</span></span>
+                </div>
+                <div class="button add" ng-click="addOutNode()">
+                    <span class="qubit output-qubit"><span class="builder-qubit-circle">+</span></span>
+                </div>
+                <div class="button add" ng-click="addInOutNode()">
+                    <span class="qubit inout-qubit"><span class="builder-qubit-circle">+</span></span>
+                </div>
+            </div>
+
+
+            <div class="button" ng-click="autolayout()">Autolayout</div>
+
+        </div>
+
+
+        <div id="canvas" class="flow-canvas"></div>
+        <div class="load-notice" ng-click="redraw()" ng-hide="flowLoaded">
+            Click here to load the Flow Analyser
+        </div>
+        <br>
+
+
+        <div style="padding:1em 2em; background:#EEE;" ng-show="flowLoaded">
+            <div class="button" ng-click="analyseFlow()" ng-hide="showAnalysisResults">Analyse Flow</div>
+
+            <div class="flow-result" ng-show="showAnalysisResults">
+                <h5>Flow Analysis Result</h5>
+                <div ng-show="foundCausalFlow">
+                    <p>Found causal flow:</p>
+                    <ul>
+                        <li>{{causalSuccessorFunc}}</li>
+                        <li>{{causalPartialOrder}}</li>
+                    </ul>
+                </div>
+                <div ng-hide="foundCausalFlow">
+                    <p>No causal flow found</p>
+                </div>
+            </div>
+
+            <div style="padding:1em 2em; background:#EEE;">
+                Pattern:
+                Angles:
+                <div class="button">Compute Pattern</div>
+            </div>
+        </div>
+
+    </div>
+</div>

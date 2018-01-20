@@ -1,0 +1,38 @@
+
+<ul ng-class="{ 's' : cursorNode == node}">
+    <li class="bracket" ng-show="node.type != 'p' && node.l != null">(</li>
+    <li ng-repeat="node in node.l" ng-include="'templates/composition-tree.html'"></li>
+    <li class="bracket" ng-show="node.type != 'p' && node.l != null">)</li>
+    <li ng-show="node.cursorleft"><div class="blinker"></div></li>
+    <li>
+        <div ng-switch="node.type">
+            <div ng-switch-when="p_h">
+                <span class="dottedbox"></span>
+            </div>
+            <div ng-switch-when="t">
+                <span class="tensor"><span class="tensor-cross"></span></span>
+            </div>
+            <div ng-switch-when="c">
+                <span class="compose"></span>
+            </div>
+            <div ng-switch-when="p">
+                <span class="letter">{{node.name}}</span>
+                (
+                <span ng-repeat="i in node.params track by $index">
+                    <span ng-if="i == null" ng-class="{'s': cursorParamIndex == $index && cursorNode == node}" class="param-dotted-box"></span>
+                    <span ng-if="i != null">
+                        <span class="param" ng-class="{'s': cursorParamIndex == $index && cursorNode == node}">{{i}}</span>
+                    </span>
+                    <span ng-show="!$last">,</span>
+                </span>
+                )
+            </div>
+            <div ng-switch-default>...</div>
+        </div>
+    </li>
+    <li ng-show="node.cursorright"><div class="blinker"></div></li>
+    <li class="bracket" ng-show="node.type != 'p' && node.r != null">(</li>
+    <li ng-repeat="node in node.r" ng-include="'templates/composition-tree.html'"></li>
+    <li class="bracket" ng-show="node.type != 'p' && node.r != null">)</li>
+</ul>
+
