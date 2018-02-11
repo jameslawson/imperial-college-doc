@@ -1,0 +1,66 @@
+\documentclass[a4paper, draft, 12pt]{article}
+
+% BEGIN PACKAGE IMPORT
+% =============================================================================
+\usepackage{examsty}
+\usepackage{complexitysty}
+% =============================================================================
+
+% BEGIN SOLUTIONS
+% =============================================================================
+
+
+
+\begin{document}
+\textbf{Complexity, 2006-2007}\\
+\textit{James Lawson}
+
+\begin{enumerate} 
+\item % Question 1
+\begin{enumerate}
+\item % (a)
+  \begin{enumerate}
+  \item % (i)
+  $L$ is $\textsf{NP}$ is there is a nondeterminstic turing machine that decides $L$ in p-time.
+  \item % (ii)
+   $L$ is $\textsf{NP}$-complete if it is in $\textsf{NP}$, and is $\textsf{NP}$-hard: if $L' \in \textsf{NP}$ then $L' \leqslant L$ .
+  \item % (iii)
+  Assume $L$ is $\textsf{NP}$-complete. 
+  Assume for contradiction that $L$ is in \textsf{P}.
+  Then take any langauge $L'$ in \textsf{NP}.
+  So $L' \leqslant L$. 
+  But given that $L$ is in \textsf{P}, we deduce that $L$ is in \textsf{P} by the downward closure property of reduction. 
+  In other words, we have shown that $\textsf{P} \subseteq \textsf{NP}$. We already know that $\textsf{NP} \subseteq \textsf{P}$, 
+  so $\textsf{P} = \textsf{NP}$ giving a contradiction. 
+  \end{enumerate}
+\item % (b)
+  \begin{enumerate}
+  \item % (i)
+  $\textsc{TRI}$ is given sets $B$, $G$, $H$, each with $n$ elements
+  and triples $T \subseteq B \times G \times H$, is there a subset $T' \subseteq T$ 
+  such that $T'$ has $n$ elements and no two triples in $T'$ have an element in common.  
+
+  \item % (ii)
+  Consider a reduction $\textsc{tri} \leqslant \textsc{SubsetSum}$. \\
+  Take $B, G, H $ of size $n$ and $T$ of size $m$.\\
+  For each $t_i \in T$, associate string, of $3n$ 0/1s for a $(m+1)$-ary numbers. \\
+  $f(B,G,H,T) = (W,K)$ where $K = \sum^{3n-1}_{i=0}(1+m)^{i}$ and $W = \{w_{t_i} \;|\; t_i \in T\}$. 
+  \begin{itemize}
+  \item $(\Rightarrow)$ Assume $(B,G, H, T)$ has a matching, then the sum will have $3n$ 1s because 
+  there are no common elements so each $n$-bit grouping has unique operands in the summation. 
+  \item $(\Leftarrow)$ Assume there is a subset sum in $f(B,G,H,T)$. \\
+  There is some $w_{t_1} + w_{t_2} + ... + w_{t_k} = K$. $K$ is a series of 3$n$ 1s. 
+  Each group of $n$ bits, is a series of 1s. Since each element has a unique $n$-string
+  each bit is covered by exactly one element. So $k = n$ and each $w_{t_i}$ corresponds 
+  to a different tuple, and the tuples sum to $K$.  
+  \end{itemize}
+
+  \end{enumerate}
+
+
+\end{enumerate}
+
+\end{enumerate}
+
+
+\end{document}
